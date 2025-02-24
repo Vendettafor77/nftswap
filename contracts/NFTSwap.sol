@@ -40,6 +40,8 @@ contract NFTSwap is IERC721Receiver {
 
     fallback() external payable {}
 
+    receive() external payable {}
+
     // 挂单: 卖家上架NFT，合约地址为_nftAddr，tokenId为_tokenId，价格_price为以太坊（单位是wei）
     function list(address _nftAddr, uint256 _tokenId, uint256 _price) public {
         IERC721 _nft = IERC721(_nftAddr); // 声明IERC721接口合约变量
@@ -124,5 +126,30 @@ contract NFTSwap is IERC721Receiver {
         bytes calldata data
     ) external override returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
+    }
+
+    // 添加 getListedNFTs 方法
+    function getListedNFTs(
+        address _nftAddr
+    ) public view returns (uint256[] memory, uint256[] memory) {
+        uint256 total = 0;
+        for (uint256 i = 0; i < 10000; i++) {
+            if (nftList[_nftAddr][i].price > 0) {
+                total++;
+            }
+        }
+
+        uint256[] memory tokenIds = new uint256[](total);
+        uint256[] memory prices = new uint256[](total);
+        uint256 index = 0;
+        for (uint256 i = 0; i < 10000; i++) {
+            if (nftList[_nftAddr][i].price > 0) {
+                tokenIds[index] = i;
+                prices[index] = nftList[_nftAddr][i].price;
+                index++;
+            }
+        }
+
+        return (tokenIds, prices);
     }
 }

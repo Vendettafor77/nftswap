@@ -10,19 +10,27 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@sentry/node": "^9.1.0",
-    "chai": "^5.2.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "chai": "^4.5.0",
     "consolidate": "^1.0.4",
     "glob": "^11.0.1",
     "hardhat": "^2.22.18",
     "lodash.isequal": "^4.5.0",
     "mkdirp": "^3.0.1",
     "prettier": "^3.5.2",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "web-vitals": "^4.2.4"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.2.0",
-    "ethers": "^6.13.5"
+    "ethers": "^6.13.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-scripts": "^5.0.1"
   }
 }
