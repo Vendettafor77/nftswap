@@ -44,18 +44,28 @@ contract NFTSwap is IERC721Receiver {
 
     // 挂单: 卖家上架NFT，合约地址为_nftAddr，tokenId为_tokenId，价格_price为以太坊（单位是wei）
     function list(address _nftAddr, uint256 _tokenId, uint256 _price) public {
+        require(_nftAddr != address(0), "Invalid NFT address");
+        require(_price > 0, "Price must be greater than 0");
+        
         IERC721 _nft = IERC721(_nftAddr); // 声明IERC721接口合约变量
-        require(_nft.getApproved(_tokenId) == address(this), "Need Approval"); // 合约得到授权
-        require(_price > 0); // 价格大于0
-
-        Order storage _order = nftList[_nftAddr][_tokenId]; //设置NFT持有人和价格
+        require(_nft.ownerOf(_tokenId) == msg.sender, "Not token owner"); // 檢查 NFT 是否屬於發送者
+        require(_nft.getApproved(_tokenId) == address(this), "Need Approval"); // 檢查合約是否已獲得授權
+        
+        Order storage _order = nftList[_nftAddr][_tokenId];
+        require(_order.owner == address(0) && _order.price == 0, "NFT already listed"); // 確保 NFT 未被掛單
+        
+        // 先設置訂單信息
         _order.owner = msg.sender;
         _order.price = _price;
-        // 将NFT转账到合约
-        _nft.safeTransferFrom(msg.sender, address(this), _tokenId);
-
-        // 释放List事件
-        emit List(msg.sender, _nftAddr, _tokenId, _price);
+        
+        // 最後執行 NFT 轉移
+        try _nft.safeTransferFrom(msg.sender, address(this), _tokenId) {
+            emit List(msg.sender, _nftAddr, _tokenId, _price);
+        } catch {
+            // 如果轉移失敗，重置訂單信息
+            delete nftList[_nftAddr][_tokenId];
+            revert("NFT transfer failed");
+        }
     }
 
     // 购买: 买家购买NFT，合约为_nftAddr，tokenId为_tokenId，调用函数时要附带ETH
