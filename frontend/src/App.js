@@ -1,85 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
 import "./App.css";
-import WalletConnect from "./components/WalletConnect";
-import NFTCard from "./components/NFTCard";
-import ListNFT from "./components/ListNFT";
-import UpdateNFT from "./components/UpdateNFT";
-import RevokeNFT from "./components/RevokeNFT";
-import { getListedNFTs, mintWtfApe, purchaseNFT } from "./utils/nftSwap";
+
+// 导入主题和全局样式
+import theme from "./styles/theme";
+import GlobalStyles from "./styles/GlobalStyles";
+
+// 导入组件
+import Navbar from "./components/Navbar/Navbar";
+
+// 导入页面
+import Home from "./pages/Home/Home";
+import MintWTFape from "./pages/MintWTFape/MintWTFape";
+import MyWTFapes from "./pages/MyWTFapes/MyWTFapes";
+import MyNFTs from "./pages/MyNFTs/MyNFTs";
+import ListNFT from "./pages/ListNFT/ListNFT";
+
+// 临时页面组件 - 在完整实现前使用
+const TempPage = ({ title }) => (
+  <div style={{ padding: "20px", textAlign: "center" }}>
+    <h2>{title}</h2>
+    <p>このページは開発中です</p>
+  </div>
+);
 
 function App() {
-  const [walletAddress, setWalletAddress] = useState("");
-  const [nfts, setNfts] = useState([]);
-  const [loading, setLoading] = useState(false); // 新增
-
-  const handleBuyNFT = async (nftAddr, tokenId, price) => {
-    if (!walletAddress) {
-      alert("ウォレットを接続してください");
-      return;
-    }
-    
-    setLoading(true);
-    const success = await purchaseNFT(nftAddr, tokenId, price);
-    if (success) {
-      // 刷新NFT列表
-      const data = await getListedNFTs("0x0165878A594ca255338adfa4d48449f69242Eb8F");
-      setNfts(data);
-    }
-    setLoading(false);
-  };
-  
   return (
-    <div>
-      {/* 現有元素... */}
-      <div>
-        {nfts.length > 0 ? (
-          nfts.map((nft, index) => (
-            <NFTCard 
-              key={index} 
-              nft={nft} 
-              buyNFT={handleBuyNFT} 
-            />
-          ))
-        ) : (
-          <p>現在、出品されているNFTはありません</p>
-        )}
-      </div>
-    </div>
-  );
-  return (
-    <div className="app-container">
-      <h1>NFT スワップ</h1>
-      <div className="wallet-section">
-        <WalletConnect setWalletAddress={setWalletAddress} />
-        <button onClick={handleMint} disabled={loading || !walletAddress}>
-          WTFApe を Mint
-        </button>
-      </div>
-      {loading && <p className="loading">処理中...</p>}
-      
-      <div className="form-section">
-        <ListNFT />
-      </div>
-      
-      <div className="form-section">
-        <UpdateNFT />
-      </div>
-      
-      <div className="form-section">
-        <RevokeNFT />
-      </div>
-      
-      <h2>出品中のNFT</h2>
-      <div className="nft-grid">
-        {nfts.length > 0 ? (
-          nfts.map((nft, index) => (
-            <NFTCard key={index} nft={nft} buyNFT={handleBuyNFT} />
-          ))
-        ) : (
-          <p>現在、出品されているNFTはありません</p>
-        )}
-      </div>
-    </div>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <Router>
+        <div className="App">
+          <Navbar />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/my-nfts" element={<MyNFTs />} />
+              <Route path="/list-nft" element={<ListNFT />} />
+              <Route path="/history" element={<TempPage title="取引履歴" />} />
+              <Route path="/mint-wtfape" element={<MintWTFape />} />
+              <Route path="/my-wtfapes" element={<MyWTFapes />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
+
 export default App;
