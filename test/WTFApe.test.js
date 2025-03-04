@@ -59,7 +59,7 @@ describe("WTFApe", function () {
     // 嘗試轉移非擁有的NFT，應該失敗
     await expect(
       wtfApe.connect(addr1).transferFrom(owner.address, addr1.address, 0)
-    ).to.be.revertedWith("transfer caller is not owner nor approved");
+    ).to.be.revertedWith("not owner nor approved");
   });
 
   it("Should approve and transfer NFT", async function () {
