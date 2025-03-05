@@ -5,35 +5,74 @@ import NFTCard from "../NFTCard/NFTCard";
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: ${(props) => props.theme.spacing.lg};
-  padding: ${(props) => props.theme.spacing.lg};
+  gap: 30px;
+  padding: 5px;
+  width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${(props) => props.theme.spacing.xl};
+  padding: 80px 30px;
   color: ${(props) => props.theme.colors.text.secondary};
-  grid-column: 1 / -1;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.01)
+  );
+  border-radius: ${(props) => props.theme.borderRadius.large};
+  backdrop-filter: blur(5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 0 auto;
+
+  h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(120deg, #6a11cb, #2575fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    font-size: 1.1rem;
+    opacity: 0.7;
+  }
 `;
 
-const NFTGrid = ({ nfts = [], onNFTAction, actionText }) => {
-  if (nfts.length === 0) {
+const NFTGrid = ({ items = [], onItemAction, actionText, renderStatus }) => {
+  if (items.length === 0) {
     return (
       <EmptyState>
-        <h3>NFTがありません</h3>
-        <p>NFTをお持ちでない場合は、まずNFTを入手してください。</p>
+        <h3>NFTが見つかりません</h3>
+        <p>検索条件を変更してお試しください。</p>
       </EmptyState>
     );
   }
 
   return (
     <Grid>
-      {nfts.map((nft, index) => (
+      {items.map((nft) => (
         <NFTCard
-          key={`${nft.tokenId}-${index}`}
+          key={nft.id || nft.tokenId}
           nft={nft}
           actionText={actionText}
-          onAction={() => onNFTAction(nft)}
+          onAction={() => onItemAction?.(nft)}
+          statusMessage={renderStatus?.(nft)}
         />
       ))}
     </Grid>

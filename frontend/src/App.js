@@ -1,14 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-
-// 导入主题和全局样式
-import theme from "./styles/theme";
-import GlobalStyles from "./styles/GlobalStyles";
 
 // 导入组件
 import Navbar from "./components/Navbar/Navbar";
+import { BackgroundDecoration } from "./components/BackgroundEffect";
 
 // 导入页面
 import Home from "./pages/Home/Home";
@@ -27,24 +23,20 @@ const TempPage = ({ title }) => (
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      <Router>
-        <div className="App">
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/my-nfts" element={<MyNFTs />} />
-              <Route path="/list-nft" element={<ListNFT />} />
-              <Route path="/history" element={<TempPage title="取引履歴" />} />
-              <Route path="/mint-wtfape" element={<MintWTFape />} />
-              <Route path="/my-wtfapes" element={<MyWTFapes />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    </ThemeProvider>
+    <div className="App">
+      <BackgroundDecoration />
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/my-nfts" element={<MyNFTs />} />
+          <Route path="/list-nft" element={<ListNFT />} />
+          <Route path="/history" element={<TempPage title="取引履歴" />} />
+          <Route path="/mint-wtfape" element={<MintWTFape />} />
+          <Route path="/my-wtfapes" element={<MyWTFapes />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 
