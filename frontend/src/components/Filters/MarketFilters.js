@@ -6,15 +6,15 @@ const FiltersContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${(props) => props.theme.spacing.md};
   flex-wrap: wrap;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${(props) => props.theme.spacing.sm};
   width: 100%;
-  background: rgba(28, 34, 65, 0.2);
+  background: rgba(28, 34, 65, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: ${(props) => props.theme.borderRadius.large};
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding: 12px 16px;
+  box-shadow: none;
 
   /* 性能优化 */
   transform: translate3d(0, 0, 0);
@@ -24,14 +24,13 @@ const FiltersContainer = styled.div`
 
 // 简化的输入框样式
 const SearchInput = styled.input`
-  padding: ${(props) => props.theme.spacing.md};
-  padding-left: ${(props) => props.theme.spacing.lg};
+  padding: 8px 12px;
   border-radius: ${(props) => props.theme.borderRadius.medium};
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 36, 68, 0.8);
+  background: rgba(30, 36, 68, 0.6);
   color: ${(props) => props.theme.colors.text.primary};
-  width: 250px;
-  font-size: 1rem;
+  width: 220px;
+  font-size: 0.95rem;
 
   /* 静态阴影，不用transition可以减少重绘 */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -41,8 +40,8 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: rgba(106, 17, 203, 0.5);
-    box-shadow: 0 0 0 2px rgba(42, 82, 190, 0.2);
+    border-color: rgba(106, 17, 203, 0.4);
+    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
   }
 
   &::placeholder {
@@ -53,7 +52,7 @@ const SearchInput = styled.input`
 // 静态过滤组样式
 const FiltersGroup = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
+  gap: ${(props) => props.theme.spacing.sm};
   align-items: center;
 
   /* 稳定绘制层 */
@@ -62,26 +61,23 @@ const FiltersGroup = styled.div`
 
 // 简化的下拉菜单样式
 const FilterSelect = styled.select`
-  padding: ${(props) => props.theme.spacing.md};
+  padding: 8px 28px 8px 12px;
   border-radius: ${(props) => props.theme.borderRadius.medium};
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 36, 68, 0.8);
+  background: rgba(30, 36, 68, 0.6);
   color: ${(props) => props.theme.colors.text.primary};
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   appearance: none;
-  padding-right: 35px;
-
-  /* 简单的箭头图标替换动态加载的SVG */
-  background-position: calc(100% - 15px) center;
-  background-size: 12px;
+  background-position: calc(100% - 12px) center;
+  background-size: 10px;
   background-repeat: no-repeat;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23B6B9C5' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
 
   &:focus {
     outline: none;
-    border-color: rgba(106, 17, 203, 0.5);
-    box-shadow: 0 0 0 2px rgba(42, 82, 190, 0.2);
+    border-color: rgba(106, 17, 203, 0.4);
+    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
   }
 
   option {

@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const NavContainer = styled.nav`
+const NavContainer = styled.nav.attrs(() => ({
+  className: "nav-text",
+}))`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,7 +48,9 @@ const NavLinks = styled.div`
   align-items: center;
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled(Link).attrs(() => ({
+  className: "nav-text",
+}))`
   color: ${(props) => props.theme.colors.text.primary};
   font-weight: 500;
   padding: ${(props) => props.theme.spacing.sm}
@@ -179,13 +183,7 @@ const Navbar = () => {
         <NavLink to="/">ホーム</NavLink>
         <NavLink to="/my-nfts">マイNFT</NavLink>
         <NavLink to="/history">取引履歴</NavLink>
-        <NavDropdown>
-          <NavLink to="#">WTFape</NavLink>
-          <DropdownContent className="dropdown-content">
-            <DropdownLink to="/mint-wtfape">WTFapeをミントする</DropdownLink>
-            <DropdownLink to="/my-wtfapes">マイWTFape</DropdownLink>
-          </DropdownContent>
-        </NavDropdown>
+        <NavLink to="/mint-wtfape">Mint WTFape</NavLink>
       </NavLinks>
       <ConnectButton onClick={() => setConnected(!connected)}>
         {connected ? "ウォレット接続済み" : "ウォレットを接続"}

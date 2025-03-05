@@ -19,16 +19,16 @@ const HomeContainer = styled.div`
 `;
 
 const MarketContainer = styled.div`
-  /* 确保搜索栏和结果在同一层渲染，减少闪动 */
+  margin-top: ${(props) => props.theme.spacing.lg};
   transform: translateZ(0);
-  will-change: transform; // 告诉浏览器这个元素会变化
+  will-change: transform;
 `;
 
 const TabsContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: ${(props) => props.theme.spacing.md};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
+  margin-bottom: ${(props) => props.theme.spacing.md};
 `;
 
 const Home = () => {
@@ -142,8 +142,6 @@ const Home = () => {
         <ListNFTSection />
       ) : (
         <MarketContainer>
-          <SectionTitle>NFTマーケットプレイス</SectionTitle>
-
           <MarketFilters
             searchTerm={searchTerm}
             onSearchChange={updateSearchTerm}

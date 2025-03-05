@@ -1,43 +1,28 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import "./App.css";
-
-// 导入组件
+import { ThemeProvider } from "styled-components";
+import theme from "./theme";
+import GlobalStyle from "./components/styled/GlobalStyle";
+import AppRoutes from "./routes";
 import Navbar from "./components/Navbar/Navbar";
 import { BackgroundDecoration } from "./components/BackgroundEffect";
+import { FontProvider } from "./contexts/FontContext";
+import FontSwitcher from "./components/FontSwitcher/FontSwitcher";
+import "./App.css";
 
-// 导入页面
-import Home from "./pages/Home/Home";
-import MintWTFape from "./pages/MintWTFape/MintWTFape";
-import MyWTFapes from "./pages/MyWTFapes/MyWTFapes";
-import MyNFTs from "./pages/MyNFTs/MyNFTs";
-import ListNFT from "./pages/ListNFT/ListNFT";
-
-// 临时页面组件 - 在完整实现前使用
-const TempPage = ({ title }) => (
-  <div style={{ padding: "20px", textAlign: "center" }}>
-    <h2>{title}</h2>
-    <p>このページは開発中です</p>
-  </div>
-);
-
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <BackgroundDecoration />
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/my-nfts" element={<MyNFTs />} />
-          <Route path="/list-nft" element={<ListNFT />} />
-          <Route path="/history" element={<TempPage title="取引履歴" />} />
-          <Route path="/mint-wtfape" element={<MintWTFape />} />
-          <Route path="/my-wtfapes" element={<MyWTFapes />} />
-        </Routes>
-      </main>
-    </div>
+    <ThemeProvider theme={theme}>
+      <FontProvider>
+        <GlobalStyle />
+        <div className="App">
+          <BackgroundDecoration />
+          <Navbar />
+          <AppRoutes />
+          <FontSwitcher />
+        </div>
+      </FontProvider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;

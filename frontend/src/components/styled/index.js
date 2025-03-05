@@ -8,27 +8,28 @@ export const HeroSection = styled.section`
   margin-bottom: ${(props) => props.theme.spacing.xl};
 
   h1 {
-    font-size: 3.2rem;
-    font-weight: 700;
+    font-size: 4.2rem;
+    font-weight: 800;
     letter-spacing: -0.5px;
-    background: linear-gradient(120deg, #11998e, #38ef7d, #6a11cb);
+    background: linear-gradient(
+      120deg,
+      rgba(106, 17, 203, 0.9) 0%,
+      rgba(142, 84, 233, 0.85) 25%,
+      rgba(37, 117, 252, 0.8) 50%,
+      rgba(106, 17, 203, 0.9) 100%
+    );
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: ${(props) => props.theme.spacing.md};
+    margin-bottom: ${(props) => props.theme.spacing.xl};
     position: relative;
     display: inline-block;
+    animation: shine 4s linear infinite;
 
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 4px;
-      background: linear-gradient(120deg, #11998e, #38ef7d);
-      border-radius: 2px;
-      opacity: 0.7;
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
     }
   }
 
