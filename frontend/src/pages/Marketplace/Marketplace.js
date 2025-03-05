@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { PrimaryButton, OutlineButton } from "../../components/styled/Button";
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -114,47 +115,11 @@ const PriceValue = styled.span`
   font-size: 1.1rem;
 `;
 
-const BuyButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.sm};
-  font-weight: bold;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  width: 100%;
-  margin-top: ${(props) => props.theme.spacing.sm};
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.primary}DD;
-  }
-`;
-
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
   margin-top: ${(props) => props.theme.spacing.xl};
   gap: ${(props) => props.theme.spacing.sm};
-`;
-
-const PageButton = styled.button`
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  background-color: ${(props) =>
-    props.active ? props.theme.colors.primary : props.theme.colors.surface};
-  color: ${(props) =>
-    props.active ? "white" : props.theme.colors.text.primary};
-  border: 1px solid
-    ${(props) =>
-      props.active
-        ? props.theme.colors.primary
-        : props.theme.colors.text.secondary}44;
-
-  &:hover {
-    background-color: ${(props) =>
-      props.active
-        ? props.theme.colors.primary
-        : props.theme.colors.text.secondary}22;
-  }
 `;
 
 // 示例市场NFT数据
@@ -354,7 +319,9 @@ const Marketplace = () => {
                   {purchaseStatus.success ? "購入成功！" : "購入失敗"}
                 </div>
               ) : (
-                <BuyButton onClick={() => handleBuy(nft)}>購入する</BuyButton>
+                <PrimaryButton fullWidth onClick={() => handleBuy(nft)}>
+                  購入する
+                </PrimaryButton>
               )}
             </NFTInfo>
           </NFTCard>
@@ -364,13 +331,13 @@ const Marketplace = () => {
       {totalPages > 1 && (
         <Pagination>
           {[...Array(totalPages)].map((_, i) => (
-            <PageButton
+            <OutlineButton
               key={i}
               active={currentPage === i + 1}
               onClick={() => setCurrentPage(i + 1)}
             >
               {i + 1}
-            </PageButton>
+            </OutlineButton>
           ))}
         </Pagination>
       )}

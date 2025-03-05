@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import NFTCard from "../../components/NFTCard/NFTCard";
+import { PrimaryButton } from "../../components/styled/Button";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -64,73 +65,6 @@ const EmptyState = styled.div`
   color: ${(props) => props.theme.colors.text.secondary};
   grid-column: 1 / -1;
 `;
-
-const ActionButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.md};
-  margin-top: ${(props) => props.theme.spacing.lg};
-`;
-
-// 示例WTFape NFT数据 - 将特征值转换为日语
-const mockWTFapes = [
-  {
-    tokenId: "221",
-    name: "WTFape #221",
-    collection: "WTFape コレクション",
-    image:
-      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
-    attributes: [
-      { trait_type: "背景", value: "ブルー" },
-      { trait_type: "毛皮", value: "ブラウン" },
-      { trait_type: "目", value: "怒り" },
-      { trait_type: "口", value: "無表情" },
-      { trait_type: "帽子", value: "キャップ" },
-    ],
-  },
-  {
-    tokenId: "453",
-    name: "WTFape #453",
-    collection: "WTFape コレクション",
-    image:
-      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
-    attributes: [
-      { trait_type: "背景", value: "グリーン" },
-      { trait_type: "毛皮", value: "ゴールド" },
-      { trait_type: "目", value: "眠そう" },
-      { trait_type: "口", value: "タバコ" },
-      { trait_type: "帽子", value: "なし" },
-    ],
-  },
-  {
-    tokenId: "874",
-    name: "WTFape #874",
-    collection: "WTFape コレクション",
-    image:
-      "https://i.seadn.io/gcs/files/d3b1a773118e400b2d5f77bbc4aa9e17.png?auto=format&dpr=1&w=1000",
-    attributes: [
-      { trait_type: "背景", value: "レッド" },
-      { trait_type: "毛皮", value: "ブラック" },
-      { trait_type: "目", value: "大きい" },
-      { trait_type: "口", value: "笑顔" },
-      { trait_type: "帽子", value: "ビーニー" },
-    ],
-  },
-  {
-    tokenId: "612",
-    name: "WTFape #612",
-    collection: "WTFape コレクション",
-    image:
-      "https://i.seadn.io/gcs/files/e1a31407b6968de5079ea112e45610df.png?auto=format&dpr=1&w=1000",
-    attributes: [
-      { trait_type: "背景", value: "パープル" },
-      { trait_type: "毛皮", value: "グレー" },
-      { trait_type: "目", value: "レーザー" },
-      { trait_type: "口", value: "ゴールド歯" },
-      { trait_type: "帽子", value: "クラウン" },
-    ],
-  },
-];
 
 const MyWTFapes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -238,11 +172,11 @@ const MyWTFapes = () => {
           <EmptyState>
             <h3>WTFapeが見つかりません</h3>
             <p>現在の検索条件に一致するWTFape NFTはありません。</p>
-            <ActionButton
+            <PrimaryButton
               onClick={() => (window.location.href = "/mint-wtfape")}
             >
               新しい WTFapeをミントする
-            </ActionButton>
+            </PrimaryButton>
           </EmptyState>
         )}
       </NFTGrid>

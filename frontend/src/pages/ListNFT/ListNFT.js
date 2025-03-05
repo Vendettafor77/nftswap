@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
 import NFTCard from "../../components/NFTCard/NFTCard";
+import { PrimaryButton } from "../../components/styled/Button";
 
 const PageContainer = styled.div`
   max-width: 900px;
@@ -74,24 +75,16 @@ const PriceInput = styled(Input)`
   border-radius: ${(props) => props.theme.borderRadius.medium} 0 0
     ${(props) => props.theme.borderRadius.medium};
   border-right: none;
-`;
-
-const SubmitButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  width: 100%;
-  margin-top: ${(props) => props.theme.spacing.md};
+  background-color: ${(props) => props.theme.colors.background};
+  cursor: text;
+  pointer-events: auto;
 
   &:disabled {
-    background-color: ${(props) => props.theme.colors.text.secondary}88;
+    background-color: ${(props) => props.theme.colors.background}88;
+    cursor: not-allowed;
   }
 `;
 
-// 新增的输入字段样式
 const InputGroup = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.md};
 `;
@@ -100,7 +93,7 @@ const InputRow = styled.div`
   display: flex;
   gap: ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -115,13 +108,15 @@ const TabContainer = styled.div`
 const Tab = styled.button`
   padding: ${(props) => props.theme.spacing.md};
   background-color: transparent;
-  color: ${(props) => 
-    props.active ? props.theme.colors.primary : props.theme.colors.text.primary};
+  color: ${(props) =>
+    props.active
+      ? props.theme.colors.primary
+      : props.theme.colors.text.primary};
   border: none;
-  border-bottom: 2px solid ${(props) => 
-    props.active ? props.theme.colors.primary : 'transparent'};
-  font-weight: ${(props) => props.active ? 'bold' : 'normal'};
-  
+  border-bottom: 2px solid
+    ${(props) => (props.active ? props.theme.colors.primary : "transparent")};
+  font-weight: ${(props) => (props.active ? "bold" : "normal")};
+
   &:hover {
     color: ${(props) => props.theme.colors.primary};
   }
@@ -141,8 +136,10 @@ const ListNFT = () => {
   const tokenIdFromParams = queryParams.get("tokenId") || "";
 
   // 添加一个标签状态来控制选择模式（我的NFT或自定义NFT）
-  const [activeTab, setActiveTab] = useState(contractFromParams ? "custom" : "myNFTs");
-  
+  const [activeTab, setActiveTab] = useState(
+    contractFromParams ? "custom" : "myNFTs"
+  );
+
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
@@ -151,14 +148,14 @@ const ListNFT = () => {
     success: false,
     message: "",
   });
-  
+
   // 自定义NFT字段
   const [contractAddress, setContractAddress] = useState(contractFromParams);
   const [tokenId, setTokenId] = useState(tokenIdFromParams);
   const [customNFTInfo, setCustomNFTInfo] = useState(null);
   const [fetchingInfo, setFetchingInfo] = useState(false);
   const [fetchError, setFetchError] = useState("");
-  
+
   // 示例NFT数据
   const myNFTs = [
     {
@@ -166,14 +163,16 @@ const ListNFT = () => {
       tokenId: "221",
       name: "WTFape #221",
       collection: "WTFape コレクション",
-      image: "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
+      image:
+        "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
     },
     {
       contractAddress: "0x123...abc",
       tokenId: "453",
       name: "WTFape #453",
       collection: "WTFape コレクション",
-      image: "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
+      image:
+        "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
     },
     {
       contractAddress: "0x456...def",
@@ -196,31 +195,33 @@ const ListNFT = () => {
       setFetchError("コントラクトアドレスとトークンIDを入力してください。");
       return;
     }
-    
+
     setFetchingInfo(true);
     setFetchError("");
-    
+
     try {
       // 实际应用中，这里会调用API来获取NFT元数据
       // 例如：const response = await fetch(`https://api.opensea.io/api/v1/asset/${contract}/${token}`);
-      
+
       // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // 模拟找到NFT信息
       const mockInfo = {
         name: `カスタムNFT #${token}`,
         collection: "カスタムコレクション",
         image: "https://via.placeholder.com/250?text=Custom+NFT",
         contractAddress: contract,
-        tokenId: token
+        tokenId: token,
       };
-      
+
       setCustomNFTInfo(mockInfo);
       setSelectedNFT(mockInfo); // 自动选择这个NFT
     } catch (error) {
       console.error("Error fetching NFT info:", error);
-      setFetchError("NFT情報の取得に失敗しました。契約アドレスとトークンIDを確認してください。");
+      setFetchError(
+        "NFT情報の取得に失敗しました。契約アドレスとトークンIDを確認してください。"
+      );
       setCustomNFTInfo(null);
     } finally {
       setFetchingInfo(false);
@@ -241,32 +242,32 @@ const ListNFT = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!selectedNFT || !price) {
       setStatusMessage({
         show: true,
         success: false,
-        message: "NFTと価格を選択してください。"
+        message: "NFTと価格を選択してください。",
       });
       return;
     }
 
     setLoading(true);
     setStatusMessage({ show: false, success: false, message: "" });
-    
+
     try {
       // 这里会调用合约的上架功能
       // 根据是自定义NFT还是已知NFT调用不同的参数
-      
+
       // 模拟上架过程
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       setStatusMessage({
         show: true,
         success: true,
-        message: `${selectedNFT.name}が${price} ETHで出品されました。`
+        message: `${selectedNFT.name}が${price} ETHで出品されました。`,
       });
-      
+
       // 成功后重置表单
       if (activeTab === "custom") {
         setContractAddress("");
@@ -279,7 +280,7 @@ const ListNFT = () => {
       setStatusMessage({
         show: true,
         success: false,
-        message: "出品に失敗しました。ウォレットの接続を確認してください。"
+        message: "出品に失敗しました。ウォレットの接続を確認してください。",
       });
     } finally {
       setLoading(false);
@@ -292,14 +293,14 @@ const ListNFT = () => {
 
       <FormContainer>
         <TabContainer>
-          <Tab 
-            active={activeTab === "myNFTs"} 
+          <Tab
+            active={activeTab === "myNFTs"}
             onClick={() => setActiveTab("myNFTs")}
           >
             マイNFTから選択
           </Tab>
-          <Tab 
-            active={activeTab === "custom"} 
+          <Tab
+            active={activeTab === "custom"}
             onClick={() => setActiveTab("custom")}
           >
             NFTを直接指定
@@ -314,7 +315,11 @@ const ListNFT = () => {
                 <div key={index} onClick={() => handleSelectNFT(nft)}>
                   <NFTCard
                     nft={nft}
-                    actionText={selectedNFT?.tokenId === nft.tokenId ? "選択済み" : "選択する"}
+                    actionText={
+                      selectedNFT?.tokenId === nft.tokenId
+                        ? "選択済み"
+                        : "選択する"
+                    }
                     onAction={() => handleSelectNFT(nft)}
                   />
                 </div>
@@ -335,7 +340,7 @@ const ListNFT = () => {
                   onChange={(e) => setContractAddress(e.target.value)}
                 />
               </InputGroup>
-              
+
               <InputGroup>
                 <Label htmlFor="tokenId">トークンID</Label>
                 <Input
@@ -347,7 +352,7 @@ const ListNFT = () => {
                 />
               </InputGroup>
             </InputRow>
-            
+
             <SubmitButton
               type="button"
               onClick={() => fetchNFTInfo(contractAddress, tokenId)}
@@ -355,17 +360,16 @@ const ListNFT = () => {
             >
               {fetchingInfo ? "NFT情報を取得中..." : "NFT情報を取得"}
             </SubmitButton>
-            
+
             {fetchError && <ErrorMessage>{fetchError}</ErrorMessage>}
-            
+
             {customNFTInfo && (
               <>
-                <SectionTitle style={{ marginTop: '20px' }}>NFTプレビュー</SectionTitle>
+                <SectionTitle style={{ marginTop: "20px" }}>
+                  NFTプレビュー
+                </SectionTitle>
                 <NFTSelection>
-                  <NFTCard
-                    nft={customNFTInfo}
-                    actionText="選択済み"
-                  />
+                  <NFTCard nft={customNFTInfo} actionText="選択済み" />
                 </NFTSelection>
               </>
             )}
@@ -383,27 +387,31 @@ const ListNFT = () => {
               onChange={handlePriceChange}
               placeholder="0.00"
               disabled={!selectedNFT}
+              autoComplete="off"
             />
             <PriceCurrency>ETH</PriceCurrency>
           </PriceInputContainer>
         </FormGroup>
-        
-        <SubmitButton
+
+        <PrimaryButton
           onClick={handleSubmit}
           disabled={loading || !selectedNFT || !price}
+          fullWidth
         >
           {loading ? "処理中..." : "マーケットに出品する"}
-        </SubmitButton>
-        
+        </PrimaryButton>
+
         {statusMessage.show && (
           <div
             style={{
               marginTop: "20px",
               padding: "10px",
               borderRadius: "8px",
-              backgroundColor: statusMessage.success ? "#36B37E22" : "#FF5C5C22",
+              backgroundColor: statusMessage.success
+                ? "#36B37E22"
+                : "#FF5C5C22",
               color: statusMessage.success ? "#36B37E" : "#FF5C5C",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             {statusMessage.message}

@@ -7,28 +7,74 @@ const NavContainer = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: ${(props) => `${props.theme.spacing.md} ${props.theme.spacing.lg}`};
-  background-color: ${(props) => props.theme.colors.surface};
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.surface}, ${props.theme.colors.surface}F8)`};
   box-shadow: ${(props) => props.theme.shadows.medium};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
 const Logo = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
-  color: ${(props) => props.theme.colors.primary};
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
 `;
 
 const NavLinks = styled.div`
   display: flex;
   gap: ${(props) => props.theme.spacing.md};
+  align-items: center;
 `;
 
 const NavLink = styled(Link)`
   color: ${(props) => props.theme.colors.text.primary};
   font-weight: 500;
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.md};
+  border-radius: ${(props) => props.theme.borderRadius.small};
+  transition: all 0.3s ease;
+  position: relative;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
 
   &:hover {
     color: ${(props) => props.theme.colors.primary};
-    text-decoration: none;
+    background: rgba(106, 17, 203, 0.1);
+
+    &::after {
+      width: 80%;
+    }
   }
 `;
 
@@ -37,42 +83,88 @@ const NavDropdown = styled.div`
   display: inline-block;
 
   &:hover .dropdown-content {
-    display: block;
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
 `;
 
 const DropdownContent = styled.div`
-  display: none;
   position: absolute;
-  background-color: ${(props) => props.theme.colors.surface};
-  min-width: 160px;
-  box-shadow: ${(props) => props.theme.shadows.medium};
-  z-index: 1;
+  top: 100%;
+  right: 0;
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.surface}, ${props.theme.colors.surface}F8)`};
+  min-width: 200px;
+  box-shadow: ${(props) => props.theme.shadows.large};
   border-radius: ${(props) => props.theme.borderRadius.medium};
   padding: ${(props) => props.theme.spacing.sm} 0;
+  transform: translateY(-10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1000;
 `;
 
 const DropdownLink = styled(Link)`
   color: ${(props) => props.theme.colors.text.primary};
   padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
-  text-decoration: none;
   display: block;
+  text-decoration: none;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary}22;
+    background: linear-gradient(
+      90deg,
+      rgba(106, 17, 203, 0.1),
+      rgba(37, 117, 252, 0.1)
+    );
     color: ${(props) => props.theme.colors.primary};
-    text-decoration: none;
   }
 `;
 
 const ConnectButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
   color: white;
-  padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
+  padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.lg}`};
   border-radius: ${(props) => props.theme.borderRadius.medium};
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: all 0.6s ease;
+  }
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary}DD;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 `;
 

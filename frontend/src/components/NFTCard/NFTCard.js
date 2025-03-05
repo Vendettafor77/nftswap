@@ -1,134 +1,81 @@
 import React, { useState, useContext } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { AnimationContext } from "../../contexts/AnimationContext";
+import { PrimaryButton, OutlineButton } from "../styled/Button";
 
-// 更优雅的闪光动画
-const shine = keyframes`
-  from {
-    background-position: 200% center;
-  }
-  to {
-    background-position: -200% center;
-  }
-`;
-
-// 平滑上升动画
-const floatUp = keyframes`
+// 邊框流光動畫
+const borderGlow = keyframes`
   0% {
-    transform: translateY(0);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: scale(1);
   }
   50% {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 20px rgba(0,0,0,0.1);
+    opacity: 0.8;
+    transform: scale(1.05);
   }
   100% {
-    transform: translateY(0);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: scale(1.1);
   }
 `;
 
-// 3D翻转效果
-const flipAnimation = keyframes`
-  0% {
-    transform: perspective(1000px) rotateY(0);
+// 選擇動畫樣式
+const cardAnimationStyles = css`
+  position: relative;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
-  100% {
-    transform: perspective(1000px) rotateY(10deg);
+  &:hover::after {
+    animation: ${borderGlow} 2.5s ease-in-out forwards;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(
+      45deg,
+      rgba(131, 58, 180, 0.6),
+      rgba(29, 185, 253, 0.6)
+    );
+    border-radius: inherit;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
   }
 `;
 
-// 渐变边框动画
-const borderAnimation = keyframes`
-  0% {
-    border-color: rgba(106, 17, 203, 0.5);
-  }
-  50% {
-    border-color: rgba(37, 117, 252, 0.5);
-  }
-  100% {
-    border-color: rgba(106, 17, 203, 0.5);
-  }
-`;
-
-// 选择动画样式（可以选择以下三种之一）
-const cardAnimationStyles = {
-  // 样式1: 3D悬浮效果
-  float: css`
-    transition: all 0.3s ease;
-    &:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-    }
-  `,
-  // 样式2: 3D翻转效果
-  flip: css`
-    transition: transform 0.5s ease;
-    transform-style: preserve-3d;
-    &:hover {
-      animation: ${flipAnimation} 1s ease-in-out forwards;
-    }
-  `,
-  // 样式3: 呼吸光效
-  pulse: css`
-    position: relative;
-    &:hover {
-      box-shadow: 0 0 20px rgba(106, 17, 203, 0.4);
-      &::before {
-        opacity: 1;
-      }
-    }
-    &::before {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(45deg, #6a11cb, #2575fc, #6a11cb);
-      background-size: 400% 400%;
-      z-index: -1;
-      border-radius: calc(${(props) => props.theme.borderRadius.medium} + 2px);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      animation: ${shine} 3s linear infinite;
-    }
-  `,
-};
-
-// 修改Card组件，根据animationType使用不同动画
+// 修改Card組件
 const Card = styled.div`
   background: ${(props) =>
-    `linear-gradient(145deg, ${props.theme.colors.surface || "#1e2633"}, ${props.theme.colors.surface || "#1e2633"}F8)`};
+    `linear-gradient(145deg, ${props.theme.colors.surface || "#1e2633"}, ${
+      props.theme.colors.surface || "#1e2633"
+    }F8)`};
   border-radius: ${(props) => props.theme.borderRadius.medium};
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-
-  // 根据animationType选择动画
-  ${(props) => {
-    switch (props.animationType) {
-      case "float":
-        return cardAnimationStyles.float;
-      case "flip":
-        return cardAnimationStyles.flip;
-      case "pulse":
-      default:
-        return cardAnimationStyles.pulse;
-    }
-  }}
+  ${cardAnimationStyles}
 `;
 
-// 其他组件保持不变
+// 修改ImageContainer
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  padding-top: 100%; /* 1:1 Aspect Ratio */
-  overflow: hidden;
+  padding-top: 100%;
+  background: ${(props) => props.theme.colors.background};
+  border-radius: ${(props) => props.theme.borderRadius.medium}
+    ${(props) => props.theme.borderRadius.medium} 0 0;
 `;
 
+// 修改Image組件，降低z-index
 const Image = styled.img`
   position: absolute;
   top: 0;
@@ -137,8 +84,12 @@ const Image = styled.img`
   height: 100%;
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border-radius: ${(props) => props.theme.borderRadius.medium}
+    ${(props) => props.theme.borderRadius.medium} 0 0;
+  overflow: hidden;
+  z-index: 1;
 
-  ${Card}:hover & {
+  ${ImageContainer}:hover & {
     transform: scale(1.08);
   }
 `;
@@ -148,7 +99,7 @@ const BadgeContainer = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 2;
+  z-index: 4;
 `;
 
 const Badge = styled.span`
@@ -165,9 +116,33 @@ const Badge = styled.span`
 const CardContent = styled.div`
   padding: ${(props) => props.theme.spacing.md};
   background: ${(props) =>
-    `linear-gradient(to bottom, ${props.theme.colors.surface}DD, ${props.theme.colors.surface})`};
+    `linear-gradient(to bottom, 
+      ${props.theme.colors.surface}99, 
+      ${props.theme.colors.surface}FF
+    )`};
   position: relative;
   z-index: 1;
+  margin-top: -2px; /* 消除可能的缝隙 */
+
+  /* 添加微妙的玻璃拟态效果 */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* 顶部阴影渐变 */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    pointer-events: none;
+  }
 `;
 
 // 使用更高级的字体渐变效果
@@ -181,6 +156,8 @@ const NFTName = styled.h3`
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
 `;
 
 const NFTCollection = styled.p`
@@ -210,70 +187,6 @@ const EthIcon = styled.span`
   font-size: 1em;
 `;
 
-// 修改ActionButton样式解决边缘问题
-const ActionButton = styled.button`
-  background: linear-gradient(45deg, #6a11cb, #2575fc);
-  color: white;
-  width: 100%;
-  padding: ${(props) => props.theme.spacing.sm} 0;
-  border-radius: ${(props) => props.theme.borderRadius.small};
-  font-weight: bold;
-  margin-top: ${(props) => props.theme.spacing.sm};
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(42, 82, 190, 0.2);
-
-  /* 修复边缘问题，确保渐变色边缘到边 */
-  background-origin: border-box;
-  background-clip: border-box;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(42, 82, 190, 0.3);
-  }
-
-  &:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(42, 82, 190, 0.2);
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-  }
-
-  &:hover::after {
-    animation: ripple 1s ease-out;
-  }
-
-  @keyframes ripple {
-    0% {
-      transform: scale(0, 0);
-      opacity: 0.5;
-    }
-    20% {
-      transform: scale(25, 25);
-      opacity: 0.3;
-    }
-    100% {
-      opacity: 0;
-      transform: scale(40, 40);
-    }
-  }
-`;
-
 // 改进状态消息样式
 const StatusContainer = styled.div`
   margin-top: ${(props) => props.theme.spacing.sm};
@@ -289,36 +202,74 @@ const StatusContainer = styled.div`
   border-left: 3px solid ${(props) => (props.success ? "#42b72a" : "#db3737")};
 `;
 
-// 组件实现
-const NFTCard = ({ nft, actionText, onAction, statusMessage }) => {
-  const { animationType } = useContext(AnimationContext);
+// 添加動畫切換按鈕容器
+const AnimationControls = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  display: flex;
+  gap: 4px;
+`;
 
-  // 确保 actionText 可以是函数或字符串
+const AnimationButton = styled(OutlineButton)`
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  ${(props) =>
+    props.active &&
+    css`
+      background: rgba(106, 17, 203, 0.5);
+      &:hover {
+        background: rgba(106, 17, 203, 0.7);
+      }
+    `}
+`;
+
+// 修改組件實現
+const NFTCard = ({ nft, actionText, onAction, statusMessage }) => {
+  const testNft = {
+    ...nft,
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    name: nft?.name || "Bored Ape #1234",
+    collection: nft?.collection || "Bored Ape Yacht Club",
+    price: nft?.price || (Math.random() * 100).toFixed(2),
+  };
+
   const getActionText =
-    typeof actionText === "function" ? () => actionText(nft) : () => actionText;
+    typeof actionText === "function"
+      ? () => actionText(testNft)
+      : () => actionText;
 
   return (
-    <Card animationType={animationType}>
+    <Card>
       <ImageContainer>
-        <Image src={nft.image} alt={nft.name} />
-        {nft.collection === "Doodles Collection" && (
+        <Image src={testNft.image} alt={testNft.name} />
+        {testNft.collection === "Bored Ape Yacht Club" && (
           <BadgeContainer>
             <Badge>Hot</Badge>
           </BadgeContainer>
         )}
       </ImageContainer>
       <CardContent>
-        <NFTName>{nft.name}</NFTName>
-        <NFTCollection>{nft.collection}</NFTCollection>
-        {nft.price && (
+        <NFTName>{testNft.name}</NFTName>
+        <NFTCollection>{testNft.collection}</NFTCollection>
+        {testNft.price && (
           <NFTDescription>
-            <EthIcon>Ξ</EthIcon> {nft.price} ETH
+            <EthIcon>Ξ</EthIcon> {testNft.price} ETH
           </NFTDescription>
         )}
         {onAction && (
-          <ActionButton onClick={() => onAction(nft)}>
+          <PrimaryButton onClick={() => onAction(testNft)} fullWidth>
             {getActionText()}
-          </ActionButton>
+          </PrimaryButton>
         )}
         {statusMessage && (
           <StatusContainer success={statusMessage.success}>

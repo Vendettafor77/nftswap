@@ -4,7 +4,8 @@ import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import MarketFilters from "../../components/Filters/MarketFilters";
 import ListNFTSection from "./components/ListNFTSection";
 import { marketNFTs } from "../../data/mockData";
-import { HeroSection, TabsContainer, Tab } from "../../components/styled";
+import { HeroSection } from "../../components/styled";
+import { OutlineButton } from "../../components/styled/Button";
 import SectionTitle from "../../components/styled/SectionTitle";
 
 // 更稳定的容器
@@ -21,6 +22,13 @@ const MarketContainer = styled.div`
   /* 确保搜索栏和结果在同一层渲染，减少闪动 */
   transform: translateZ(0);
   will-change: transform; // 告诉浏览器这个元素会变化
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.xl};
 `;
 
 const Home = () => {
@@ -116,15 +124,18 @@ const Home = () => {
       </HeroSection>
 
       <TabsContainer>
-        <Tab
+        <OutlineButton
           active={activeTab === "marketplace"}
           onClick={() => setActiveTab("marketplace")}
         >
           NFTを閲覧・購入
-        </Tab>
-        <Tab active={activeTab === "list"} onClick={() => setActiveTab("list")}>
+        </OutlineButton>
+        <OutlineButton
+          active={activeTab === "list"}
+          onClick={() => setActiveTab("list")}
+        >
           NFTを出品する
-        </Tab>
+        </OutlineButton>
       </TabsContainer>
 
       {activeTab === "list" ? (

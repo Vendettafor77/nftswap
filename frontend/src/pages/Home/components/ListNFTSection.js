@@ -3,6 +3,7 @@ import styled from "styled-components";
 import NFTGrid from "../../../components/NFTGrid/NFTGrid";
 import { myNFTs } from "../../../data/mockData";
 import SectionTitle from "../../../components/styled/SectionTitle";
+import { PrimaryButton } from "../../../components/styled/Button";
 
 const Section = styled.div`
   background-color: ${(props) => props.theme.colors.background};
@@ -48,29 +49,6 @@ const PriceCurrency = styled.div`
   font-weight: bold;
   min-width: 60px;
   text-align: center;
-`;
-
-const ActionButton = styled.button`
-  width: 100%;
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  margin-top: ${(props) => props.theme.spacing.lg};
-  cursor: pointer;
-  border: none;
-  outline: none;
-
-  &:disabled {
-    background-color: ${(props) => props.theme.colors.text.secondary}88;
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled) {
-    background-color: ${(props) => props.theme.colors.primary}DD;
-  }
 `;
 
 const StatusMessage = styled.div`
@@ -152,9 +130,9 @@ const ListNFTSection = () => {
         </PriceInputContainer>
       </FormGroup>
 
-      <ActionButton onClick={handleSubmit} disabled={!selectedNFT || !price}>
+      <PrimaryButton onClick={handleSubmit} disabled={!selectedNFT || !price}>
         マーケットに出品する
-      </ActionButton>
+      </PrimaryButton>
 
       {listingStatus.show && (
         <StatusMessage success={listingStatus.success}>

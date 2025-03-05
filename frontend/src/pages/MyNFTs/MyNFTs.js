@@ -78,22 +78,46 @@ const ActionMenu = styled.div`
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: ${props => props.theme.colors.surface};
-  border-radius: ${props => props.theme.borderRadius.medium};
-  box-shadow: ${props => props.theme.shadows.medium};
-  padding: ${props => props.theme.spacing.sm} 0;
+  background-color: ${(props) => props.theme.colors.surface};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  box-shadow: ${(props) => props.theme.shadows.medium};
+  padding: ${(props) => props.theme.spacing.sm} 0;
   z-index: 10;
   min-width: 150px;
 `;
 
 const ActionMenuItem = styled.div`
-  padding: ${props => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
-  color: ${props => props.theme.colors.text.primary};
+  padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
+  color: ${(props) => props.theme.colors.text.primary};
   cursor: pointer;
-  
+
   &:hover {
-    background-color: ${props => props.theme.colors.primary}22;
-    color: ${props => props.theme.colors.primary};
+    background-color: ${(props) => props.theme.colors.primary}22;
+    color: ${(props) => props.theme.colors.primary};
+  }
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  border-bottom: 1px solid ${(props) => props.theme.colors.text.secondary}44;
+`;
+
+const Tab = styled.button`
+  padding: ${(props) => props.theme.spacing.md};
+  background-color: transparent;
+  color: ${(props) =>
+    props.active
+      ? props.theme.colors.primary
+      : props.theme.colors.text.primary};
+  border: none;
+  border-bottom: 2px solid
+    ${(props) => (props.active ? props.theme.colors.primary : "transparent")};
+  font-weight: ${(props) => (props.active ? "bold" : "normal")};
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 
@@ -104,14 +128,16 @@ const mockUserNFTs = [
     tokenId: "221",
     name: "WTFape #221",
     collection: "WTFape コレクション",
-    image: "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
+    image:
+      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
   },
   {
     contractAddress: "0x123...abc",
     tokenId: "453",
     name: "WTFape #453",
     collection: "WTFape コレクション",
-    image: "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
+    image:
+      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
   },
   {
     contractAddress: "0x456...def",
@@ -125,7 +151,27 @@ const mockUserNFTs = [
     tokenId: "042",
     name: "Doodle #042",
     collection: "Doodles",
-    image: "https://i.seadn.io/gcs/files/03c44f5f83805652ba076c41fa43c4b1.png?auto=format&dpr=1&w=1000",
+    image:
+      "https://i.seadn.io/gcs/files/03c44f5f83805652ba076c41fa43c4b1.png?auto=format&dpr=1&w=1000",
+  },
+];
+
+const mockWTFapes = [
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "222",
+    name: "WTFape #222",
+    collection: "WTFape コレクション",
+    image:
+      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
+  },
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "454",
+    name: "WTFape #454",
+    collection: "WTFape コレクション",
+    image:
+      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
   },
 ];
 
@@ -138,20 +184,14 @@ const MyNFTs = () => {
   const [showActionMenu, setShowActionMenu] = useState(false);
 
   // 从所有NFT中提取集合列表
-  const collections = [...new Set(nfts.map(nft => nft.collection))];
-  
+  const collections = [...new Set(nfts.map((nft) => nft.collection))];
+
   // 模拟从区块链上获取用户的NFT
   useEffect(() => {
     const fetchUserNFTs = async () => {
       try {
-        // 在实际应用中，这里会调用钱包API或区块链API来获取用户的NFT
-        // 例如使用Moralis、Alchemy、Covalent等服务
-        
-        // 模拟API调用延迟
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // 使用模拟数据
-        setNfts(mockUserNFTs);
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        setNfts([...mockUserNFTs, ...mockWTFapes]);
       } catch (error) {
         console.error("Error fetching NFTs:", error);
       } finally {
@@ -163,17 +203,20 @@ const MyNFTs = () => {
   }, []);
 
   // 筛选NFT
-  const filteredNFTs = nfts.filter(nft => {
+  const filteredNFTs = nfts.filter((nft) => {
     // 搜索词过滤
-    if (searchTerm && !nft.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (
+      searchTerm &&
+      !nft.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
       return false;
     }
-    
+
     // 集合过滤
     if (collectionFilter !== "all" && nft.collection !== collectionFilter) {
       return false;
     }
-    
+
     return true;
   });
 
@@ -182,7 +225,7 @@ const MyNFTs = () => {
     setActiveNFT(nft);
     setShowActionMenu(true);
   };
-  
+
   // 处理上架NFT
   const handleListNFT = (nft) => {
     window.location.href = `/list-nft?contract=${nft.contractAddress}&tokenId=${nft.tokenId}`;
@@ -205,7 +248,9 @@ const MyNFTs = () => {
     <PageContainer>
       <PageHeader>
         <Title>マイNFT</Title>
-        <Subtitle>あなたのウォレットにあるすべてのNFTをここで確認できます。</Subtitle>
+        <Subtitle>
+          あなたのウォレットにあるすべてのNFTをここで確認できます。
+        </Subtitle>
       </PageHeader>
 
       {loading ? (
@@ -219,13 +264,13 @@ const MyNFTs = () => {
             <SearchInput
               placeholder="NFTを検索..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            
+
             <FilterGroup>
               <FilterSelect
                 value={collectionFilter}
-                onChange={e => setCollectionFilter(e.target.value)}
+                onChange={(e) => setCollectionFilter(e.target.value)}
               >
                 <option value="all">すべてのコレクション</option>
                 {collections.map((collection, index) => (
@@ -251,14 +296,22 @@ const MyNFTs = () => {
           ) : (
             <EmptyState>
               <h3>NFTが見つかりません</h3>
-              <p>該当するNFTがありません。検索条件を変更するか、NFTを取得してください。</p>
+              <p>
+                該当するNFTがありません。検索条件を変更するか、NFTを取得してください。
+              </p>
             </EmptyState>
           )}
-          
+
           {showActionMenu && activeNFT && (
-            <div style={{ position: 'relative' }}>
-              <div 
-                style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }} 
+            <div style={{ position: "relative" }}>
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                }}
                 onClick={handleClickOutside}
               />
               <ActionMenu>

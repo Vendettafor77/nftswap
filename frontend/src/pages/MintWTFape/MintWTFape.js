@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import {
+  PrimaryButton,
+  SecondaryButton,
+  OutlineButton,
+} from "../../components/styled/Button";
 
 const MintContainer = styled.div`
   max-width: 800px;
@@ -15,6 +20,10 @@ const MintHeader = styled.div`
 const Title = styled.h1`
   color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.md};
+  font-size: 2.5rem;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const Description = styled.p`
@@ -26,13 +35,17 @@ const Description = styled.p`
 `;
 
 const MintCard = styled.div`
-  background-color: ${(props) => props.theme.colors.surface};
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.surface}, ${props.theme.colors.surface}F8)`};
   border-radius: ${(props) => props.theme.borderRadius.large};
   box-shadow: ${(props) => props.theme.shadows.large};
   padding: ${(props) => props.theme.spacing.lg};
   display: flex;
   flex-direction: column;
   gap: ${(props) => props.theme.spacing.lg};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -41,6 +54,7 @@ const MintCard = styled.div`
 
 const PreviewSection = styled.div`
   flex: 1;
+  position: relative;
 `;
 
 const NFTPreview = styled.div`
@@ -48,28 +62,34 @@ const NFTPreview = styled.div`
   aspect-ratio: 1;
   border-radius: ${(props) => props.theme.borderRadius.large};
   overflow: hidden;
-  background-color: ${(props) => props.theme.colors.background};
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.background}, ${props.theme.colors.background}F8)`};
   position: relative;
+  box-shadow: ${(props) => props.theme.shadows.medium};
+  border: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
 const PreviewImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-`;
+  transition: transform 0.3s ease;
 
-const RandomizeButton = styled.button`
-  background-color: ${(props) => props.theme.colors.secondary};
-  color: white;
-  width: 100%;
-  margin-top: ${(props) => props.theme.spacing.md};
-  padding: ${(props) => props.theme.spacing.md};
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const MintSection = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.surface}05, ${props.theme.colors.surface}15)`};
+  padding: ${(props) => props.theme.spacing.lg};
+  border-radius: ${(props) => props.theme.borderRadius.large};
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 `;
 
 const MintInfo = styled.div`
@@ -79,6 +99,10 @@ const MintInfo = styled.div`
 const InfoTitle = styled.h3`
   color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.sm};
+  font-size: 1.5rem;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 const InfoText = styled.p`
@@ -92,16 +116,30 @@ const PriceContainer = styled.div`
   align-items: center;
   gap: ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.md};
+  background: ${(props) => props.theme.colors.background}22;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  border: 1px solid rgba(255, 255, 255, 0.05);
+`;
+
+const EthIcon = styled.span`
+  font-size: 1.2rem;
+  margin-right: ${(props) => props.theme.spacing.xs};
+  opacity: 0.8;
 `;
 
 const PriceTag = styled.div`
-  background-color: ${(props) => props.theme.colors.primary}22;
-  color: ${(props) => props.theme.colors.primary};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.md};
+  display: flex;
+  align-items: center;
+  color: ${(props) => props.theme.colors.text.primary};
   font-weight: bold;
   font-size: 1.2rem;
+
+  ${EthIcon} {
+    background: linear-gradient(120deg, #6a11cb, #2575fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 `;
 
 const QuantityControl = styled.div`
@@ -115,18 +153,6 @@ const QuantityLabel = styled.span`
   color: ${(props) => props.theme.colors.text.primary};
 `;
 
-const QuantityButton = styled.button`
-  background-color: ${(props) => props.theme.colors.surface};
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  color: ${(props) => props.theme.colors.primary};
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-`;
-
 const QuantityInput = styled.input`
   width: 60px;
   text-align: center;
@@ -134,79 +160,6 @@ const QuantityInput = styled.input`
   padding: ${(props) => props.theme.spacing.sm};
 `;
 
-const TotalPrice = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: ${(props) => props.theme.spacing.md} 0;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  border-top: 1px solid ${(props) => props.theme.colors.text.secondary}33;
-  border-bottom: 1px solid ${(props) => props.theme.colors.text.secondary}33;
-`;
-
-const TotalLabel = styled.span`
-  color: ${(props) => props.theme.colors.text.primary};
-  font-weight: bold;
-`;
-
-const TotalAmount = styled.span`
-  color: ${(props) => props.theme.colors.accent};
-  font-weight: bold;
-  font-size: 1.2rem;
-`;
-
-const MintButton = styled.button`
-  background-color: ${(props) => props.theme.colors.primary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-top: auto;
-
-  &:disabled {
-    background-color: ${(props) => props.theme.colors.text.secondary}88;
-  }
-`;
-
-const MintingStatus = styled.div`
-  margin-top: ${(props) => props.theme.spacing.md};
-  padding: ${(props) => props.theme.spacing.md};
-  text-align: center;
-  color: ${(props) =>
-    props.success ? props.theme.colors.success : props.theme.colors.error};
-  background-color: ${(props) =>
-    props.success
-      ? props.theme.colors.success + "22"
-      : props.theme.colors.error + "22"};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  display: ${(props) => (props.visible ? "block" : "none")};
-`;
-
-// TokenID导航按钮样式更改
-const NavigationButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: ${(props) => props.theme.spacing.md};
-  margin-top: ${(props) => props.theme.spacing.md};
-`;
-
-const NavButton = styled.button`
-  flex: 1;
-  background-color: ${(props) => props.theme.colors.secondary};
-  color: white;
-  padding: ${(props) => props.theme.spacing.md};
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${(props) => props.theme.spacing.sm};
-
-  svg {
-    width: 20px;
-    height: 20px;
-  }
-`;
-
-// TokenID输入区样式
 const TokenIdControl = styled.div`
   display: flex;
   flex-direction: column;
@@ -216,16 +169,76 @@ const TokenIdControl = styled.div`
 const TokenIdLabel = styled.span`
   margin-bottom: ${(props) => props.theme.spacing.sm};
   color: ${(props) => props.theme.colors.text.primary};
+  font-weight: 500;
 `;
 
 const TokenIdInput = styled.input`
   padding: ${(props) => props.theme.spacing.md};
   border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
-  background-color: ${(props) => props.theme.colors.surface};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${(props) =>
+    `linear-gradient(145deg, ${props.theme.colors.surface}22, ${props.theme.colors.surface}44)`};
   color: ${(props) => props.theme.colors.text.primary};
   font-size: 1rem;
   text-align: center;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+    outline: none;
+  }
+`;
+
+const TotalPrice = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.md};
+  background: linear-gradient(
+    145deg,
+    rgba(106, 17, 203, 0.1),
+    rgba(37, 117, 252, 0.1)
+  );
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+`;
+
+const TotalLabel = styled.span`
+  color: ${(props) => props.theme.colors.text.primary};
+  font-weight: bold;
+`;
+
+const TotalAmount = styled.span`
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  font-size: 1.2rem;
+`;
+
+const MintingStatus = styled.div`
+  margin-top: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.md};
+  text-align: center;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  background: ${(props) =>
+    props.success
+      ? "linear-gradient(145deg, rgba(66, 183, 42, 0.1), rgba(66, 183, 42, 0.2))"
+      : "linear-gradient(145deg, rgba(219, 55, 55, 0.1), rgba(219, 55, 55, 0.2))"};
+  color: ${(props) => (props.success ? "#42b72a" : "#db3737")};
+  border-left: 3px solid ${(props) => (props.success ? "#42b72a" : "#db3737")};
+  display: ${(props) => (props.visible ? "block" : "none")};
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: ${(props) => props.theme.spacing.md};
+  margin-top: ${(props) => props.theme.spacing.md};
 `;
 
 // 示例NFT数据
@@ -354,12 +367,12 @@ const MintWTFape = () => {
               alt={`WTFape #${tokenId}`}
             />
           </NFTPreview>
-          <RandomizeButton onClick={handleRandomPreview}>
+          <OutlineButton onClick={handleRandomPreview}>
             ランダムプレビュー
-          </RandomizeButton>
+          </OutlineButton>
 
           <NavigationButtons>
-            <NavButton onClick={handlePrevious}>
+            <OutlineButton direction="prev" onClick={handlePrevious}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -368,8 +381,8 @@ const MintWTFape = () => {
                 <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
               </svg>
               前のNFT
-            </NavButton>
-            <NavButton onClick={handleNext}>
+            </OutlineButton>
+            <OutlineButton direction="next" onClick={handleNext}>
               次のNFT
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -378,7 +391,7 @@ const MintWTFape = () => {
               >
                 <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
               </svg>
-            </NavButton>
+            </OutlineButton>
           </NavigationButtons>
         </PreviewSection>
 
@@ -390,7 +403,10 @@ const MintWTFape = () => {
             </InfoText>
 
             <PriceContainer>
-              <PriceTag>{pricePerNFT} ETH</PriceTag>
+              <PriceTag>
+                <EthIcon>Ξ</EthIcon>
+                {pricePerNFT} ETH
+              </PriceTag>
             </PriceContainer>
 
             <TokenIdControl>
@@ -409,9 +425,9 @@ const MintWTFape = () => {
             </TotalPrice>
           </MintInfo>
 
-          <MintButton disabled={isMinting} onClick={handleMint}>
+          <PrimaryButton fullWidth disabled={isMinting} onClick={handleMint}>
             {isMinting ? "ミント中..." : "このWTFapeをミントする"}
-          </MintButton>
+          </PrimaryButton>
 
           <MintingStatus
             visible={mintStatus.visible}
