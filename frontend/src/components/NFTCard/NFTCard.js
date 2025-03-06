@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { AnimationContext } from "../../contexts/AnimationContext";
 import { PrimaryButton, OutlineButton } from "../styled/Button";
+import { StatusMessage } from "../styled/StatusMessage";
 
 // 邊框流光動畫
 const borderGlow = keyframes`
@@ -58,11 +59,37 @@ const Card = styled.div`
     }F8)`};
   border-radius: ${(props) => props.theme.borderRadius.medium};
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: ${(props) =>
+    props.isSelected
+      ? "0 15px 30px rgba(106, 17, 203, 0.3)"
+      : "0 10px 20px rgba(0, 0, 0, 0.08)"};
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: ${(props) =>
+    props.isSelected
+      ? `2px solid ${props.theme.colors.primary}`
+      : "1px solid rgba(255, 255, 255, 0.1)"};
   backdrop-filter: blur(10px);
-  ${cardAnimationStyles}
+  transform: ${(props) => (props.isSelected ? "translateY(-5px)" : "none")};
+  transition: all 0.3s ease;
+
+  ${(props) => !props.isSelected && cardAnimationStyles}
+
+  ${(props) =>
+    props.isSelected &&
+    `
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 2px ${props.theme.colors.primary};
+      pointer-events: none;
+    }
+  `}
 `;
 
 // 修改ImageContainer
@@ -114,7 +141,12 @@ const Badge = styled.span`
 `;
 
 const CardContent = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 100%); /* 自動調整高度 */
+  padding: ${(props) =>
+    `${props.theme.spacing.md} ${props.theme.spacing.md} calc(${props.theme.spacing.md} + ${props.theme.spacing.sm}) ${props.theme.spacing.md}`};
   background: ${(props) =>
     `linear-gradient(to bottom, 
       ${props.theme.colors.surface}99, 
@@ -143,6 +175,11 @@ const CardContent = styled.div`
     );
     pointer-events: none;
   }
+`;
+
+// 添加卡片信息部分容器
+const InfoContainer = styled.div`
+  flex: 1;
 `;
 
 // 使用更高级的字体渐变效果
@@ -177,7 +214,7 @@ const NFTDescription = styled.div`
   background: linear-gradient(to right, #11998e, #38ef7d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: ${(props) => props.theme.spacing.sm} 0;
+  margin: ${(props) => props.theme.spacing.md} 0 0;
   display: flex;
   align-items: center;
 `;
@@ -185,21 +222,6 @@ const NFTDescription = styled.div`
 const EthIcon = styled.span`
   margin-right: 4px;
   font-size: 1em;
-`;
-
-// 改进状态消息样式
-const StatusContainer = styled.div`
-  margin-top: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.xs};
-  background: ${(props) =>
-    props.success
-      ? "linear-gradient(45deg, rgba(66, 183, 42, 0.2), rgba(66, 183, 42, 0.1))"
-      : "linear-gradient(45deg, rgba(219, 55, 55, 0.2), rgba(219, 55, 55, 0.1))"};
-  color: ${(props) => (props.success ? "#42b72a" : "#db3737")};
-  border-radius: ${(props) => props.theme.borderRadius.small};
-  text-align: center;
-  font-size: 0.9rem;
-  border-left: 3px solid ${(props) => (props.success ? "#42b72a" : "#db3737")};
 `;
 
 // 添加動畫切換按鈕容器
@@ -232,50 +254,103 @@ const AnimationButton = styled(OutlineButton)`
     `}
 `;
 
+// 将這個添加到樣式組件部分
+const ActionContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: ${(props) => props.theme.spacing.md};
+  margin-bottom: 0;
+  height: 38px; /* 精確匹配按鈕高度 */
+  position: relative;
+`;
+
+// 添加卡片內的狀態消息樣式
+const CardStatusMessage = styled(StatusMessage)`
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 38px;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  vertical-align: middle;
+
+  &::after,
+  &::before {
+    display: none; /* 移除圖標和箭頭 */
+  }
+`;
+
 // 修改組件實現
-const NFTCard = ({ nft, actionText, onAction, statusMessage }) => {
-  const testNft = {
-    ...nft,
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    name: nft?.name || "Bored Ape #1234",
-    collection: nft?.collection || "Bored Ape Yacht Club",
-    price: nft?.price || (Math.random() * 100).toFixed(2),
-  };
+const NFTCard = ({
+  nft,
+  actionText,
+  onAction,
+  statusMessage,
+  customActionButton,
+  isSelected,
+}) => {
+  // 使用實際 NFT 數據，而不是測試數據
+  const nftData = nft;
 
   const getActionText =
     typeof actionText === "function"
-      ? () => actionText(testNft)
+      ? () => actionText(nftData)
       : () => actionText;
 
+  // 處理按鈕點擊
+  const handleAction = () => {
+    if (onAction) {
+      onAction(nftData);
+    }
+  };
+
   return (
-    <Card>
+    <Card isSelected={isSelected}>
       <ImageContainer>
-        <Image src={testNft.image} alt={testNft.name} />
-        {testNft.collection === "Bored Ape Yacht Club" && (
+        <Image src={nftData.image} alt={nftData.name} />
+        {nftData.collection === "Bored Ape Yacht Club" && (
           <BadgeContainer>
             <Badge>Hot</Badge>
           </BadgeContainer>
         )}
       </ImageContainer>
       <CardContent>
-        <NFTName>{testNft.name}</NFTName>
-        <NFTCollection>{testNft.collection}</NFTCollection>
-        {testNft.price && (
-          <NFTDescription>
-            <EthIcon>Ξ</EthIcon> {testNft.price} ETH
-          </NFTDescription>
-        )}
-        {onAction && (
-          <PrimaryButton onClick={() => onAction(testNft)} fullWidth>
-            {getActionText()}
-          </PrimaryButton>
-        )}
-        {statusMessage && (
-          <StatusContainer success={statusMessage.success}>
-            {statusMessage.message}
-          </StatusContainer>
-        )}
+        <InfoContainer>
+          <NFTName>{nftData.name}</NFTName>
+          <NFTCollection>{nftData.collection}</NFTCollection>
+          {nftData.price && (
+            <NFTDescription>
+              <EthIcon>Ξ</EthIcon> {nftData.price} ETH
+            </NFTDescription>
+          )}
+        </InfoContainer>
+        <ActionContainer>
+          {onAction && !statusMessage && customActionButton && (
+            <div style={{ width: "100%" }} onClick={handleAction}>
+              {customActionButton()}
+            </div>
+          )}
+          {onAction && !statusMessage && !customActionButton && (
+            <PrimaryButton onClick={handleAction} fullWidth>
+              {getActionText()}
+            </PrimaryButton>
+          )}
+          {statusMessage && (
+            <CardStatusMessage
+              success={statusMessage.success}
+              fadeOut={statusMessage.fadeOut}
+              fullWidth
+              noArrow
+            >
+              {statusMessage.message}
+            </CardStatusMessage>
+          )}
+        </ActionContainer>
       </CardContent>
     </Card>
   );

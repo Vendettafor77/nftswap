@@ -125,9 +125,42 @@ export const GhostButton = styled.button`
   }
 `;
 
+export const TabButton = styled.button`
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${(props) =>
+    props.active
+      ? props.theme.colors.text.primary
+      : props.theme.colors.text.secondary};
+  background: ${(props) =>
+    props.active ? props.theme.colors.surface : "transparent"};
+  border: none;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 ${(props) => props.theme.spacing.sm};
+
+  &:hover {
+    background: ${(props) => props.theme.colors.surface};
+    color: ${(props) => props.theme.colors.text.primary};
+  }
+`;
+
+export const TabsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: ${(props) => props.theme.spacing.md} 0;
+  gap: ${(props) => props.theme.spacing.sm};
+`;
+
 export default {
   PrimaryButton,
   SecondaryButton,
   OutlineButton,
   GhostButton,
+  TabButton,
+  TabsContainer,
 };

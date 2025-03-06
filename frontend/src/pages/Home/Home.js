@@ -40,6 +40,7 @@ const Home = () => {
     show: false,
     nftId: null,
     success: false,
+    fadeOut: false,
   });
 
   // 将集合缓存为useMemo
@@ -86,16 +87,37 @@ const Home = () => {
     setCollectionFilter(value);
   }, []);
 
-  const handleBuyNFT = useCallback(async (nft) => {
+  const handleBuy = useCallback(async (nft) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setPurchaseStatus({ show: true, nftId: nft.id, success: true });
-      setTimeout(
-        () => setPurchaseStatus({ show: false, nftId: null, success: false }),
-        3000
-      );
+      setPurchaseStatus({
+        show: true,
+        nftId: nft.id,
+        success: true,
+        fadeOut: false,
+      });
+
+      // 2秒後開始淡出動畫
+      setTimeout(() => {
+        setPurchaseStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 2000);
+
+      // 淡出動畫後隱藏信息
+      setTimeout(() => {
+        setPurchaseStatus({
+          show: false,
+          nftId: null,
+          success: false,
+          fadeOut: false,
+        });
+      }, 2400);
     } catch (error) {
-      setPurchaseStatus({ show: true, nftId: nft.id, success: false });
+      setPurchaseStatus({
+        show: true,
+        nftId: nft.id,
+        success: false,
+        fadeOut: false,
+      });
     }
   }, []);
 
@@ -106,6 +128,7 @@ const Home = () => {
         return {
           success: purchaseStatus.success,
           message: purchaseStatus.success ? "購入成功！" : "購入失敗",
+          fadeOut: purchaseStatus.fadeOut,
         };
       }
       return null;
@@ -155,7 +178,7 @@ const Home = () => {
           <NFTGrid
             items={filteredNFTs}
             actionText="購入する"
-            onItemAction={handleBuyNFT}
+            onItemAction={handleBuy}
             renderStatus={renderNftStatus}
           />
         </MarketContainer>

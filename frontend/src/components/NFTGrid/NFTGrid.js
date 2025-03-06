@@ -54,7 +54,15 @@ const EmptyState = styled.div`
   }
 `;
 
-const NFTGrid = ({ items = [], onItemAction, actionText, renderStatus }) => {
+const NFTGrid = ({
+  items = [],
+  onItemAction,
+  actionText,
+  renderStatus,
+  renderActionButton,
+  selectedNFT,
+  className,
+}) => {
   if (items.length === 0) {
     return (
       <EmptyState>
@@ -64,17 +72,32 @@ const NFTGrid = ({ items = [], onItemAction, actionText, renderStatus }) => {
     );
   }
 
+  const getCustomButton = (nft) => {
+    if (!renderActionButton) return null;
+    return renderActionButton(nft);
+  };
+
   return (
-    <Grid>
-      {items.map((nft) => (
-        <NFTCard
-          key={nft.id || nft.tokenId}
-          nft={nft}
-          actionText={actionText}
-          onAction={() => onItemAction?.(nft)}
-          statusMessage={renderStatus?.(nft)}
-        />
-      ))}
+    <Grid className={className}>
+      {items.map((nft) => {
+        const isNFTSelected =
+          selectedNFT &&
+          (selectedNFT.id === nft.id || selectedNFT.tokenId === nft.tokenId);
+
+        return (
+          <NFTCard
+            key={nft.id || nft.tokenId}
+            nft={nft}
+            actionText={actionText}
+            onAction={onItemAction}
+            statusMessage={renderStatus ? renderStatus(nft) : null}
+            customActionButton={
+              renderActionButton ? () => getCustomButton(nft) : null
+            }
+            isSelected={isNFTSelected}
+          />
+        );
+      })}
     </Grid>
   );
 };

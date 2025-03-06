@@ -5,6 +5,7 @@ import {
   SecondaryButton,
   OutlineButton,
 } from "../../components/styled/Button";
+import { StatusMessage } from "../../components/styled/StatusMessage";
 
 const MintContainer = styled.div`
   max-width: 800px;
@@ -287,6 +288,7 @@ const MintWTFape = () => {
   const [mintStatus, setMintStatus] = useState({
     visible: false,
     success: false,
+    fadeOut: false,
     message: "",
   });
 
@@ -326,7 +328,12 @@ const MintWTFape = () => {
 
   const handleMint = async () => {
     setIsMinting(true);
-    setMintStatus({ visible: false, success: false, message: "" });
+    setMintStatus({
+      visible: false,
+      success: false,
+      fadeOut: false,
+      message: "",
+    });
 
     try {
       // 模拟铸造过程
@@ -336,15 +343,47 @@ const MintWTFape = () => {
       setMintStatus({
         visible: true,
         success: true,
+        fadeOut: false,
         message: `おめでとうございます！TokenID: ${tokenId}のWTFape NFTのミントに成功しました。`,
       });
+
+      // 3秒後開始淡出動畫
+      setTimeout(() => {
+        setMintStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 3000);
+
+      // 淡出動畫後隱藏信息
+      setTimeout(() => {
+        setMintStatus({
+          visible: false,
+          success: false,
+          fadeOut: false,
+          message: "",
+        });
+      }, 3400);
     } catch (error) {
       setMintStatus({
         visible: true,
         success: false,
+        fadeOut: false,
         message:
           "ミントに失敗しました。ウォレットの接続を確認して再試行してください。",
       });
+
+      // 3秒後開始淡出動畫
+      setTimeout(() => {
+        setMintStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 3000);
+
+      // 淡出動畫後隱藏信息
+      setTimeout(() => {
+        setMintStatus({
+          visible: false,
+          success: false,
+          fadeOut: false,
+          message: "",
+        });
+      }, 3400);
     } finally {
       setIsMinting(false);
     }
@@ -429,12 +468,17 @@ const MintWTFape = () => {
             {isMinting ? "ミント中..." : "このWTFapeをミントする"}
           </PrimaryButton>
 
-          <MintingStatus
-            visible={mintStatus.visible}
-            success={mintStatus.success}
-          >
-            {mintStatus.message}
-          </MintingStatus>
+          {mintStatus.visible && (
+            <StatusMessage
+              success={mintStatus.success}
+              fullWidth
+              noArrow
+              fadeOut={mintStatus.fadeOut}
+              style={{ marginTop: "1rem", width: "100%" }}
+            >
+              {mintStatus.message}
+            </StatusMessage>
+          )}
         </MintSection>
       </MintCard>
     </MintContainer>

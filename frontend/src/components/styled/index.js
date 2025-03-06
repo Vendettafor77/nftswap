@@ -2,52 +2,55 @@ import React from "react";
 import styled from "styled-components";
 import { OutlineButton } from "./Button";
 
-export const HeroSection = styled.section`
+export const HeroSection = styled.div`
   text-align: center;
-  padding: ${(props) => props.theme.spacing.xl} 0;
-  margin-bottom: ${(props) => props.theme.spacing.xl};
+  padding: ${(props) => props.theme.spacing.md} 0;
+  margin-bottom: ${(props) => props.theme.spacing.sm};
 
   h1 {
-    font-size: 4.2rem;
+    font-size: 3.2rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    margin-bottom: ${(props) => props.theme.spacing.xs};
     background: linear-gradient(
       120deg,
-      rgba(106, 17, 203, 0.9) 0%,
-      rgba(142, 84, 233, 0.85) 25%,
-      rgba(37, 117, 252, 0.8) 50%,
-      rgba(106, 17, 203, 0.9) 100%
+      rgba(106, 17, 203, 0.9),
+      rgba(142, 84, 233, 0.85),
+      rgba(37, 117, 252, 0.8),
+      rgba(106, 17, 203, 0.9)
     );
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: ${(props) => props.theme.spacing.xl};
-    position: relative;
-    display: inline-block;
     animation: shine 4s linear infinite;
-
-    @keyframes shine {
-      to {
-        background-position: 200% center;
-      }
-    }
   }
 
   p {
-    font-size: 1.3rem;
+    font-size: 0.95rem;
     color: ${(props) => props.theme.colors.text.secondary};
-    max-width: 700px;
+    max-width: 600px;
     margin: 0 auto;
-    line-height: 1.7;
-    margin-top: 30px;
+    line-height: 1.4;
   }
+
+  @keyframes shine {
+    to {
+      background-position: 200% center;
+    }
+  }
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 2rem;
+  color: ${(props) => props.theme.colors.text.primary};
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  text-align: center;
 `;
 
 export const TabsContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  padding: 10px;
+  margin-bottom: ${(props) => props.theme.spacing.md};
+  padding: 8px;
   transform: translateZ(0);
   perspective: 1000px;
 `;
