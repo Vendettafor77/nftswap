@@ -6,6 +6,7 @@ import {
   OutlineButton,
 } from "../../components/styled/Button";
 import { StatusMessage } from "../../components/styled/StatusMessage";
+import { EthSymbol } from "../../components/NFTCard/NFTCard";
 
 const MintContainer = styled.div`
   max-width: 800px;
@@ -123,24 +124,12 @@ const PriceContainer = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
-const EthIcon = styled.span`
-  font-size: 1.2rem;
-  margin-right: ${(props) => props.theme.spacing.xs};
-  opacity: 0.8;
-`;
-
 const PriceTag = styled.div`
   display: flex;
   align-items: center;
   color: ${(props) => props.theme.colors.text.primary};
   font-weight: bold;
   font-size: 1.2rem;
-
-  ${EthIcon} {
-    background: linear-gradient(120deg, #6a11cb, #2575fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
 `;
 
 const QuantityControl = styled.div`
@@ -443,7 +432,7 @@ const MintWTFape = () => {
 
             <PriceContainer>
               <PriceTag>
-                <EthIcon>Ξ</EthIcon>
+                <EthSymbol>Ξ</EthSymbol>
                 {pricePerNFT} ETH
               </PriceTag>
             </PriceContainer>
@@ -460,7 +449,9 @@ const MintWTFape = () => {
 
             <TotalPrice>
               <TotalLabel>価格:</TotalLabel>
-              <TotalAmount>{pricePerNFT.toFixed(2)} ETH</TotalAmount>
+              <TotalAmount>
+                <EthSymbol>Ξ</EthSymbol> {pricePerNFT.toFixed(2)} ETH
+              </TotalAmount>
             </TotalPrice>
           </MintInfo>
 

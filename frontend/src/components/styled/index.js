@@ -13,15 +13,17 @@ export const HeroSection = styled.div`
     margin-bottom: ${(props) => props.theme.spacing.xs};
     background: linear-gradient(
       120deg,
-      rgba(106, 17, 203, 0.9),
-      rgba(142, 84, 233, 0.85),
-      rgba(37, 117, 252, 0.8),
-      rgba(106, 17, 203, 0.9)
+      rgba(106, 17, 203, 1),
+      /* 紫色 */ rgba(142, 84, 233, 1),
+      /* 淺紫色 */ rgba(56, 239, 125, 1),
+      /* 綠色 */ rgba(37, 117, 252, 1),
+      /* 藍色 */ rgba(106, 17, 203, 1) /* 紫色 */
     );
-    background-size: 200% auto;
+    background-size: 400% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shine 4s linear infinite;
+    animation: shine 15s linear infinite;
+    text-shadow: 0 0 20px rgba(106, 17, 203, 0.3);
   }
 
   p {
@@ -33,8 +35,14 @@ export const HeroSection = styled.div`
   }
 
   @keyframes shine {
-    to {
+    0% {
+      background-position: 0% center;
+    }
+    50% {
       background-position: 200% center;
+    }
+    100% {
+      background-position: 0% center;
     }
   }
 `;

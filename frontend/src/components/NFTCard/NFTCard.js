@@ -1,7 +1,11 @@
 import React, { useState, useContext } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { AnimationContext } from "../../contexts/AnimationContext";
-import { PrimaryButton, OutlineButton } from "../styled/Button";
+import {
+  PrimaryButton,
+  OutlineButton,
+  SecondaryButton,
+} from "../styled/Button";
 import { StatusMessage } from "../styled/StatusMessage";
 
 // 邊框流光動畫
@@ -12,11 +16,11 @@ const borderGlow = keyframes`
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   100% {
     opacity: 0;
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 `;
 
@@ -29,7 +33,7 @@ const cardAnimationStyles = css`
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
   &:hover::after {
-    animation: ${borderGlow} 2.5s ease-in-out forwards;
+    animation: ${borderGlow} 1.5s ease-in-out infinite;
   }
   &::after {
     content: "";
@@ -43,12 +47,29 @@ const cardAnimationStyles = css`
       rgba(131, 58, 180, 0.6),
       rgba(29, 185, 253, 0.6)
     );
-    border-radius: inherit;
+    border-radius: ${(props) => props.theme.borderRadius.medium};
     z-index: 2;
     opacity: 0;
     pointer-events: none;
     mix-blend-mode: screen;
   }
+`;
+
+// 基礎標籤樣式
+const BaseTag = styled.div`
+  position: absolute;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 `;
 
 // 修改Card組件
@@ -71,6 +92,9 @@ const Card = styled.div`
   backdrop-filter: blur(10px);
   transform: ${(props) => (props.isSelected ? "translateY(-5px)" : "none")};
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   ${(props) => !props.isSelected && cardAnimationStyles}
 
@@ -85,7 +109,7 @@ const Card = styled.div`
       right: 0;
       bottom: 0;
       z-index: 2;
-      border-radius: inherit;
+      border-radius: ${props.theme.borderRadius.medium};
       box-shadow: inset 0 0 0 2px ${props.theme.colors.primary};
       pointer-events: none;
     }
@@ -98,11 +122,12 @@ const ImageContainer = styled.div`
   width: 100%;
   padding-top: 100%;
   background: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.borderRadius.medium}
-    ${(props) => props.theme.borderRadius.medium} 0 0;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  overflow: hidden;
+  flex-shrink: 0;
 `;
 
-// 修改Image組件，降低z-index
+// 修改Image組件
 const Image = styled.img`
   position: absolute;
   top: 0;
@@ -110,76 +135,70 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border-radius: ${(props) => props.theme.borderRadius.medium}
-    ${(props) => props.theme.borderRadius.medium} 0 0;
-  overflow: hidden;
+  transition: transform 0.3s ease;
+  border-radius: inherit;
   z-index: 1;
 
   ${ImageContainer}:hover & {
-    transform: scale(1.08);
+    transform: scale(1.02);
   }
 `;
 
-// 改进徽章样式
-const BadgeContainer = styled.div`
-  position: absolute;
+// 修改ListingBadge組件
+const ListingBadge = styled(BaseTag)`
   top: 10px;
   right: 10px;
-  z-index: 4;
-`;
-
-const Badge = styled.span`
-  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  background: ${(props) => props.theme.colors.primary}CC;
   color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  letter-spacing: 0.5px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
 `;
 
+// 修改價格標示組件
+const PriceTag = styled(BaseTag)`
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+export const EthSymbol = styled.span`
+  font-size: 1em;
+  color: #00ff9d;
+  font-weight: bold;
+  background: linear-gradient(120deg, #00ff9d, #00c9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+
+// 調整卡片內容區域，減少底部空白
 const CardContent = styled.div`
+  padding: ${(props) => props.theme.spacing.md};
+  padding-bottom: ${(props) => props.theme.spacing.md}; /* 減少底部間距 */
+  position: relative;
+  z-index: 3;
+  background: ${(props) => props.theme.colors.surface}F8;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100% - 100%); /* 自動調整高度 */
-  padding: ${(props) =>
-    `${props.theme.spacing.md} ${props.theme.spacing.md} calc(${props.theme.spacing.md} + ${props.theme.spacing.sm}) ${props.theme.spacing.md}`};
-  background: ${(props) =>
-    `linear-gradient(to bottom, 
-      ${props.theme.colors.surface}99, 
-      ${props.theme.colors.surface}FF
-    )`};
-  position: relative;
-  z-index: 1;
-  margin-top: -2px; /* 消除可能的缝隙 */
-
-  /* 添加微妙的玻璃拟态效果 */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  /* 顶部阴影渐变 */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
-    pointer-events: none;
-  }
+  flex-grow: 1;
+  height: auto;
+  min-height: 120px; /* 減少最小高度 */
 `;
 
 // 添加卡片信息部分容器
 const InfoContainer = styled.div`
-  flex: 1;
+  padding: 0;
+  margin-bottom: 8px; /* 使用固定間距替代auto */
+  flex-grow: 0;
 `;
 
 // 使用更高级的字体渐变效果
@@ -195,94 +214,53 @@ const NFTName = styled.h3`
   font-weight: 600;
   position: relative;
   z-index: 1;
+  padding: 0;
 `;
 
 const NFTCollection = styled.p`
   font-size: 0.9rem;
   color: ${(props) => props.theme.colors.text.secondary};
-  margin: 0 0 ${(props) => props.theme.spacing.sm} 0;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.8;
-`;
-
-// 改进价格显示
-const NFTDescription = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  background: linear-gradient(to right, #11998e, #38ef7d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: ${(props) => props.theme.spacing.md} 0 0;
-  display: flex;
-  align-items: center;
-`;
-
-const EthIcon = styled.span`
-  margin-right: 4px;
-  font-size: 1em;
+  padding: 0;
 `;
 
 // 添加動畫切換按鈕容器
-const AnimationControls = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 4;
-  display: flex;
-  gap: 4px;
-`;
-
-const AnimationButton = styled(OutlineButton)`
-  padding: 2px 8px;
-  font-size: 0.75rem;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.7);
-  }
-
-  ${(props) =>
-    props.active &&
-    css`
-      background: rgba(106, 17, 203, 0.5);
-      &:hover {
-        background: rgba(106, 17, 203, 0.7);
-      }
-    `}
-`;
-
-// 将這個添加到樣式組件部分
 const ActionContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin-top: ${(props) => props.theme.spacing.md};
-  margin-bottom: 0;
-  height: 38px; /* 精確匹配按鈕高度 */
+  margin: 0;
+  padding: 0;
+  height: 42px;
   position: relative;
+  z-index: 3;
+  flex-shrink: 0;
+  margin-top: 0;
+  box-sizing: border-box;
 `;
 
-// 添加卡片內的狀態消息樣式
-const CardStatusMessage = styled(StatusMessage)`
-  padding: 0;
+// 卡片內建按鈕樣式覆蓋
+const CardButton = styled(PrimaryButton)`
+  width: 100%;
+  max-width: 100%;
   margin: 0;
-  font-size: 0.9rem;
-  line-height: 38px;
-  box-shadow: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px;
-  vertical-align: middle;
+  height: 42px;
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+`;
 
-  &::after,
-  &::before {
-    display: none; /* 移除圖標和箭頭 */
-  }
+// 卡片狀態消息
+const CardStatusMessage = styled(StatusMessage)`
+  width: 100%; /* 確保與按鈕寬度一致 */
+  margin: 0;
+  padding: ${(props) => props.theme.spacing.sm};
+  font-size: 0.9rem;
 `;
 
 // 修改組件實現
@@ -313,32 +291,38 @@ const NFTCard = ({
     <Card isSelected={isSelected}>
       <ImageContainer>
         <Image src={nftData.image} alt={nftData.name} />
-        {nftData.collection === "Bored Ape Yacht Club" && (
-          <BadgeContainer>
-            <Badge>Hot</Badge>
-          </BadgeContainer>
+        {nftData.isListed && <ListingBadge>出品中</ListingBadge>}
+        {nftData.price && (
+          <PriceTag>
+            <EthSymbol>Ξ</EthSymbol>
+            {nftData.price}
+          </PriceTag>
         )}
       </ImageContainer>
       <CardContent>
         <InfoContainer>
           <NFTName>{nftData.name}</NFTName>
           <NFTCollection>{nftData.collection}</NFTCollection>
-          {nftData.price && (
-            <NFTDescription>
-              <EthIcon>Ξ</EthIcon> {nftData.price} ETH
-            </NFTDescription>
-          )}
         </InfoContainer>
         <ActionContainer>
           {onAction && !statusMessage && customActionButton && (
-            <div style={{ width: "100%" }} onClick={handleAction}>
+            <div
+              style={{
+                width: "100%",
+                height: "42px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                padding: 0,
+                margin: 0,
+              }}
+              onClick={handleAction}
+            >
               {customActionButton()}
             </div>
           )}
           {onAction && !statusMessage && !customActionButton && (
-            <PrimaryButton onClick={handleAction} fullWidth>
-              {getActionText()}
-            </PrimaryButton>
+            <CardButton onClick={handleAction}>{getActionText()}</CardButton>
           )}
           {statusMessage && (
             <CardStatusMessage
@@ -346,6 +330,7 @@ const NFTCard = ({
               fadeOut={statusMessage.fadeOut}
               fullWidth
               noArrow
+              {...(statusMessage.style || {})}
             >
               {statusMessage.message}
             </CardStatusMessage>

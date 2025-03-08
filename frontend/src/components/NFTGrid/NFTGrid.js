@@ -2,25 +2,37 @@ import React from "react";
 import styled from "styled-components";
 import NFTCard from "../NFTCard/NFTCard";
 
+// 固定大小的網格容器，確保1080p下一排顯示4個卡片
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 30px;
-  padding: 5px;
+  /* 固定大小的網格，不受容器寬度影響 */
+  grid-template-columns: repeat(4, minmax(260px, 1fr));
+  gap: 24px;
+  padding: 0;
   width: 100%;
+  box-sizing: border-box;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  /* 確保卡片最小寬度，防止擠壓變形 */
+  & > div {
+    min-width: 260px;
   }
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(4, minmax(260px, 1fr));
+  }
+
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+  }
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
     gap: 20px;
   }
 
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
   }
 `;
 
@@ -54,6 +66,32 @@ const EmptyState = styled.div`
   }
 `;
 
+const StandardNFTButton = styled.div`
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+
+  button {
+    height: 42px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: ${(props) => props.theme.spacing.sm}
+      ${(props) => props.theme.spacing.lg};
+  }
+`;
+
+/**
+ * NFT卡片網格組件
+ * @param {Array} items - NFT卡片數據
+ * @param {Function} onItemAction - 卡片操作回調
+ * @param {String|Function} actionText - 操作按鈕文字
+ * @param {Function} renderStatus - 渲染狀態回調
+ * @param {Function} renderActionButton - 自定義按鈕渲染
+ * @param {Object} selectedNFT - 已選中的NFT
+ * @param {String} className - 附加類名
+ * @returns {JSX.Element} NFT卡片網格
+ */
 const NFTGrid = ({
   items = [],
   onItemAction,
@@ -73,16 +111,14 @@ const NFTGrid = ({
   }
 
   const getCustomButton = (nft) => {
-    if (!renderActionButton) return null;
-    return renderActionButton(nft);
+    return renderActionButton ? renderActionButton(nft) : null;
   };
 
   return (
     <Grid className={className}>
       {items.map((nft) => {
         const isNFTSelected =
-          selectedNFT &&
-          (selectedNFT.id === nft.id || selectedNFT.tokenId === nft.tokenId);
+          selectedNFT && selectedNFT.tokenId === nft.tokenId;
 
         return (
           <NFTCard
@@ -92,7 +128,13 @@ const NFTGrid = ({
             onAction={onItemAction}
             statusMessage={renderStatus ? renderStatus(nft) : null}
             customActionButton={
-              renderActionButton ? () => getCustomButton(nft) : null
+              renderActionButton
+                ? () => (
+                    <StandardNFTButton>
+                      {getCustomButton(nft)}
+                    </StandardNFTButton>
+                  )
+                : null
             }
             isSelected={isNFTSelected}
           />

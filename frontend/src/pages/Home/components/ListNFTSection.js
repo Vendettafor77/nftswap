@@ -1,42 +1,46 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import NFTGrid from "../../../components/NFTGrid/NFTGrid";
 import { myNFTs } from "../../../data/mockData";
-import {
-  PrimaryButton,
-  SecondaryButton,
-} from "../../../components/styled/Button";
-import { StatusMessage } from "../../../components/styled/StatusMessage";
+import { PrimaryButton } from "../../../components/styled/Button";
+import ListNFTForm from "./ListNFTForm";
+
+// 全局共享的選中NFT狀態（使用useRef替代普通對象）
+export const selectedNFTRef = React.createRef();
 
 const Section = styled.div`
-  /* 移除原有的背景色和陰影，與主頁保持一致 */
   transform: translateZ(0);
-  will-change: transform;
-  margin-top: ${(props) => props.theme.spacing.lg};
+  margin-top: 0; /* 確保與主頁卡片部分對齊 */
+  width: 100%;
 `;
 
+// 搜索欄容器
 const FiltersContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: ${(props) => props.theme.spacing.md};
-  flex-wrap: wrap;
-  gap: ${(props) => props.theme.spacing.sm};
   width: 100%;
   background: rgba(28, 34, 65, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   padding: 12px 16px;
-  box-shadow: none;
+  box-sizing: border-box;
 `;
 
+// 搜索輸入框行
+const SearchRow = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+// 搜索輸入框
 const SearchInput = styled.input`
   padding: 8px 12px;
   border-radius: ${(props) => props.theme.borderRadius.medium};
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(30, 36, 68, 0.6);
   color: ${(props) => props.theme.colors.text.primary};
-  width: 220px;
+  width: 180px;
   font-size: 0.95rem;
 
   &:focus {
@@ -50,141 +54,55 @@ const SearchInput = styled.input`
   }
 `;
 
-const NFTGridContainer = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-
-  /* 確保卡片大小與主頁一致 */
-  .nft-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: ${(props) => props.theme.spacing.lg};
-  }
-`;
-
-const FormContainer = styled.div`
-  background-color: ${(props) => props.theme.colors.background}CC;
-  border-radius: ${(props) => props.theme.borderRadius.large};
-  padding: ${(props) => props.theme.spacing.lg};
-  box-shadow: ${(props) => props.theme.shadows.medium};
-  margin-top: ${(props) => props.theme.spacing.xl};
-  margin-bottom: ${(props) => props.theme.spacing.xl};
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const FormContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: ${(props) => props.theme.spacing.md};
-  flex-wrap: wrap;
+// 標準網格布局
+const StandardGridLayout = styled.div`
   width: 100%;
+  padding: 0;
+  margin: 0;
+`;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
+// 特殊樣式的選中按鈕 - 確保與普通按鈕尺寸一致
+const SelectedButton = styled(PrimaryButton)`
+  background: linear-gradient(90deg, #ff0080, #7928ca);
+  height: 36px; /* 確保固定高度 */
+  font-size: 0.95rem;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    background: linear-gradient(90deg, #ff0080, #7928ca);
+    box-shadow: 0 6px 14px rgba(255, 0, 128, 0.4);
   }
 `;
 
-const FormGroup = styled.div`
-  flex: 1;
-  min-width: 200px;
-  max-width: 400px;
+// 標準按鈕樣式
+const StandardButton = styled(PrimaryButton)`
+  height: 36px;
+  font-size: 0.95rem;
+  max-width: 100%;
+  box-sizing: border-box;
 `;
 
-const Label = styled.label`
-  display: block;
-  margin-bottom: ${(props) => props.theme.spacing.sm};
-  color: ${(props) => props.theme.colors.text.primary};
-  font-weight: 500;
-`;
-
-const PriceInputContainer = styled.div`
+// 包裝器包裹按鈕 - 確保固定尺寸
+const ButtonWrapper = styled.div`
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  height: 36px; /* 確保固定高度 */
   display: flex;
   align-items: center;
-  width: 100%;
+  justify-content: center;
 `;
 
-const PriceInput = styled.input`
-  flex-grow: 1;
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.medium} 0 0
-    ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
-  border-right: none;
-  background-color: ${(props) => props.theme.colors.surface};
-  color: ${(props) => props.theme.colors.text.primary};
-`;
-
-const PriceCurrency = styled.div`
-  padding: ${(props) => props.theme.spacing.md};
-  background-color: ${(props) => props.theme.colors.primary}22;
-  color: ${(props) => props.theme.colors.primary};
-  border-radius: 0 ${(props) => props.theme.borderRadius.medium}
-    ${(props) => props.theme.borderRadius.medium} 0;
-  font-weight: bold;
-  min-width: 60px;
-  text-align: center;
-`;
-
-// 新增選中NFT信息顯示組件
-const SelectedNFTInfo = styled.div`
-  display: flex;
-  align-items: center;
-  padding: ${(props) => props.theme.spacing.sm};
-  background: ${(props) => props.theme.colors.primary}11;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  border: 1px solid ${(props) => props.theme.colors.primary}33;
-`;
-
-const NFTImage = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: ${(props) => props.theme.borderRadius.small};
-  margin-right: ${(props) => props.theme.spacing.sm};
-  object-fit: cover;
-`;
-
-const NFTDetails = styled.div`
-  flex: 1;
-`;
-
-const NFTName = styled.div`
-  font-weight: bold;
-  color: ${(props) => props.theme.colors.text.primary};
-`;
-
-const NFTCollection = styled.div`
-  font-size: 0.9rem;
-  color: ${(props) => props.theme.colors.text.secondary};
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-  align-items: stretch;
-  flex-shrink: 0;
-  min-width: 250px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    width: 100%;
-  }
-`;
-
-const ListNFTSection = () => {
+/**
+ * NFT出品頁面組件
+ * @param {Object} props - 組件屬性
+ * @param {Boolean} props.standalone - 是否獨立使用
+ * @returns {JSX.Element} 出品頁面組件
+ */
+const ListNFTSection = ({ standalone = true }) => {
   const [selectedNFT, setSelectedNFT] = useState(null);
-  const [price, setPrice] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [listingStatus, setListingStatus] = useState({
-    show: false,
-    success: false,
-    fadeOut: false,
-    message: "",
-  });
 
   const filteredNFTs = myNFTs.filter((nft) =>
     searchTerm
@@ -196,173 +114,89 @@ const ListNFTSection = () => {
     setSearchTerm(e.target.value);
   }, []);
 
-  const handleSubmit = async () => {
-    if (!selectedNFT || !price) {
-      setListingStatus({
-        show: true,
-        success: false,
-        fadeOut: false,
-        message: "NFTと価格を選択してください。",
-      });
-      return;
-    }
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setListingStatus({
-        show: true,
-        success: true,
-        fadeOut: false,
-        message: `${selectedNFT.name}が${price} ETHで出品されました。`,
-      });
-
-      // 3秒後開始淡出動畫
-      setTimeout(() => {
-        setListingStatus((prev) => ({ ...prev, fadeOut: true }));
-      }, 3000);
-
-      // 淡出動畫後隱藏信息
-      setTimeout(() => {
-        setListingStatus({
-          show: false,
-          success: false,
-          fadeOut: false,
-          message: "",
-        });
-      }, 3400);
-
+  // 同步選中狀態
+  useEffect(() => {
+    // 監聽清除事件
+    const handleNFTCleared = () => {
       setSelectedNFT(null);
-      setPrice("");
-    } catch (error) {
-      setListingStatus({
-        show: true,
-        success: false,
-        fadeOut: false,
-        message: "出品に失敗しました。",
-      });
+    };
 
-      // 3秒後開始淡出動畫
-      setTimeout(() => {
-        setListingStatus((prev) => ({ ...prev, fadeOut: true }));
-      }, 3000);
-
-      // 淡出動畫後隱藏信息
-      setTimeout(() => {
-        setListingStatus({
-          show: false,
-          success: false,
-          fadeOut: false,
-          message: "",
-        });
-      }, 3400);
+    // 初始載入時檢查是否有預選的NFT
+    if (selectedNFTRef.current && !selectedNFT) {
+      setSelectedNFT(selectedNFTRef.current);
     }
-  };
 
-  const handleClear = () => {
-    setSelectedNFT(null);
-    setPrice("");
-  };
+    window.addEventListener("nft-cleared", handleNFTCleared);
 
-  const renderActionButton = (nft) => {
-    const isSelected = selectedNFT?.tokenId === nft.tokenId;
-    return isSelected ? (
-      <SecondaryButton fullWidth>選択済み</SecondaryButton>
-    ) : (
-      <PrimaryButton fullWidth>選択する</PrimaryButton>
-    );
-  };
+    return () => {
+      window.removeEventListener("nft-cleared", handleNFTCleared);
+    };
+  }, [selectedNFT]);
+
+  // 渲染按鈕函數 - 使用React.memo優化性能
+  const renderActionButton = useCallback(
+    (nft) => {
+      const isSelected = selectedNFT?.tokenId === nft.tokenId;
+      return (
+        <ButtonWrapper>
+          {isSelected ? (
+            <SelectedButton fullWidth>選択済み</SelectedButton>
+          ) : (
+            <StandardButton fullWidth>選択する</StandardButton>
+          )}
+        </ButtonWrapper>
+      );
+    },
+    [selectedNFT]
+  );
 
   const onAction = (nft) => {
-    // 如果是選中的 NFT，則取消選中
     if (selectedNFT?.tokenId === nft.tokenId) {
+      // 取消選中（等同clear操作）
       setSelectedNFT(null);
+      selectedNFTRef.current = null;
+
+      // 觸發自定義事件通知其他組件
+      window.dispatchEvent(new CustomEvent("nft-cleared"));
+      console.log("NFT已清除"); // 添加調試信息
     } else {
-      // 否則設置為選中狀態
+      // 選中新NFT
       setSelectedNFT(nft);
+      selectedNFTRef.current = nft;
+
+      // 觸發自定義事件通知其他組件
+      window.dispatchEvent(new CustomEvent("nft-selected"));
+      console.log("NFT已選中"); // 添加調試信息
     }
   };
 
   return (
     <Section>
       <FiltersContainer>
-        <SearchInput
-          placeholder="所持NFTを検索..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          spellCheck="false"
-          autoComplete="off"
-        />
+        <SearchRow>
+          <SearchInput
+            placeholder="所持NFTを検索..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            spellCheck="false"
+            autoComplete="off"
+          />
+        </SearchRow>
       </FiltersContainer>
 
-      <NFTGridContainer>
+      <StandardGridLayout>
         <NFTGrid
           items={filteredNFTs}
-          actionText={(nft) =>
-            selectedNFT?.tokenId === nft.tokenId ? "選択済み" : "選択する"
-          }
-          onItemAction={onAction}
-          className="nft-grid"
           renderActionButton={renderActionButton}
+          onItemAction={onAction}
           selectedNFT={selectedNFT}
         />
-      </NFTGridContainer>
-
-      <FormContainer>
-        {selectedNFT && (
-          <SelectedNFTInfo>
-            <NFTImage src={selectedNFT.image} alt={selectedNFT.name} />
-            <NFTDetails>
-              <NFTName>{selectedNFT.name}</NFTName>
-              <NFTCollection>{selectedNFT.collection}</NFTCollection>
-            </NFTDetails>
-          </SelectedNFTInfo>
-        )}
-
-        <FormContent>
-          <FormGroup>
-            <Label>販売価格</Label>
-            <PriceInputContainer>
-              <PriceInput
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="0.00"
-                disabled={!selectedNFT}
-                min="0"
-                step="0.01"
-                autoComplete="off"
-              />
-              <PriceCurrency>ETH</PriceCurrency>
-            </PriceInputContainer>
-          </FormGroup>
-
-          <ButtonsContainer>
-            {selectedNFT && (
-              <SecondaryButton onClick={handleClear}>クリア</SecondaryButton>
-            )}
-            <PrimaryButton
-              onClick={handleSubmit}
-              disabled={!selectedNFT || !price}
-            >
-              マーケットに出品する
-            </PrimaryButton>
-          </ButtonsContainer>
-        </FormContent>
-
-        {listingStatus.show && (
-          <StatusMessage
-            success={listingStatus.success}
-            fullWidth
-            noArrow
-            fadeOut={listingStatus.fadeOut}
-            style={{ marginTop: "1rem", width: "100%" }}
-          >
-            {listingStatus.message}
-          </StatusMessage>
-        )}
-      </FormContainer>
+      </StandardGridLayout>
     </Section>
   );
 };
+
+// 添加Form作為子組件，方便獨立使用
+ListNFTSection.Form = ListNFTForm;
 
 export default ListNFTSection;

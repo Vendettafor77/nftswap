@@ -5,7 +5,8 @@ const baseButtonStyles = css`
   align-items: center;
   justify-content: center;
   gap: ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.md};
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.medium};
   font-weight: bold;
   cursor: pointer;
@@ -14,6 +15,8 @@ const baseButtonStyles = css`
   overflow: hidden;
   border: none;
   width: ${(props) => (props.fullWidth ? "100%" : "auto")};
+  height: 42px;
+  font-size: 0.95rem;
 
   &::before {
     content: "";

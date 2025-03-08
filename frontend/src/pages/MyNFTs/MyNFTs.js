@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import NFTCard from "../../components/NFTCard/NFTCard";
+import { useNavigate } from "react-router-dom";
+import { PrimaryButton as Button } from "../../components/styled/Button";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -24,6 +27,58 @@ const Subtitle = styled.p`
   margin: 0 auto;
 `;
 
+const FiltersContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${(props) => props.theme.spacing.md};
+  flex-wrap: wrap;
+  gap: ${(props) => props.theme.spacing.sm};
+  width: 100%;
+  background: rgba(28, 34, 65, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding: 12px 16px;
+  box-sizing: border-box;
+  box-shadow: none;
+  position: relative;
+  z-index: 10;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px 12px;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 36, 68, 0.6);
+  color: ${(props) => props.theme.colors.text.primary};
+  width: 180px;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  -webkit-font-smoothing: antialiased;
+
+  &:focus {
+    outline: none;
+    border-color: rgba(106, 17, 203, 0.4);
+    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
+  }
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.text.secondary}99;
+  }
+`;
+
+const FiltersGroup = styled.div`
+  display: flex;
+  gap: ${(props) => props.theme.spacing.sm};
+  align-items: center;
+  flex-shrink: 0;
+  transform: translateZ(0);
+`;
+
 const FilterBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -33,33 +88,17 @@ const FilterBar = styled.div`
   gap: ${(props) => props.theme.spacing.md};
 `;
 
-const SearchInput = styled.input`
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
-  background-color: ${(props) => props.theme.colors.surface};
-  color: ${(props) => props.theme.colors.text.primary};
-  min-width: 250px;
-`;
-
-const FilterGroup = styled.div`
-  display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-  align-items: center;
-`;
-
-const FilterSelect = styled.select`
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
-  background-color: ${(props) => props.theme.colors.surface};
-  color: ${(props) => props.theme.colors.text.primary};
-`;
-
 const NFTGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: ${(props) => props.theme.spacing.md};
+  position: relative;
+
+  > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const LoadingState = styled.div`
@@ -76,7 +115,7 @@ const EmptyState = styled.div`
 
 const ActionMenu = styled.div`
   position: absolute;
-  top: 100%;
+  top: calc(100% + 5px);
   right: 0;
   background-color: ${(props) => props.theme.colors.surface};
   border-radius: ${(props) => props.theme.borderRadius.medium};
@@ -121,6 +160,79 @@ const Tab = styled.button`
   }
 `;
 
+const ListedNFTCard = styled(NFTCard)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: "出品中";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: ${(props) => props.theme.colors.primary}CC;
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.8rem;
+    z-index: 5;
+  }
+
+  opacity: 0.8;
+  filter: grayscale(30%);
+`;
+
+const TransferModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: ${(props) => props.theme.colors.surface};
+  padding: ${(props) => props.theme.spacing.xl};
+  border-radius: ${(props) => props.theme.borderRadius.large};
+  box-shadow: ${(props) => props.theme.shadows.large};
+  width: 90%;
+  max-width: 500px;
+  z-index: 1000;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+`;
+
+const TransferInput = styled.input`
+  width: 100%;
+  padding: ${(props) => props.theme.spacing.md};
+  margin: ${(props) => props.theme.spacing.md} 0;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
+  background: ${(props) => props.theme.colors.background};
+  color: ${(props) => props.theme.colors.text.primary};
+`;
+
+const NFTPreview = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${(props) => props.theme.spacing.md};
+  margin: ${(props) => props.theme.spacing.md} 0;
+  padding: ${(props) => props.theme.spacing.md};
+  background: ${(props) => props.theme.colors.background};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+
+  img {
+    width: 60px;
+    height: 60px;
+    border-radius: ${(props) => props.theme.borderRadius.small};
+    object-fit: cover;
+  }
+`;
+
 // 模拟用户拥有的NFT数据
 const mockUserNFTs = [
   {
@@ -129,7 +241,9 @@ const mockUserNFTs = [
     name: "WTFape #221",
     collection: "WTFape コレクション",
     image:
-      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.5",
   },
   {
     contractAddress: "0x123...abc",
@@ -137,14 +251,18 @@ const mockUserNFTs = [
     name: "WTFape #453",
     collection: "WTFape コレクション",
     image:
-      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
   },
   {
     contractAddress: "0x456...def",
     tokenId: "001",
     name: "サムライNFT #001",
     collection: "Samurai Collection",
-    image: "https://via.placeholder.com/250?text=Samurai",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.8",
   },
   {
     contractAddress: "0x789...ghi",
@@ -152,7 +270,8 @@ const mockUserNFTs = [
     name: "Doodle #042",
     collection: "Doodles",
     image:
-      "https://i.seadn.io/gcs/files/03c44f5f83805652ba076c41fa43c4b1.png?auto=format&dpr=1&w=1000",
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
   },
 ];
 
@@ -163,7 +282,8 @@ const mockWTFapes = [
     name: "WTFape #222",
     collection: "WTFape コレクション",
     image:
-      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
   },
   {
     contractAddress: "0x123...abc",
@@ -171,7 +291,9 @@ const mockWTFapes = [
     name: "WTFape #454",
     collection: "WTFape コレクション",
     image:
-      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.3",
   },
 ];
 
@@ -179,9 +301,14 @@ const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("recent");
   const [activeNFT, setActiveNFT] = useState(null);
   const [showActionMenu, setShowActionMenu] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const navigate = useNavigate();
 
   // 从所有NFT中提取集合列表
   const collections = [...new Set(nfts.map((nft) => nft.collection))];
@@ -202,23 +329,60 @@ const MyNFTs = () => {
     fetchUserNFTs();
   }, []);
 
-  // 筛选NFT
-  const filteredNFTs = nfts.filter((nft) => {
-    // 搜索词过滤
-    if (
-      searchTerm &&
-      !nft.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ) {
-      return false;
+  // 處理搜索
+  const handleSearchSubmit = useCallback(() => {
+    if (localSearchTerm !== searchTerm) {
+      setSearchTerm(localSearchTerm);
     }
+  }, [localSearchTerm, searchTerm]);
 
-    // 集合过滤
-    if (collectionFilter !== "all" && nft.collection !== collectionFilter) {
-      return false;
+  // 處理本地搜索變化
+  const handleLocalSearchChange = (e) => {
+    setLocalSearchTerm(e.target.value);
+  };
+
+  // 處理鍵盤按下
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearchSubmit();
     }
+  };
 
-    return true;
-  });
+  // 處理失去焦點
+  const handleBlur = () => {
+    handleSearchSubmit();
+  };
+
+  // 筛选和排序NFT
+  const filteredNFTs = nfts
+    .filter((nft) => {
+      // 搜索词过滤
+      if (
+        searchTerm &&
+        !nft.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+
+      // 集合过滤
+      if (collectionFilter !== "all" && nft.collection !== collectionFilter) {
+        return false;
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      // 排序邏輯
+      if (sortBy === "name_asc") {
+        return a.name.localeCompare(b.name);
+      } else if (sortBy === "name_desc") {
+        return b.name.localeCompare(a.name);
+      } else if (sortBy === "recent") {
+        // 默認按照最新順序（可以使用ID或其他時間戳）
+        return parseInt(b.tokenId) - parseInt(a.tokenId);
+      }
+      return 0;
+    });
 
   // 处理NFT操作
   const handleNFTAction = (nft) => {
@@ -244,6 +408,19 @@ const MyNFTs = () => {
     setShowActionMenu(false);
   };
 
+  const handleTransfer = (nft) => {
+    setActiveNFT(nft);
+    setShowTransferModal(true);
+    setShowActionMenu(false);
+  };
+
+  const handleTransferSubmit = () => {
+    // 這裡稍後添加轉移邏輯
+    console.log("Transferring NFT to:", recipientAddress);
+    setShowTransferModal(false);
+    setRecipientAddress("");
+  };
+
   return (
     <PageContainer>
       <PageHeader>
@@ -260,37 +437,102 @@ const MyNFTs = () => {
         </LoadingState>
       ) : (
         <>
-          <FilterBar>
+          <FiltersContainer>
             <SearchInput
               placeholder="NFTを検索..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={localSearchTerm}
+              onChange={handleLocalSearchChange}
+              onBlur={handleBlur}
+              onKeyPress={handleKeyPress}
+              spellCheck="false"
+              autoComplete="off"
             />
-
-            <FilterGroup>
-              <FilterSelect
+            <FiltersGroup>
+              <CustomSelect
                 value={collectionFilter}
-                onChange={(e) => setCollectionFilter(e.target.value)}
-              >
-                <option value="all">すべてのコレクション</option>
-                {collections.map((collection, index) => (
-                  <option key={index} value={collection}>
-                    {collection}
-                  </option>
-                ))}
-              </FilterSelect>
-            </FilterGroup>
-          </FilterBar>
+                options={[
+                  { value: "all", label: "すべてのコレクション" },
+                  ...collections.map((collection) => ({
+                    value: collection,
+                    label: collection,
+                  })),
+                ]}
+                onChange={setCollectionFilter}
+              />
+              <CustomSelect
+                value={sortBy}
+                options={[
+                  { value: "recent", label: "最新順" },
+                  { value: "name_asc", label: "名前（A-Z）" },
+                  { value: "name_desc", label: "名前（Z-A）" },
+                ]}
+                onChange={setSortBy}
+              />
+            </FiltersGroup>
+          </FiltersContainer>
 
           {filteredNFTs.length > 0 ? (
             <NFTGrid>
               {filteredNFTs.map((nft, index) => (
-                <NFTCard
-                  key={index}
-                  nft={nft}
-                  actionText="操作"
-                  onAction={() => handleNFTAction(nft)}
-                />
+                <div key={index} style={{ position: "relative" }}>
+                  {nft.isListed ? (
+                    <ListedNFTCard
+                      nft={nft}
+                      actionText="操作"
+                      onAction={() => handleNFTAction(nft)}
+                    />
+                  ) : (
+                    <NFTCard
+                      nft={nft}
+                      actionText="操作"
+                      onAction={() => handleNFTAction(nft)}
+                    />
+                  )}
+                  {showActionMenu && activeNFT?.tokenId === nft.tokenId && (
+                    <>
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          left: 0,
+                          zIndex: 9,
+                        }}
+                        onClick={handleClickOutside}
+                      />
+                      <ActionMenu>
+                        {nft.isListed ? (
+                          <ActionMenuItem
+                            onClick={() => handleRevoke(activeNFT)}
+                          >
+                            出品を取り消す
+                          </ActionMenuItem>
+                        ) : (
+                          <>
+                            <ActionMenuItem
+                              onClick={() => handleListNFT(activeNFT)}
+                            >
+                              マーケットに出品
+                            </ActionMenuItem>
+                            <ActionMenuItem
+                              onClick={() => handleTransfer(activeNFT)}
+                            >
+                              転送する
+                            </ActionMenuItem>
+                          </>
+                        )}
+                        <ActionMenuItem
+                          onClick={() =>
+                            navigate(`/history?nft=${activeNFT.tokenId}`)
+                          }
+                        >
+                          履歴ページへ
+                        </ActionMenuItem>
+                      </ActionMenu>
+                    </>
+                  )}
+                </div>
               ))}
             </NFTGrid>
           ) : (
@@ -301,29 +543,30 @@ const MyNFTs = () => {
               </p>
             </EmptyState>
           )}
+        </>
+      )}
 
-          {showActionMenu && activeNFT && (
-            <div style={{ position: "relative" }}>
-              <div
-                style={{
-                  position: "fixed",
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                }}
-                onClick={handleClickOutside}
-              />
-              <ActionMenu>
-                <ActionMenuItem onClick={() => handleListNFT(activeNFT)}>
-                  マーケットに出品
-                </ActionMenuItem>
-                <ActionMenuItem onClick={() => handleSendNFT(activeNFT)}>
-                  送信する
-                </ActionMenuItem>
-              </ActionMenu>
-            </div>
-          )}
+      {showTransferModal && activeNFT && (
+        <>
+          <ModalOverlay onClick={() => setShowTransferModal(false)} />
+          <TransferModal>
+            <h3>NFTを転送</h3>
+            <NFTPreview>
+              <img src={activeNFT.image} alt={activeNFT.name} />
+              <div>
+                <h4>{activeNFT.name}</h4>
+                <p>{activeNFT.collection}</p>
+              </div>
+            </NFTPreview>
+            <TransferInput
+              placeholder="受取人のアドレスを入力"
+              value={recipientAddress}
+              onChange={(e) => setRecipientAddress(e.target.value)}
+            />
+            <Button onClick={handleTransferSubmit} fullWidth>
+              転送する
+            </Button>
+          </TransferModal>
         </>
       )}
     </PageContainer>

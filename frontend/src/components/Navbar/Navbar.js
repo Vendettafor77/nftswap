@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { PrimaryButton } from "../styled/Button";
 
 const NavContainer = styled.nav.attrs(() => ({
   className: "nav-text",
@@ -17,28 +18,20 @@ const NavContainer = styled.nav.attrs(() => ({
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
-const Logo = styled.div`
-  font-size: 1.5rem;
+const Logo = styled(Link)`
   font-weight: bold;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  font-size: 1.5rem;
+  color: ${(props) => props.theme.colors.text.primary};
+  text-decoration: none;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #6a11cb, #2575fc);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover::after {
-    opacity: 1;
+  &:hover {
+    text-decoration: none;
   }
 `;
 
@@ -130,7 +123,8 @@ const DropdownLink = styled(Link)`
   }
 `;
 
-const ConnectButton = styled.button`
+// 固定寬度的錢包按鈕
+const WalletButton = styled.button`
   background: linear-gradient(45deg, #6a11cb, #2575fc);
   color: white;
   padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.lg}`};
@@ -140,6 +134,16 @@ const ConnectButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+  width: 180px; /* 固定寬度 */
+  height: 42px; /* 固定高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* 防止文本換行 */
+
+  /* 進行文本顯示調整 */
+  text-overflow: ellipsis;
   overflow: hidden;
 
   &::before {
@@ -178,16 +182,16 @@ const Navbar = () => {
 
   return (
     <NavContainer>
-      <Logo>NFTマーケット</Logo>
+      <Logo to="/">NFTマーケット</Logo>
       <NavLinks>
         <NavLink to="/">ホーム</NavLink>
         <NavLink to="/my-nfts">マイNFT</NavLink>
         <NavLink to="/history">取引履歴</NavLink>
         <NavLink to="/mint-wtfape">Mint WTFape</NavLink>
       </NavLinks>
-      <ConnectButton onClick={() => setConnected(!connected)}>
+      <WalletButton onClick={() => setConnected(!connected)}>
         {connected ? "ウォレット接続済み" : "ウォレットを接続"}
-      </ConnectButton>
+      </WalletButton>
     </NavContainer>
   );
 };

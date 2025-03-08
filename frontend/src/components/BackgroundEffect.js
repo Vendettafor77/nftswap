@@ -39,19 +39,6 @@ const GradientOrb = styled.div`
   }
 `;
 
-const GridLines = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(rgba(71, 85, 165, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(71, 85, 165, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  background-position: -1px -1px;
-`;
-
 // 星星背景
 const StarryBackground = styled.div`
   position: absolute;
@@ -158,8 +145,8 @@ export const BackgroundDecoration = () => {
     },
   ];
 
-  // 生成30个随机星星
-  const stars = Array(30)
+  // 增加星星數量到70個
+  const stars = Array(300)
     .fill(0)
     .map((_, i) => ({
       size: Math.random() * 2 + 1,
@@ -190,7 +177,6 @@ export const BackgroundDecoration = () => {
 
   return (
     <BackgroundWrapper>
-      <GridLines />
       {orbs.map((orb, i) => (
         <GradientOrb
           key={i}
