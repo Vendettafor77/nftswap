@@ -158,7 +158,6 @@ const ListNFTSection = ({ standalone = true }) => {
 
       // 觸發自定義事件通知其他組件
       window.dispatchEvent(new CustomEvent("nft-cleared"));
-      console.log("NFT已清除"); // 添加調試信息
     } else {
       // 選中新NFT
       setSelectedNFT(nft);
@@ -166,7 +165,6 @@ const ListNFTSection = ({ standalone = true }) => {
 
       // 觸發自定義事件通知其他組件
       window.dispatchEvent(new CustomEvent("nft-selected"));
-      console.log("NFT已選中"); // 添加調試信息
     }
   };
 

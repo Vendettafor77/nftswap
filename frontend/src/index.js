@@ -8,9 +8,6 @@ import { FontProvider } from "./contexts/FontContext";
 import { AnimationProvider } from "./contexts/AnimationContext";
 import "./index.css";
 
-// 移除index.css导入，避免样式冲突
-// import "./index.css";
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

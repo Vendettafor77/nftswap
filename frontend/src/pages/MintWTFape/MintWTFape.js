@@ -12,6 +12,7 @@ const MintContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.xl};
+  padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
 `;
 
 const MintHeader = styled.div`
@@ -379,7 +380,7 @@ const MintWTFape = () => {
   };
 
   return (
-    <MintContainer>
+    <MintContainer className="content-container">
       <MintHeader>
         <Title>WTFape NFTをミントする</Title>
         <Description>

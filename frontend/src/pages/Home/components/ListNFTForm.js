@@ -4,138 +4,139 @@ import { PrimaryButton } from "../../../components/styled/Button";
 import { StatusMessage } from "../../../components/styled/StatusMessage";
 import { selectedNFTRef } from "./ListNFTSection";
 
-// 表單容器
+// 表單容器 - 美化版
 const FormWrapper = styled.div`
   position: relative;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: ${(props) => props.theme.spacing.md};
 `;
 
-// 表單標題
+// 表單標題 - 居中顯示
 const FormTitle = styled.h3`
   color: ${(props) => props.theme.colors.text.primary};
-  margin-top: 0;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  font-size: 1.2rem;
-  padding-top: 0;
-  padding-left: ${(props) => props.theme.spacing.sm}; /* 統一左側間距 */
+  margin: 0 0 ${(props) => props.theme.spacing.lg} 0;
+  font-size: 1.25rem;
+  text-align: center;
+  width: 100%;
 `;
 
-// 選中NFT信息顯示組件 - 確保固定高度
+// 選中NFT信息顯示組件 - 美化版
 const SelectedNFTInfo = styled.div`
   display: flex;
   align-items: center;
-  padding: ${(props) => props.theme.spacing.sm};
-  background: ${(props) => props.theme.colors.primary}11;
+  padding: ${(props) => props.theme.spacing.md};
+  background: rgba(106, 17, 203, 0.1);
   border-radius: ${(props) => props.theme.borderRadius.medium};
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  border: 1px solid ${(props) => props.theme.colors.primary}33;
-  height: 50px; /* 固定高度 */
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  border: 1px solid rgba(106, 17, 203, 0.2);
+  height: 60px;
   box-sizing: border-box;
-  width: calc(
-    100% - ${(props) => props.theme.spacing.sm} * 2
-  ); /* 扣除左右間距 */
-  margin-left: ${(props) => props.theme.spacing.sm}; /* 統一左側間距 */
-  margin-right: ${(props) => props.theme.spacing.sm}; /* 統一右側間距 */
+  width: 100%;
 `;
 
-// NFT圖片
+// NFT圖片 - 稍微放大
 const NFTImage = styled.img`
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: ${(props) => props.theme.borderRadius.small};
-  margin-right: ${(props) => props.theme.spacing.sm};
+  margin-right: ${(props) => props.theme.spacing.md};
   object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
-// NFT詳情
+// NFT詳情 - 改進樣式
 const NFTDetails = styled.div`
   flex: 1;
 `;
 
-// NFT名稱
+// NFT名稱 - 漸變效果
 const NFTName = styled.div`
   font-weight: bold;
-  color: ${(props) => props.theme.colors.text.primary};
-  font-size: 0.9rem;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1rem;
 `;
 
-// NFT收藏集
+// NFT收藏集 - 改進樣式
 const NFTCollection = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: ${(props) => props.theme.colors.text.secondary};
+  margin-top: 2px;
 `;
 
-// 提示信息 - 確保與選中NFT信息顯示組件高度一致
+// 提示信息 - 美化版
 const NFTSelectPrompt = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  padding: ${(props) => props.theme.spacing.sm};
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.md};
   color: ${(props) => props.theme.colors.text.secondary};
-  height: 50px; /* 固定高度與SelectedNFTInfo一致 */
+  height: 60px;
   display: flex;
   align-items: center;
+  justify-content: center;
   box-sizing: border-box;
-  width: calc(
-    100% - ${(props) => props.theme.spacing.sm} * 2
-  ); /* 與SelectedNFTInfo一致 */
-  margin-left: ${(props) => props.theme.spacing.sm}; /* 統一左側間距 */
-  margin-right: ${(props) => props.theme.spacing.sm}; /* 統一右側間距 */
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  font-size: 0.95rem;
 `;
 
-// 表單內容容器
+// 表單內容容器 - 美化版
 const FormContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  padding-left: ${(props) => props.theme.spacing.sm}; /* 統一左側間距 */
-  padding-right: ${(props) => props.theme.spacing.sm}; /* 統一右側間距 */
-  box-sizing: border-box;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
 `;
 
-// 表單組 - 調整左對齊
+// 表單組 - 改進樣式
 const FormGroup = styled.div`
   width: 100%;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
 `;
 
-// 標籤
+// 標籤 - 居中顯示
 const Label = styled.label`
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: ${(props) => props.theme.colors.text.secondary};
-  margin-bottom: ${(props) => props.theme.spacing.xs};
-  padding-left: 0; /* 確保無內邊距，完全對齊 */
+  margin-bottom: ${(props) => props.theme.spacing.sm};
+  display: block;
+  text-align: center;
+  width: 100%;
 `;
 
-// 價格輸入容器 - 調整寬度確保左對齊
+// 價格輸入容器 - 美化版
 const PriceInputContainer = styled.div`
   display: flex;
-  align-items: stretch; /* 確保子元素等高 */
-  width: 80%; /* 減短寬度 */
-  margin-left: 0; /* 確保左對齊 */
-  position: relative; /* 確保子元素可以定位 */
+  width: 80%;
+  margin: 0 auto;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 `;
 
-// 價格輸入框
+// 價格輸入框 - 美化版
 const PriceInput = styled.input`
   flex: 1;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 36, 68, 0.6);
+  padding: 12px 16px;
+  border: 1px solid rgba(106, 17, 203, 0.2);
+  background: rgba(30, 36, 68, 0.3);
   color: ${(props) => props.theme.colors.text.primary};
-  font-size: 0.95rem;
+  font-size: 1rem;
+  border-right: none;
   border-radius: ${(props) => props.theme.borderRadius.medium} 0 0
     ${(props) => props.theme.borderRadius.medium};
-  border-right: none; /* 確保與貨幣單位無縫連接 */
+  text-align: center;
 
   &:focus {
     outline: none;
+    background: rgba(30, 36, 68, 0.4);
     border-color: rgba(106, 17, 203, 0.4);
-    box-shadow: inset 0 0 0 1px rgba(42, 82, 190, 0.2);
   }
 
   &:disabled {
@@ -154,52 +155,71 @@ const PriceInput = styled.input`
   }
 `;
 
-// 價格單位
+// 價格單位 - 美化版
 const PriceCurrency = styled.div`
-  padding: 8px 12px;
-  background: rgba(30, 36, 68, 0.4);
-  color: ${(props) => props.theme.colors.text.secondary};
-  font-size: 0.9rem;
+  padding: 12px 20px;
+  background: rgba(106, 17, 203, 0.2);
+  color: ${(props) => props.theme.colors.text.primary};
+  font-weight: bold;
+  font-size: 1rem;
   user-select: none;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: none; /* 確保與輸入框無縫連接 */
+  border: 1px solid rgba(106, 17, 203, 0.2);
+  border-left: none;
   border-radius: 0 ${(props) => props.theme.borderRadius.medium}
     ${(props) => props.theme.borderRadius.medium} 0;
   display: flex;
   align-items: center;
-  min-width: 50px; /* 確保ETH有足夠空間顯示 */
-  justify-content: center; /* 居中ETH文字 */
+  justify-content: center;
+  min-width: 70px;
 `;
 
-// 按鈕容器 - 控制上下間距
+// 按鈕容器 - 美化版
 const ButtonsContainer = styled.div`
   display: flex;
-  gap: ${(props) => props.theme.spacing.md};
-  align-items: stretch;
-  width: 100%;
-  justify-content: center;
-  margin-top: ${(props) => props.theme.spacing.sm};
-  margin-bottom: 0; /* 減少底部間距 */
+  width: 80%;
+  margin: 0 auto;
+`;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    width: 100%;
+// 自定義主按鈕 - 漸變效果
+const ListButton = styled(PrimaryButton)`
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(120deg, #5b0fb1, #1f65dd);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(106, 17, 203, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
   }
 `;
 
-// 添加狀態消息容器樣式，改為外部定位
+// 添加狀態消息容器樣式 - 美化版
 const StatusMessageContainer = styled.div`
   position: absolute;
-  bottom: -100px; /* 定位在容器下方 */
+  bottom: -80px;
   left: 0;
   width: 100%;
-  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
-  z-index: 50; /* 確保在其他元素上方 */
+  z-index: 50;
+`;
+
+// 自定義狀態消息 - 美化版
+const CustomStatusMessage = styled(StatusMessage)`
+  width: 90%;
+  padding: 14px;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 `;
 
 /**
@@ -349,26 +369,21 @@ const ListNFTForm = () => {
         </FormGroup>
 
         <ButtonsContainer>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={isSubmitDisabled}
-            style={{ opacity: isSubmitDisabled ? 0.6 : 1 }}
-          >
+          <ListButton onClick={handleSubmit} disabled={isSubmitDisabled}>
             マーケットに出品する
-          </PrimaryButton>
+          </ListButton>
         </ButtonsContainer>
       </FormContent>
 
-      {/* 狀態消息容器，改為外部顯示 */}
+      {/* 狀態消息容器 */}
       <StatusMessageContainer>
         {listingStatus.show && (
-          <StatusMessage
+          <CustomStatusMessage
             success={listingStatus.success}
             fadeOut={listingStatus.fadeOut}
-            style={{ width: "90%" }} /* 控制提示寬度 */
           >
             {listingStatus.message}
-          </StatusMessage>
+          </CustomStatusMessage>
         )}
       </StatusMessageContainer>
     </FormWrapper>

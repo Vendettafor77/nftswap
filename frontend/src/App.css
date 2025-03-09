@@ -1,9 +1,94 @@
 /* App.css */
+/* 設置全局滾動條 - 僅在頂層元素 */
+:root {
+  /* 計算滾動條寬度的CSS變量 */
+  --scrollbar-width: calc(100vw - 100%);
+  --scrollbar-compensation: calc(0px - var(--scrollbar-width));
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* 防止水平滾動 */
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* 防止水平滾動 */
+}
+
+body {
+  overflow-x: hidden;
+  min-height: 100vh;
+  max-width: 100%;
+  width: 100%;
+  overscroll-behavior: none; /* 防止過度滾動 */
+}
+
+/* 導航欄容器包裝器 - 確保覆蓋滾動條區域 */
+.navbar-container-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* 延伸到全寬 */
+  right: 0;
+  width: 100%;
+  z-index: 998; /* 降低層級以確保不會遮擋滾動條 */
+  background-color: #1c2241;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* App 樣式 */
+.App {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 內容區域樣式 */
+.app-content {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  /* 為固定導航欄添加上方間距 */
+  margin-top: 80px; /* 根據導航欄高度調整，稍微增加間距 */
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 確保全寬元素占據整個視口寬度 */
+.full-width-container {
+  width: 100vw; /* 使用視口寬度確保覆蓋滾動條 */
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+  overflow-x: hidden;
+  box-sizing: border-box; /* 確保盒模型計算正確 */
+}
+
+/* 內容區域需要一個合適的容器 */
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  /* 補償滾動條寬度 */
+  padding-right: calc(20px + 6px);
 }
 
 h1 {
@@ -20,13 +105,13 @@ h1 {
   width: 250px;
   display: inline-block;
   vertical-align: top;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
 }
 
 .nft-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .image-placeholder {
@@ -51,7 +136,7 @@ h1 {
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -96,4 +181,69 @@ input {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+/* 確保所有容器都使用border-box盒模型 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 定义滚动条样式 - 只应用于顶层元素 */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.1);
+  border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+/* App根元素樣式 */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden; /* 修改為hidden以防止水平滾動 */
+  width: 100%; /* 確保佔滿寬度 */
+}
+
+/* 重写滚动条占位宽度，确保稳定布局 */
+.App {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible !important; /* 确保内部元素不产生滚动条 */
+  width: 100%; /* 確保佔滿寬度 */
+}
+
+/* 確保導航欄覆蓋滾動條區域 */
+.navbar-wrapper {
+  width: calc(100% - 6px) !important; /* 確保與navbar-container-wrapper一致 */
+  min-width: 0 !important; /* 防止最小寬度限制 */
+  max-width: 100% !important; /* 防止最大寬度限制 */
+  height: auto !important; /* 確保高度自適應內容 */
+  min-height: 60px !important; /* 提供最小高度 */
+  left: 0;
+  right: 6px; /* 為滾動條預留6px寬度 */
+  top: 0;
+  position: fixed;
+  z-index: 1000;
+  /* 移除可能的固定寬度設定 */
+  max-width: none;
 }

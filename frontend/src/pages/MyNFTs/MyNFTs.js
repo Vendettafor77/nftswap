@@ -9,6 +9,7 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.xl};
+  padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
 `;
 
 const PageHeader = styled.div`
@@ -399,7 +400,6 @@ const MyNFTs = () => {
   // 处理发送NFT
   const handleSendNFT = (nft) => {
     // 实现发送NFT的逻辑
-    console.log("Sending NFT:", nft);
     setShowActionMenu(false);
   };
 
@@ -416,13 +416,12 @@ const MyNFTs = () => {
 
   const handleTransferSubmit = () => {
     // 這裡稍後添加轉移邏輯
-    console.log("Transferring NFT to:", recipientAddress);
     setShowTransferModal(false);
     setRecipientAddress("");
   };
 
   return (
-    <PageContainer>
+    <PageContainer className="content-container">
       <PageHeader>
         <Title>マイNFT</Title>
         <Subtitle>

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import styled from "styled-components";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
-import MarketFilters from "../../components/Filters/MarketFilters";
+import FilterBar from "../../components/Filters/FilterBar";
 import ListNFTSection from "./components/ListNFTSection";
 import { marketNFTs } from "../../data/mockData";
 import { HeroSection } from "../../components/styled";
@@ -15,6 +15,13 @@ const HomeContainer = styled.div`
   padding: 0 20px;
   box-sizing: border-box;
   position: relative;
+  /* 應用全局樣式 */
+  &.content-container {
+    /* 補償滾動條寬度 */
+    width: 100%;
+    padding-right: calc(20px + 6px); /* 原始padding + 滾動條寬度 */
+    box-sizing: border-box;
+  }
 `;
 
 // 固定寬度的主內容區域
@@ -23,6 +30,10 @@ const MainContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.lg} 0;
+  /* 確保內容寬度一致，不受滾動條影響 */
+  box-sizing: border-box;
+  min-height: 70vh; /* 確保內容足夠高，保持頁面內容充實 */
+  position: relative;
 `;
 
 // 標簽切換容器
@@ -56,6 +67,8 @@ const CardSection = styled.div`
   box-sizing: border-box;
   padding-top: 0;
   margin-top: 0;
+  /* 確保內容區高度一致 */
+  min-height: 70vh;
 
   @media (max-width: 1100px) {
     order: 2;
@@ -70,6 +83,7 @@ const SidebarSection = styled.div`
   margin-top: 0;
   padding-top: 0;
   box-sizing: border-box;
+  height: 100%;
 
   @media (max-width: 1100px) {
     width: 100%;
@@ -88,6 +102,7 @@ const StickySidebar = styled.div`
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   height: fit-content;
+  min-height: 500px; /* 確保側邊欄有最小高度 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -394,7 +409,7 @@ const Home = () => {
   };
 
   return (
-    <HomeContainer>
+    <HomeContainer className="content-container">
       <MainContent>
         <HeroSection>
           <h1>NFTマーケットプレイスへようこそ</h1>
@@ -425,14 +440,32 @@ const Home = () => {
           <CardSection>
             {activeTab === "marketplace" ? (
               <MarketContainer>
-                <MarketFilters
+                <FilterBar
                   searchTerm={searchTerm}
                   onSearchChange={updateSearchTerm}
-                  sortBy={sortBy}
-                  onSortChange={updateSortBy}
-                  collectionFilter={collectionFilter}
-                  onCollectionChange={updateCollectionFilter}
-                  collections={collections}
+                  searchPlaceholder="NFTを検索..."
+                  filters={[
+                    {
+                      value: collectionFilter,
+                      options: [
+                        { value: "all", label: "すべてのコレクション" },
+                        ...collections.map((collection) => ({
+                          value: collection,
+                          label: collection,
+                        })),
+                      ],
+                      onChange: updateCollectionFilter,
+                    },
+                    {
+                      value: sortBy,
+                      options: [
+                        { value: "recent", label: "最新順" },
+                        { value: "price_low", label: "価格（安い順）" },
+                        { value: "price_high", label: "価格（高い順）" },
+                      ],
+                      onChange: updateSortBy,
+                    },
+                  ]}
                 />
                 <NFTGrid
                   items={filteredNFTs}

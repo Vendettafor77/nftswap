@@ -14,11 +14,12 @@ const fontOptions = {
 const FontContext = createContext();
 
 export const FontProvider = ({ children }) => {
-  // 直接使用 mPlusRounded 作為默認字體
-  const [currentFont] = useState("mPlusRounded");
+  // 直接使用 mPlusRounded 作為默認字體，但保留 setCurrentFont 函數以避免潛在錯誤
+  const [currentFont, setCurrentFont] = useState("mPlusRounded");
 
   const value = {
     currentFont,
+    setCurrentFont,
     fontOptions,
     currentFontFamily: fontOptions[currentFont].family,
   };

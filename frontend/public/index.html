@@ -1,10 +1,17 @@
 <!doctype html>
-<html lang="ja">
+<html
+  lang="ja"
+  style="
+    background-color: #1c2241;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241;
+  "
+>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1c2241" />
     <meta name="description" content="NFTスワッププラットフォーム" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -14,6 +21,63 @@
       rel="stylesheet"
     />
     <title>NFTスワップ</title>
+    <style>
+      /* 直接在HTML中添加樣式，確保滾動條區域與導航欄背景色一致 */
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: #1c2241; /* 與導航欄背景一致 */
+        display: block !important;
+        position: fixed;
+        z-index: 1000 !important; /* 確保滾動條在最上層 */
+      }
+
+      html::-webkit-scrollbar-track,
+      body::-webkit-scrollbar-track {
+        background: #1c2241; /* 與導航欄背景一致 */
+        border-radius: 0;
+        z-index: 1000 !important;
+      }
+
+      html::-webkit-scrollbar-thumb,
+      body::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.5);
+        border-radius: 3px;
+        z-index: 1000 !important;
+      }
+
+      html::-webkit-scrollbar-thumb:hover,
+      body::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 0.7);
+        z-index: 1000 !important;
+      }
+
+      body {
+        background-color: #1c2241;
+        margin: 0;
+        padding: 0;
+        /* 確保滾動條顯示在頁面上方 */
+        overflow-x: hidden;
+      }
+
+      /* 修正滾動條被遮擋的問題 */
+      .navbar-container-wrapper {
+        z-index: 998 !important; /* 降低一點層級，確保不會遮擋滾動條 */
+        width: 100% !important; /* 擴展到全寬 */
+        right: 0 !important; /* 延伸到最右側 */
+        box-sizing: border-box !important;
+        background-color: #1c2241 !important;
+      }
+
+      /* 添加強制重寫所有寬度屬性 */
+      .navbar-container-wrapper *,
+      .navbar-wrapper * {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+      }
+    </style>
   </head>
   <body>
     <noscript>JavaScriptを有効にしてこのアプリを実行してください。</noscript>

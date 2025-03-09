@@ -1,13 +1,116 @@
+/* 基本重置 */
+html,
+body,
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 防止水平滾動 */
+  max-width: 100%;
+}
+
+/* 特殊樣式，確保滾動條區域與導航欄背景色一致 */
+html {
+  background-color: #1c2241 !important;
+  overflow-y: auto; /* 根據需要顯示滾動條 */
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241 !important; /* 使滾動條可見 */
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 確保內容不隨滾動條出現/消失而移動 */
+  padding-right: 0 !important;
+  /* 根據需要顯示滾動條 */
+  overflow-y: auto;
+  /* 确保内容不随滚动条出现/消失而移动 */
+  width: 100%;
+  min-height: 100vh;
+  margin-right: 0 !important;
+  overflow-x: hidden; /* 再次強調防止水平滾動 */
+  /* 添加背景色，確保與導航欄背景色一致 */
+  background-color: #1c2241;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+/* 强制全局滚动条设置 */
+html {
+  overflow-y: auto; /* 根據需要顯示滾動條 */
+  overflow-x: hidden !important; /* 強制防止水平滾動 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241; /* 使滾動條可見 */
+  width: 100%;
+  max-width: 100%;
+  /* 添加背景色，確保與導航欄背景色一致 */
+  background-color: #1c2241;
+}
+
+/* 确保所有容器都使用border-box盒模型 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 定义滚动条样式 - 只应用于顶层元素 */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  /* 確保滾動條背景與導航欄背景一致 */
+  background-color: #1c2241;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #1c2241; /* 與導航欄背景色一致 */
+  border-radius: 0; /* 移除圓角 */
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5); /* 使滾動條可見 */
+  border-radius: 3px; /* 添加圓角 */
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7); /* 懸停時變深 */
+}
+
+/* App根元素樣式 */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden; /* 修改為hidden以防止水平滾動 */
+  width: 100%;
+}
+
+/* 重写滚动条占位宽度，确保稳定布局 */
+.App {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible !important; /* 确保内部元素不产生滚动条 */
+  width: 100%;
+}
+
+/* 確保導航欄覆蓋滾動條區域 */
+.navbar-wrapper {
+  width: 100% !important; /* 擴展到全寬 */
+  left: 0;
+  right: 0; /* 延伸到最右側 */
+  top: 0;
+  position: fixed;
+  z-index: 999; /* 確保在上層但不遮擋滾動條 */
 }

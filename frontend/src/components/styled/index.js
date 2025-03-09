@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { OutlineButton } from "./Button";
+import SectionTitle from "./SectionTitle";
+
+export { SectionTitle };
 
 export const HeroSection = styled.div`
   text-align: center;
@@ -45,13 +48,6 @@ export const HeroSection = styled.div`
       background-position: 0% center;
     }
   }
-`;
-
-export const SectionTitle = styled.h2`
-  font-size: 2rem;
-  color: ${(props) => props.theme.colors.text.primary};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-  text-align: center;
 `;
 
 export const TabsContainer = styled.div`
