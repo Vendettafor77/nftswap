@@ -19,34 +19,42 @@ const FiltersContainer = styled.div`
   box-shadow: none;
   position: relative;
   z-index: 10;
-  /* 確保滾動條占位 */
+  /* 確保與NFT卡片網格對齊 */
   margin-right: 0;
+  margin-left: 0;
   /* 確保容器寬度固定，不受滾動條影響 */
   max-width: 100%;
-  padding-right: 22px; /* 16px基本間距 + 6px滾動條寬度 */
+  /* 確保最小高度一致，防止頁面抖動 */
+  min-height: 60px;
 `;
 
-// 搜索輸入框樣式
-const SearchInput = styled.input`
-  padding: 8px 12px;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 36, 68, 0.6);
-  color: ${(props) => props.theme.colors.text.primary};
-  width: 180px;
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  -webkit-font-smoothing: antialiased;
+// 搜索輸入框樣式 - 增加樣式優先級
+const SearchInput = styled.input.attrs({
+  type: "text",
+  className: "search-input",
+})`
+  && {
+    padding: 8px 12px;
+    border-radius: ${(props) => props.theme.borderRadius.medium};
+    border: 1px solid rgba(255, 255, 255, 0.05) !important; /* 使用!important確保樣式優先級 */
+    background: rgba(30, 36, 68, 0.6);
+    color: ${(props) => props.theme.colors.text.primary};
+    width: 180px;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    -webkit-font-smoothing: antialiased;
+    margin: 0; /* 覆蓋全局樣式的margin */
 
-  &:focus {
-    outline: none;
-    border-color: rgba(106, 17, 203, 0.4);
-    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
-  }
+    &:focus {
+      outline: none;
+      border-color: rgba(106, 17, 203, 0.4) !important;
+      box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
+    }
 
-  &::placeholder {
-    color: ${(props) => props.theme.colors.text.secondary}99;
+    &::placeholder {
+      color: ${(props) => props.theme.colors.text.secondary}99;
+    }
   }
 `;
 
@@ -57,6 +65,8 @@ const FiltersGroup = styled.div`
   align-items: center;
   flex-shrink: 0;
   transform: translateZ(0);
+  min-width: 40px; /* 確保即使沒有過濾器也佔據一定空間 */
+  min-height: 36px; /* 保持一致的高度 */
 `;
 
 /**
@@ -80,7 +90,7 @@ const FilterBar = ({
   };
 
   return (
-    <FiltersContainer className="content-container">
+    <FiltersContainer>
       <SearchInput
         placeholder={searchPlaceholder}
         value={searchTerm}
@@ -89,14 +99,19 @@ const FilterBar = ({
         autoComplete="off"
       />
       <FiltersGroup>
-        {filters.map((filter, index) => (
-          <CustomSelect
-            key={index}
-            value={filter.value}
-            options={filter.options}
-            onChange={filter.onChange}
-          />
-        ))}
+        {filters.length > 0 ? (
+          filters.map((filter, index) => (
+            <CustomSelect
+              key={index}
+              value={filter.value}
+              options={filter.options}
+              onChange={filter.onChange}
+              className={filter.className}
+            />
+          ))
+        ) : (
+          <div style={{ minWidth: "40px" }} />
+        )}
       </FiltersGroup>
     </FiltersContainer>
   );

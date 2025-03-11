@@ -94,7 +94,7 @@ const SelectOption = styled.div`
 `;
 
 // 自定義下拉選單組件
-const CustomSelect = ({ value, options, onChange, placeholder }) => {
+const CustomSelect = ({ value, options, onChange, placeholder, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
   const containerRef = useRef(null);
@@ -128,7 +128,7 @@ const CustomSelect = ({ value, options, onChange, placeholder }) => {
   };
 
   return (
-    <CustomSelectContainer ref={containerRef}>
+    <CustomSelectContainer className={className} ref={containerRef}>
       <SelectHeader onClick={() => setIsOpen(!isOpen)}>
         {selectedLabel}
       </SelectHeader>

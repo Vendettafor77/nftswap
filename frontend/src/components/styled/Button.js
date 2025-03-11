@@ -15,8 +15,10 @@ const baseButtonStyles = css`
   overflow: hidden;
   border: none;
   width: ${(props) => (props.fullWidth ? "100%" : "auto")};
-  height: 42px;
+  height: 45px;
   font-size: 0.95rem;
+  margin: 0;
+  box-sizing: border-box;
 
   &::before {
     content: "";
@@ -50,6 +52,7 @@ const baseButtonStyles = css`
     cursor: not-allowed;
     transform: none;
     opacity: 0.7;
+    box-shadow: none;
 
     &::before {
       display: none;
@@ -158,12 +161,3 @@ export const TabsContainer = styled.div`
   margin: ${(props) => props.theme.spacing.md} 0;
   gap: ${(props) => props.theme.spacing.sm};
 `;
-
-export default {
-  PrimaryButton,
-  SecondaryButton,
-  OutlineButton,
-  GhostButton,
-  TabButton,
-  TabsContainer,
-};

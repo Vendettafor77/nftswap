@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { EthSymbol } from "../../../components/NFTCard/NFTCard";
 import { formatDate } from "../../../utils/dateUtils"; // 需要實現此函數
 
+// 導入原始NFTName組件
+import { default as NFTCardComponent } from "../../../components/NFTCard/NFTCard";
+
 // 卡片容器
 const Card = styled.div`
   background: ${(props) =>
@@ -50,24 +53,36 @@ const TransactionInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0; /* 確保flex子項可以正確縮小 */
+  overflow: hidden; /* 防止內容溢出 */
 `;
 
-const NFTName = styled.h3`
+// 一個純文本包裝元素，沒有額外的樣式
+const TextWrapper = styled.div`
   font-size: 1.1rem;
-  margin: 0;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  margin: 0 0 4px 0; /* 添加底部間距與NFTCard一致 */
+  padding: 0;
+  line-height: 1.5;
+  height: 26px; /* 稍微調整高度 */
+  position: relative; /* 與NFTCard一致 */
+  z-index: 1; /* 與NFTCard一致 */
 `;
 
 const TransactionType = styled.div`
   display: inline-block;
-  padding: 4px 12px;
+  padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 600;
   margin-bottom: 4px;
+  width: fit-content;
+  min-width: 50px;
+  text-align: center;
   background: ${({ type, theme }) => {
     switch (type) {
       case "purchase":
@@ -105,6 +120,10 @@ const TransactionDetails = styled.div`
   gap: ${(props) => props.theme.spacing.sm};
   font-size: 0.9rem;
   color: ${(props) => props.theme.colors.text.secondary};
+  flex-wrap: wrap; /* 允許在需要時換行 */
+  overflow: hidden; /* 防止內容溢出 */
+  text-overflow: ellipsis; /* 當文字太長時顯示省略號 */
+  white-space: nowrap; /* 保持文字在一行 */
 `;
 
 // 交易金額區
@@ -114,6 +133,9 @@ const PriceInfo = styled.div`
   align-items: flex-end;
   justify-content: center;
   gap: 4px;
+  flex-shrink: 0; /* 防止價格區域被壓縮 */
+  margin-left: auto; /* 確保價格區域靠右 */
+  min-width: 80px; /* 提供最小寬度 */
 `;
 
 const Price = styled.div`
@@ -211,7 +233,49 @@ const TransactionCard = ({ transaction }) => {
           {getTypeText(transaction.type)}
         </TransactionType>
 
-        <NFTName>{transaction.nftName}</NFTName>
+        <TextWrapper>
+          <svg
+            width="100%"
+            height="26"
+            style={{
+              overflow: "visible",
+              marginTop: "-2px" /* 微調垂直位置 */,
+              filter:
+                "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))" /* 添加微妙的陰影 */,
+            }}
+          >
+            <defs>
+              <linearGradient
+                id={`tx-gradient-${transaction.id}`}
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+              >
+                <stop offset="0%" stopColor="#6a11cb" />
+                <stop offset="100%" stopColor="#2575fc" />
+              </linearGradient>
+            </defs>
+            <text
+              x="0"
+              y="18"
+              fill={`url(#tx-gradient-${transaction.id})`}
+              fontWeight="600"
+              fontSize="1.1rem"
+              fontFamily="inherit"
+              letterSpacing="0.01em"
+              dominantBaseline="middle"
+              style={{
+                fontFamily: "inherit" /* 使用全局字體設置 */,
+                textRendering: "optimizeLegibility",
+                shapeRendering: "geometricPrecision",
+                opacity: "0.95" /* 輕微調整不透明度以匹配原始效果 */,
+              }}
+            >
+              {transaction.nftName}
+            </text>
+          </svg>
+        </TextWrapper>
 
         <TransactionDetails>
           <span>{transaction.nftCollection}</span>

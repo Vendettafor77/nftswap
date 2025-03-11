@@ -3,7 +3,9 @@ import styled from "styled-components";
 import NFTCard from "../../components/NFTCard/NFTCard";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton as Button } from "../../components/styled/Button";
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import FilterBar from "../../components/Filters/FilterBar";
+import NFTGrid from "../../components/NFTGrid/NFTGrid";
+import { StatusMessage } from "../../components/styled/StatusMessage";
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -18,9 +20,54 @@ const PageHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.md};
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
+// 使用與NFTCard相同的SVG漸變文字
+const GradientTitle = ({ children }) => {
+  const uniqueId = `mynft-title-gradient-${Math.random().toString(36).substring(7)}`;
+
+  return (
+    <svg
+      width="100%"
+      height="50"
+      style={{
+        maxWidth: "400px",
+        overflow: "visible",
+        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
+      }}
+    >
+      <defs>
+        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6a11cb" />
+          <stop offset="100%" stopColor="#2575fc" />
+        </linearGradient>
+      </defs>
+      <text
+        x="50%"
+        y="36"
+        fill={`url(#${uniqueId})`}
+        fontWeight="600"
+        fontSize="2.5rem"
+        fontFamily="inherit"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fontFamily: "inherit",
+          textRendering: "optimizeLegibility",
+          shapeRendering: "geometricPrecision",
+          opacity: "0.95",
+        }}
+      >
+        {children}
+      </text>
+    </svg>
+  );
+};
 
 const Subtitle = styled.p`
   color: ${(props) => props.theme.colors.text.secondary};
@@ -28,59 +75,7 @@ const Subtitle = styled.p`
   margin: 0 auto;
 `;
 
-const FiltersContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  flex-wrap: wrap;
-  gap: ${(props) => props.theme.spacing.sm};
-  width: 100%;
-  background: rgba(28, 34, 65, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  padding: 12px 16px;
-  box-sizing: border-box;
-  box-shadow: none;
-  position: relative;
-  z-index: 10;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-font-smoothing: subpixel-antialiased;
-`;
-
-const SearchInput = styled.input`
-  padding: 8px 12px;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 36, 68, 0.6);
-  color: ${(props) => props.theme.colors.text.primary};
-  width: 180px;
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  -webkit-font-smoothing: antialiased;
-
-  &:focus {
-    outline: none;
-    border-color: rgba(106, 17, 203, 0.4);
-    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
-  }
-
-  &::placeholder {
-    color: ${(props) => props.theme.colors.text.secondary}99;
-  }
-`;
-
-const FiltersGroup = styled.div`
-  display: flex;
-  gap: ${(props) => props.theme.spacing.sm};
-  align-items: center;
-  flex-shrink: 0;
-  transform: translateZ(0);
-`;
-
-const FilterBar = styled.div`
+const FilterBarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -89,7 +84,7 @@ const FilterBar = styled.div`
   gap: ${(props) => props.theme.spacing.md};
 `;
 
-const NFTGrid = styled.div`
+const NFTGridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: ${(props) => props.theme.spacing.md};
@@ -98,7 +93,6 @@ const NFTGrid = styled.div`
   > div {
     height: 100%;
     display: flex;
-    flex-direction: column;
   }
 `;
 
@@ -123,7 +117,9 @@ const ActionMenu = styled.div`
   box-shadow: ${(props) => props.theme.shadows.medium};
   padding: ${(props) => props.theme.spacing.sm} 0;
   z-index: 10;
-  min-width: 150px;
+  min-width: 120px;
+  max-width: 180px;
+  width: auto;
 `;
 
 const ActionMenuItem = styled.div`
@@ -192,9 +188,89 @@ const TransferModal = styled.div`
   padding: ${(props) => props.theme.spacing.xl};
   border-radius: ${(props) => props.theme.borderRadius.large};
   box-shadow: ${(props) => props.theme.shadows.large};
-  width: 90%;
-  max-width: 500px;
+  width: 95%;
+  max-width: 550px;
   z-index: 1000;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: ${(props) => props.theme.spacing.md};
+    text-align: center;
+    background: linear-gradient(120deg, #6a11cb, #2575fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+`;
+
+const TransferButton = styled(Button)`
+  margin-top: ${(props) => props.theme.spacing.lg};
+  height: 54px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  box-shadow: 0 4px 12px rgba(106, 17, 203, 0.25);
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(106, 17, 203, 0.4);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background: linear-gradient(120deg, #6a11cb88, #2575fc88);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.text.secondary};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: ${(props) => props.theme.colors.text.primary};
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 2px;
+    background-color: currentColor;
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
 `;
 
 const ModalOverlay = styled.div`
@@ -205,33 +281,76 @@ const ModalOverlay = styled.div`
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999;
+  backdrop-filter: blur(4px);
 `;
 
-const TransferInput = styled.input`
-  width: 100%;
-  padding: ${(props) => props.theme.spacing.md};
-  margin: ${(props) => props.theme.spacing.md} 0;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid ${(props) => props.theme.colors.text.secondary}44;
-  background: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.text.primary};
+const TransferInput = styled.input.attrs({
+  className: "transfer-input",
+})`
+  && {
+    width: 100%;
+    padding: 12px 16px;
+    margin: ${(props) => props.theme.spacing.lg} 0;
+    border-radius: ${(props) => props.theme.borderRadius.medium};
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(30, 36, 68, 0.6);
+    color: ${(props) => props.theme.colors.text.primary};
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    -webkit-font-smoothing: antialiased;
+    height: 50px;
+
+    &:focus {
+      outline: none;
+      border-color: rgba(106, 17, 203, 0.5) !important;
+      box-shadow: 0 0 0 2px rgba(42, 82, 190, 0.3);
+    }
+
+    &::placeholder {
+      color: ${(props) => props.theme.colors.text.secondary}99;
+    }
+  }
 `;
 
 const NFTPreview = styled.div`
   display: flex;
   align-items: center;
   gap: ${(props) => props.theme.spacing.md};
-  margin: ${(props) => props.theme.spacing.md} 0;
-  padding: ${(props) => props.theme.spacing.md};
+  margin: ${(props) => props.theme.spacing.lg} 0;
+  padding: ${(props) => props.theme.spacing.lg};
   background: ${(props) => props.theme.colors.background};
   border-radius: ${(props) => props.theme.borderRadius.medium};
 
   img {
-    width: 60px;
-    height: 60px;
+    width: 75px;
+    height: 75px;
     border-radius: ${(props) => props.theme.borderRadius.small};
     object-fit: cover;
   }
+
+  div {
+    h4 {
+      font-size: 1.2rem;
+      margin-bottom: ${(props) => props.theme.spacing.sm};
+    }
+
+    p {
+      color: ${(props) => props.theme.colors.text.secondary};
+    }
+  }
+`;
+
+const TransferStatusMessage = styled.div.attrs((props) => ({
+  className: `transfer-status ${props.success ? "success" : "error"}`,
+}))`
+  opacity: ${(props) => (props.fadeOut ? 0 : 1)};
+`;
+
+// 添加自定義的 StatusMessage 組件
+const CustomStatusMessage = styled(StatusMessage)`
+  margin-top: ${(props) => props.theme.spacing.md};
+  width: 100%;
 `;
 
 // 模拟用户拥有的NFT数据
@@ -302,13 +421,19 @@ const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
   const [activeNFT, setActiveNFT] = useState(null);
   const [showActionMenu, setShowActionMenu] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [transferStatus, setTransferStatus] = useState({
+    show: false,
+    success: false,
+    fadeOut: false,
+    message: "",
+  });
   const navigate = useNavigate();
 
   // 从所有NFT中提取集合列表
@@ -331,28 +456,9 @@ const MyNFTs = () => {
   }, []);
 
   // 處理搜索
-  const handleSearchSubmit = useCallback(() => {
-    if (localSearchTerm !== searchTerm) {
-      setSearchTerm(localSearchTerm);
-    }
-  }, [localSearchTerm, searchTerm]);
-
-  // 處理本地搜索變化
-  const handleLocalSearchChange = (e) => {
-    setLocalSearchTerm(e.target.value);
-  };
-
-  // 處理鍵盤按下
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearchSubmit();
-    }
-  };
-
-  // 處理失去焦點
-  const handleBlur = () => {
-    handleSearchSubmit();
-  };
+  const handleSearchChange = useCallback((value) => {
+    setSearchTerm(value);
+  }, []);
 
   // 筛选和排序NFT
   const filteredNFTs = nfts
@@ -386,8 +492,20 @@ const MyNFTs = () => {
     });
 
   // 处理NFT操作
-  const handleNFTAction = (nft) => {
+  const handleNFTAction = (nft, event) => {
     setActiveNFT(nft);
+
+    // 计算菜单位置，将其定位在按钮下方
+    if (event && event.currentTarget) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+      setMenuPosition({
+        top: rect.bottom + scrollTop,
+        left: rect.left + rect.width / 2 - 90, // 居中显示在按钮下方
+      });
+    }
+
     setShowActionMenu(true);
   };
 
@@ -415,15 +533,95 @@ const MyNFTs = () => {
   };
 
   const handleTransferSubmit = () => {
-    // 這裡稍後添加轉移邏輯
-    setShowTransferModal(false);
-    setRecipientAddress("");
+    if (!recipientAddress.trim()) {
+      setTransferStatus({
+        show: true,
+        success: false,
+        fadeOut: false,
+        message: "受取人のアドレスを入力してください。",
+      });
+
+      // 3秒後開始淡出動畫
+      setTimeout(() => {
+        setTransferStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 3000);
+
+      // 淡出動畫後隱藏信息
+      setTimeout(() => {
+        setTransferStatus({
+          show: false,
+          success: false,
+          fadeOut: false,
+          message: "",
+        });
+      }, 3400);
+
+      return;
+    }
+
+    // 這裡添加轉移邏輯（模擬成功）
+    try {
+      // 模擬轉移操作
+      // 實際應用中，這裡會調用合約方法
+
+      // 顯示成功消息
+      setTransferStatus({
+        show: true,
+        success: true,
+        fadeOut: false,
+        message: "購入成功！", // 修改為與購入成功相同的文字
+      });
+
+      // 成功時，3秒後開始淡出動畫
+      setTimeout(() => {
+        setTransferStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 3000);
+
+      // 淡出動畫後隱藏信息並關閉模態框
+      setTimeout(() => {
+        setTransferStatus({
+          show: false,
+          success: false,
+          fadeOut: false,
+          message: "",
+        });
+        // 僅在成功時關閉模態框和清空輸入
+        setShowTransferModal(false);
+        setRecipientAddress("");
+      }, 3400);
+    } catch (error) {
+      console.error("轉移失敗:", error);
+      setTransferStatus({
+        show: true,
+        success: false,
+        fadeOut: false,
+        message: "NFTの転送に失敗しました。",
+      });
+
+      // 3秒後開始淡出動畫
+      setTimeout(() => {
+        setTransferStatus((prev) => ({ ...prev, fadeOut: true }));
+      }, 3000);
+
+      // 淡出動畫後隱藏信息
+      setTimeout(() => {
+        setTransferStatus({
+          show: false,
+          success: false,
+          fadeOut: false,
+          message: "",
+        });
+        // 失敗時不關閉模態框，讓用戶可以重試
+      }, 3400);
+    }
   };
 
   return (
     <PageContainer className="content-container">
       <PageHeader>
-        <Title>マイNFT</Title>
+        <Title>
+          <GradientTitle>マイNFT</GradientTitle>
+        </Title>
         <Subtitle>
           あなたのウォレットにあるすべてのNFTをここで確認できます。
         </Subtitle>
@@ -436,111 +634,99 @@ const MyNFTs = () => {
         </LoadingState>
       ) : (
         <>
-          <FiltersContainer>
-            <SearchInput
-              placeholder="NFTを検索..."
-              value={localSearchTerm}
-              onChange={handleLocalSearchChange}
-              onBlur={handleBlur}
-              onKeyPress={handleKeyPress}
-              spellCheck="false"
-              autoComplete="off"
-            />
-            <FiltersGroup>
-              <CustomSelect
-                value={collectionFilter}
-                options={[
+          <FilterBar
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+            searchPlaceholder="NFTを検索..."
+            filters={[
+              {
+                value: collectionFilter,
+                options: [
                   { value: "all", label: "すべてのコレクション" },
                   ...collections.map((collection) => ({
                     value: collection,
                     label: collection,
                   })),
-                ]}
-                onChange={setCollectionFilter}
-              />
-              <CustomSelect
-                value={sortBy}
-                options={[
+                ],
+                onChange: setCollectionFilter,
+              },
+              {
+                value: sortBy,
+                options: [
                   { value: "recent", label: "最新順" },
                   { value: "name_asc", label: "名前（A-Z）" },
                   { value: "name_desc", label: "名前（Z-A）" },
-                ]}
-                onChange={setSortBy}
-              />
-            </FiltersGroup>
-          </FiltersContainer>
+                ],
+                onChange: setSortBy,
+              },
+            ]}
+          />
 
           {filteredNFTs.length > 0 ? (
-            <NFTGrid>
-              {filteredNFTs.map((nft, index) => (
-                <div key={index} style={{ position: "relative" }}>
-                  {nft.isListed ? (
-                    <ListedNFTCard
-                      nft={nft}
-                      actionText="操作"
-                      onAction={() => handleNFTAction(nft)}
-                    />
-                  ) : (
-                    <NFTCard
-                      nft={nft}
-                      actionText="操作"
-                      onAction={() => handleNFTAction(nft)}
-                    />
-                  )}
-                  {showActionMenu && activeNFT?.tokenId === nft.tokenId && (
-                    <>
-                      <div
-                        style={{
-                          position: "fixed",
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                          left: 0,
-                          zIndex: 9,
-                        }}
-                        onClick={handleClickOutside}
-                      />
-                      <ActionMenu>
-                        {nft.isListed ? (
-                          <ActionMenuItem
-                            onClick={() => handleRevoke(activeNFT)}
-                          >
-                            出品を取り消す
-                          </ActionMenuItem>
-                        ) : (
-                          <>
-                            <ActionMenuItem
-                              onClick={() => handleListNFT(activeNFT)}
-                            >
-                              マーケットに出品
-                            </ActionMenuItem>
-                            <ActionMenuItem
-                              onClick={() => handleTransfer(activeNFT)}
-                            >
-                              転送する
-                            </ActionMenuItem>
-                          </>
-                        )}
-                        <ActionMenuItem
-                          onClick={() =>
-                            navigate(`/history?nft=${activeNFT.tokenId}`)
-                          }
-                        >
-                          履歴ページへ
-                        </ActionMenuItem>
-                      </ActionMenu>
-                    </>
-                  )}
-                </div>
-              ))}
-            </NFTGrid>
+            <NFTGrid
+              items={filteredNFTs}
+              actionText="操作"
+              onItemAction={(nft, event) => handleNFTAction(nft, event)}
+              renderStatus={(nft) =>
+                nft.statusMessage
+                  ? {
+                      message: nft.statusMessage,
+                      success: nft.statusType === "success",
+                      fadeOut: nft.fadeOut,
+                    }
+                  : null
+              }
+            />
           ) : (
             <EmptyState>
               <h3>NFTが見つかりません</h3>
-              <p>
-                該当するNFTがありません。検索条件を変更するか、NFTを取得してください。
-              </p>
+              <p>NFTをミントするか、他のユーザーから購入してください。</p>
             </EmptyState>
+          )}
+
+          {showActionMenu && activeNFT && (
+            <>
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  zIndex: 9,
+                }}
+                onClick={handleClickOutside}
+              />
+              <ActionMenu
+                style={{
+                  position: "fixed",
+                  top: `${menuPosition.top}px`,
+                  left: `${menuPosition.left}px`,
+                  transform: "none",
+                  zIndex: 10,
+                }}
+              >
+                {activeNFT.isListed ? (
+                  <ActionMenuItem onClick={() => handleRevoke(activeNFT)}>
+                    出品を取り消す
+                  </ActionMenuItem>
+                ) : (
+                  <>
+                    <ActionMenuItem onClick={() => handleListNFT(activeNFT)}>
+                      マーケットに出品
+                    </ActionMenuItem>
+                    <ActionMenuItem onClick={() => handleTransfer(activeNFT)}>
+                      転送する
+                    </ActionMenuItem>
+                  </>
+                )}
+                <ActionMenuItem
+                  onClick={() => navigate(`/history?nft=${activeNFT.tokenId}`)}
+                >
+                  履歴ページへ
+                </ActionMenuItem>
+              </ActionMenu>
+            </>
           )}
         </>
       )}
@@ -549,6 +735,7 @@ const MyNFTs = () => {
         <>
           <ModalOverlay onClick={() => setShowTransferModal(false)} />
           <TransferModal>
+            <CloseButton onClick={() => setShowTransferModal(false)} />
             <h3>NFTを転送</h3>
             <NFTPreview>
               <img src={activeNFT.image} alt={activeNFT.name} />
@@ -562,11 +749,45 @@ const MyNFTs = () => {
               value={recipientAddress}
               onChange={(e) => setRecipientAddress(e.target.value)}
             />
-            <Button onClick={handleTransferSubmit} fullWidth>
+            <TransferButton
+              onClick={handleTransferSubmit}
+              fullWidth
+              disabled={!recipientAddress.trim()}
+            >
               転送する
-            </Button>
+            </TransferButton>
+
+            {transferStatus.show && (
+              <CustomStatusMessage
+                success={transferStatus.success}
+                fadeOut={transferStatus.fadeOut}
+                noArrow={false} // 顯示箭頭
+                centered={true} // 居中顯示
+              >
+                {transferStatus.message}
+              </CustomStatusMessage>
+            )}
           </TransferModal>
         </>
+      )}
+
+      {/* 模態框外的全局提示消息 */}
+      {transferStatus.show && !showTransferModal && (
+        <StatusMessage
+          success={transferStatus.success}
+          fadeOut={transferStatus.fadeOut}
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1100,
+            minWidth: "300px",
+            maxWidth: "80%",
+          }}
+        >
+          {transferStatus.message}
+        </StatusMessage>
       )}
     </PageContainer>
   );

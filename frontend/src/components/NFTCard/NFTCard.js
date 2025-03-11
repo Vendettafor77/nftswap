@@ -205,17 +205,58 @@ const InfoContainer = styled.div`
 const NFTName = styled.h3`
   font-size: 1.1rem;
   margin: 0 0 ${(props) => props.theme.spacing.xs} 0;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  position: relative;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
-  position: relative;
-  z-index: 1;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding-top: 0;
 `;
+
+// 在NFTCard组件中使用SVG文本渲染NFT名称
+const NFTNameSVG = ({ children, id }) => {
+  // 為每個卡片生成唯一的漸變ID
+  const gradientId = `nftGradient-${id}`;
+
+  return (
+    <svg
+      width="100%"
+      height="26"
+      style={{
+        overflow: "visible",
+        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
+      }}
+    >
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6a11cb" />
+          <stop offset="100%" stopColor="#2575fc" />
+        </linearGradient>
+      </defs>
+      <text
+        x="0"
+        y="18"
+        fill={`url(#${gradientId})`}
+        fontWeight="600"
+        fontSize="1.1rem"
+        fontFamily="inherit"
+        letterSpacing="0.01em"
+        dominantBaseline="middle"
+        style={{
+          fontFamily: "inherit",
+          textRendering: "optimizeLegibility",
+          shapeRendering: "geometricPrecision",
+          opacity: "0.95",
+        }}
+      >
+        {children}
+      </text>
+    </svg>
+  );
+};
 
 const NFTCollection = styled.p`
   font-size: 0.9rem;
@@ -236,7 +277,7 @@ const ActionContainer = styled.div`
   width: 100%;
   margin: 0;
   padding: 0;
-  height: 42px;
+  height: 45px; /* 調整為與ListNFTForm中的按鈕高度一致 */
   position: relative;
   z-index: 3;
   flex-shrink: 0;
@@ -249,7 +290,7 @@ const CardButton = styled(PrimaryButton)`
   width: 100%;
   max-width: 100%;
   margin: 0;
-  height: 42px;
+  height: 45px; /* 調整為與ListNFTForm中的按鈕高度一致 */
   padding: ${(props) => props.theme.spacing.sm}
     ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.medium};
@@ -261,6 +302,10 @@ const CardStatusMessage = styled(StatusMessage)`
   margin: 0;
   padding: ${(props) => props.theme.spacing.sm};
   font-size: 0.9rem;
+  text-align: center; /* 確保文字居中 */
+  justify-content: center; /* 確保內容居中 */
+  display: flex;
+  align-items: center;
 `;
 
 // 修改組件實現
@@ -281,9 +326,9 @@ const NFTCard = ({
       : () => actionText;
 
   // 處理按鈕點擊
-  const handleAction = () => {
+  const handleAction = (event) => {
     if (onAction) {
-      onAction(nftData);
+      onAction(nftData, event);
     }
   };
 
@@ -301,7 +346,11 @@ const NFTCard = ({
       </ImageContainer>
       <CardContent>
         <InfoContainer>
-          <NFTName>{nftData.name}</NFTName>
+          <NFTName>
+            <NFTNameSVG id={nftData.id || nftData.tokenId}>
+              {nftData.name}
+            </NFTNameSVG>
+          </NFTName>
           <NFTCollection>{nftData.collection}</NFTCollection>
         </InfoContainer>
         <ActionContainer>
@@ -316,20 +365,31 @@ const NFTCard = ({
                 padding: 0,
                 margin: 0,
               }}
-              onClick={handleAction}
+              onClick={(e) => handleAction(e)}
             >
               {customActionButton()}
             </div>
           )}
           {onAction && !statusMessage && !customActionButton && (
-            <CardButton onClick={handleAction}>{getActionText()}</CardButton>
+            <CardButton onClick={(e) => handleAction(e)}>
+              {getActionText()}
+            </CardButton>
           )}
           {statusMessage && (
             <CardStatusMessage
               success={statusMessage.success}
               fadeOut={statusMessage.fadeOut}
               fullWidth
-              noArrow
+              noArrow={
+                statusMessage.noArrow !== undefined
+                  ? statusMessage.noArrow
+                  : true
+              }
+              centered={
+                statusMessage.centered !== undefined
+                  ? statusMessage.centered
+                  : false
+              }
               {...(statusMessage.style || {})}
             >
               {statusMessage.message}

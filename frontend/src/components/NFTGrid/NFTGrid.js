@@ -8,6 +8,9 @@ const GridWrapper = styled.div`
   width: 100%;
   position: relative;
   box-sizing: border-box;
+  /* 確保與搜索欄對齊 */
+  margin: 0;
+  padding: 0;
 
   /* 保持頁面高度一致，防止因結果數量變化導致頁面高度變化 */
   display: flex;
@@ -90,7 +93,7 @@ const StandardNFTButton = styled.div`
   box-sizing: border-box;
 
   button {
-    height: 42px;
+    height: 45px; /* 与NFTCard中的按钮高度保持一致 */
     width: 100%;
     max-width: 100%;
     margin: 0;
@@ -124,7 +127,7 @@ const NFTGrid = ({
   };
 
   return (
-    <GridWrapper className="content-container">
+    <GridWrapper>
       {items.length === 0 ? (
         <EmptyState>
           <h3>NFTが見つかりません</h3>

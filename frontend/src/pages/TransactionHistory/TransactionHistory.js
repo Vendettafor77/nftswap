@@ -21,13 +21,55 @@ const PageHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.md};
   font-size: 2.5rem;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
 `;
+
+// 使用與NFTCard相同的SVG漸變文字
+const GradientTitle = ({ children }) => {
+  const uniqueId = `transaction-title-gradient-${Math.random().toString(36).substring(7)}`;
+
+  return (
+    <svg
+      width="100%"
+      height="60"
+      style={{
+        maxWidth: "400px",
+        overflow: "visible",
+        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
+      }}
+    >
+      <defs>
+        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6a11cb" />
+          <stop offset="100%" stopColor="#2575fc" />
+        </linearGradient>
+      </defs>
+      <text
+        x="50%"
+        y="45"
+        fill={`url(#${uniqueId})`}
+        fontWeight="600"
+        fontSize="2.5rem"
+        fontFamily="inherit"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fontFamily: "inherit",
+          textRendering: "optimizeLegibility",
+          shapeRendering: "geometricPrecision",
+          opacity: "0.95",
+        }}
+      >
+        {children}
+      </text>
+    </svg>
+  );
+};
 
 const Description = styled.p`
   color: ${(props) => props.theme.colors.text.secondary};
@@ -65,9 +107,10 @@ const EmptyState = styled.div`
     font-size: 1.8rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    background: linear-gradient(120deg, #6a11cb, #2575fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
   }
 
   p {
@@ -75,6 +118,48 @@ const EmptyState = styled.div`
     opacity: 0.7;
   }
 `;
+
+// 空狀態的漸變標題
+const EmptyGradientTitle = ({ children }) => {
+  const uniqueId = `empty-title-gradient-${Math.random().toString(36).substring(7)}`;
+
+  return (
+    <svg
+      width="100%"
+      height="40"
+      style={{
+        maxWidth: "300px",
+        overflow: "visible",
+        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
+      }}
+    >
+      <defs>
+        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6a11cb" />
+          <stop offset="100%" stopColor="#2575fc" />
+        </linearGradient>
+      </defs>
+      <text
+        x="50%"
+        y="30"
+        fill={`url(#${uniqueId})`}
+        fontWeight="600"
+        fontSize="1.8rem"
+        fontFamily="inherit"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{
+          fontFamily: "inherit",
+          textRendering: "optimizeLegibility",
+          shapeRendering: "geometricPrecision",
+          opacity: "0.95",
+        }}
+      >
+        {children}
+      </text>
+    </svg>
+  );
+};
 
 /**
  * 交易記錄頁面組件
@@ -128,7 +213,9 @@ const TransactionHistory = () => {
   return (
     <PageContainer className="content-container">
       <PageHeader>
-        <Title>取引履歴</Title>
+        <Title>
+          <GradientTitle>取引履歴</GradientTitle>
+        </Title>
         <Description>
           あなたのNFT取引履歴を閲覧できます。購入、出品、鋳造、転送などのすべての活動を確認してください。
         </Description>
@@ -138,7 +225,7 @@ const TransactionHistory = () => {
       <FilterBar
         searchTerm={searchTerm}
         onSearchChange={updateSearchTerm}
-        searchPlaceholder="NFT名で検索..."
+        searchPlaceholder="NFTを検索..."
         filters={[
           {
             value: typeFilter,
@@ -171,7 +258,9 @@ const TransactionHistory = () => {
           ))
         ) : (
           <EmptyState>
-            <h3>取引記録が見つかりません</h3>
+            <h3>
+              <EmptyGradientTitle>取引記録が見つかりません</EmptyGradientTitle>
+            </h3>
             <p>検索条件を変更してお試しください。</p>
           </EmptyState>
         )}

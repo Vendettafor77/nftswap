@@ -7,6 +7,7 @@ import { marketNFTs } from "../../data/mockData";
 import { HeroSection } from "../../components/styled";
 import { OutlineButton } from "../../components/styled/Button";
 import SectionTitle from "../../components/styled/SectionTitle";
+import ListNFTForm from "./components/ListNFTForm";
 
 // 頁面主容器
 const HomeContainer = styled.div`
@@ -65,8 +66,8 @@ const CardSection = styled.div`
   max-width: 100%;
   width: 100%;
   box-sizing: border-box;
-  padding-top: 0;
-  margin-top: 0;
+  padding: 0; /* 移除内边距，确保搜索栏和NFT卡片网格对齐 */
+  margin: 0; /* 移除外边距，确保搜索栏和NFT卡片网格对齐 */
   /* 確保內容區高度一致 */
   min-height: 70vh;
 
@@ -102,7 +103,6 @@ const StickySidebar = styled.div`
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   height: fit-content;
-  min-height: 500px; /* 確保側邊欄有最小高度 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -110,16 +110,19 @@ const StickySidebar = styled.div`
   margin-top: 0;
 `;
 
-// 側邊欄標題 - 增加右側內間距
+// 側邊欄標題 - 增加顯眼度
 const SidebarTitle = styled.h3`
   color: ${(props) => props.theme.colors.text.primary};
   margin-top: 0;
   margin-bottom: ${(props) => props.theme.spacing.md};
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding-top: 0;
   width: 100%; /* 確保完全填充 */
-  text-align: left; /* 左對齊 */
-  padding-left: ${(props) => props.theme.spacing.sm}; /* 統一左側間距 */
+  text-align: center; /* 居中對齊 */
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
 `;
 
 // 統計項目 - 增加內間距和對齊
@@ -232,6 +235,9 @@ const EthSymbol = styled.span`
 
 const MarketContainer = styled.div`
   margin-top: 0; /* 移除上边距，确保搜索栏和右侧菜单对齐 */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0; /* 移除内边距，确保搜索栏和NFT卡片网格对齐 */
 `;
 
 /**
@@ -343,7 +349,15 @@ const Home = () => {
           success: purchaseStatus.success,
           message: purchaseStatus.success ? "購入成功！" : "購入失敗",
           fadeOut: purchaseStatus.fadeOut,
-          style: { width: "100%" }, // 設置提示消息寬度為100%
+          style: {
+            width: "100%", // 設置提示消息寬度為100%
+            textAlign: "center", // 確保文字居中
+            display: "flex",
+            justifyContent: "center", // 確保內容水平居中
+            alignItems: "center", // 確保內容垂直居中
+          },
+          centered: true, // 使用StatusMessage的centered屬性
+          noArrow: false, // 顯示頂部箭頭
         };
       }
       return null;
@@ -404,7 +418,8 @@ const Home = () => {
         </>
       );
     } else {
-      return <ListNFTSection.Form />;
+      // 直接返回ListNFTForm組件，而不是通過ListNFTSection.Form間接引用
+      return <ListNFTForm />;
     }
   };
 

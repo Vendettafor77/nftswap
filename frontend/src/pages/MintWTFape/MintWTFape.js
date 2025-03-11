@@ -21,13 +21,56 @@ const MintHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.md};
   font-size: 2.5rem;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
 `;
+
+// 使用與NFTCard相同的SVG漸變文字
+const GradientTitle = ({ children, className, fontSize = "2.5rem" }) => {
+  const uniqueId = `title-gradient-${Math.random().toString(36).substring(7)}`;
+
+  return (
+    <svg
+      width="100%"
+      height={fontSize === "2.5rem" ? "60" : "40"}
+      style={{
+        maxWidth: fontSize === "2.5rem" ? "600px" : "300px",
+        overflow: "visible",
+        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
+      }}
+      className={className}
+    >
+      <defs>
+        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6a11cb" />
+          <stop offset="100%" stopColor="#2575fc" />
+        </linearGradient>
+      </defs>
+      <text
+        x={fontSize === "2.5rem" ? "50%" : "0"}
+        y={fontSize === "2.5rem" ? "45" : "30"}
+        fill={`url(#${uniqueId})`}
+        fontWeight="600"
+        fontSize={fontSize}
+        fontFamily="inherit"
+        textAnchor={fontSize === "2.5rem" ? "middle" : "start"}
+        dominantBaseline="middle"
+        style={{
+          fontFamily: "inherit",
+          textRendering: "optimizeLegibility",
+          shapeRendering: "geometricPrecision",
+          opacity: "0.95",
+        }}
+      >
+        {children}
+      </text>
+    </svg>
+  );
+};
 
 const Description = styled.p`
   color: ${(props) => props.theme.colors.text.secondary};
@@ -100,12 +143,11 @@ const MintInfo = styled.div`
 `;
 
 const InfoTitle = styled.h3`
-  color: ${(props) => props.theme.colors.text.primary};
   margin-bottom: ${(props) => props.theme.spacing.sm};
   font-size: 1.5rem;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  height: 40px;
 `;
 
 const InfoText = styled.p`
@@ -133,24 +175,6 @@ const PriceTag = styled.div`
   font-size: 1.2rem;
 `;
 
-const QuantityControl = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
-`;
-
-const QuantityLabel = styled.span`
-  margin-right: ${(props) => props.theme.spacing.md};
-  color: ${(props) => props.theme.colors.text.primary};
-`;
-
-const QuantityInput = styled.input`
-  width: 60px;
-  text-align: center;
-  margin: 0 ${(props) => props.theme.spacing.sm};
-  padding: ${(props) => props.theme.spacing.sm};
-`;
-
 const TokenIdControl = styled.div`
   display: flex;
   flex-direction: column;
@@ -163,23 +187,13 @@ const TokenIdLabel = styled.span`
   font-weight: 500;
 `;
 
-const TokenIdInput = styled.input`
-  padding: ${(props) => props.theme.spacing.md};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: ${(props) =>
-    `linear-gradient(145deg, ${props.theme.colors.surface}22, ${props.theme.colors.surface}44)`};
-  color: ${(props) => props.theme.colors.text.primary};
-  font-size: 1rem;
-  text-align: center;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  transition: all 0.3s ease;
-
-  &:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
-    outline: none;
+const TokenIdInput = styled.input.attrs({
+  type: "text",
+  className: "search-input token-id-input",
+})`
+  && {
+    width: 180px !important;
+    text-align: center;
   }
 `;
 
@@ -382,7 +396,9 @@ const MintWTFape = () => {
   return (
     <MintContainer className="content-container">
       <MintHeader>
-        <Title>WTFape NFTをミントする</Title>
+        <Title>
+          <GradientTitle>WTFape NFTをミントする</GradientTitle>
+        </Title>
         <Description>
           WTFapeは10,000個のユニークに生成されたアートコレクションです。各WTFapeは一意であり、特別な属性と特徴を持っています。
         </Description>
@@ -426,7 +442,9 @@ const MintWTFape = () => {
 
         <MintSection>
           <MintInfo>
-            <InfoTitle>WTFape #{tokenId}</InfoTitle>
+            <InfoTitle>
+              <GradientTitle fontSize="1.5rem">WTFape #{tokenId}</GradientTitle>
+            </InfoTitle>
             <InfoText>
               WTFapeを所有すると、アートワークの完全な所有権と、コミュニティイベントや将来のプロジェクトエアドロップに参加する特権が得られます。
             </InfoText>

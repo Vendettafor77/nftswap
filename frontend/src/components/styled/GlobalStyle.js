@@ -154,11 +154,18 @@ const BaseStyle = createGlobalStyle`
   }
 
   /* 確保搜索欄使用正確字體 */
-  input[type="search"], input[type="text"], select {
+  input[type="search"]:not(.search-input), input[type="text"]:not(.search-input), select {
     font-family: ${(props) => props.fontFamily} !important;
   }
 
-  button, input, select, textarea {
+  /* 專門為搜索輸入框設置樣式 */
+  .search-input {
+    font-family: ${(props) => props.fontFamily} !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background: rgba(30, 36, 68, 0.6) !important;
+  }
+
+  button, input:not(.search-input), select, textarea {
     font-family: inherit;
   }
 

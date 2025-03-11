@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { PrimaryButton } from "../../../components/styled/Button";
 import { StatusMessage } from "../../../components/styled/StatusMessage";
-import { selectedNFTRef } from "./ListNFTSection";
+import { selectedNFTRef } from "./sharedState";
 
 // 表單容器 - 美化版
 const FormWrapper = styled.div`
@@ -10,16 +10,23 @@ const FormWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: ${(props) => props.theme.spacing.md};
+  margin: 0; /* 移除边距，避免与StickySidebar的填充重叠 */
+  padding: 0; /* 恢復原始設置，不再添加底部內邊距 */
 `;
 
-// 表單標題 - 居中顯示
+// 表單標題 - 居中顯示並增加顯眼度
 const FormTitle = styled.h3`
   color: ${(props) => props.theme.colors.text.primary};
-  margin: 0 0 ${(props) => props.theme.spacing.lg} 0;
-  font-size: 1.25rem;
+  margin: 0 0 ${(props) => props.theme.spacing.md} 0;
+  font-size: 1.4rem;
   text-align: center;
   width: 100%;
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  padding-top: ${(props) => props.theme.spacing.xs};
+  padding-bottom: ${(props) => props.theme.spacing.xs};
 `;
 
 // 選中NFT信息顯示組件 - 美化版
@@ -29,11 +36,13 @@ const SelectedNFTInfo = styled.div`
   padding: ${(props) => props.theme.spacing.md};
   background: rgba(106, 17, 203, 0.1);
   border-radius: ${(props) => props.theme.borderRadius.medium};
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${(props) => props.theme.spacing.md}; /* 統一間距 */
   border: 1px solid rgba(106, 17, 203, 0.2);
   height: 60px;
   box-sizing: border-box;
-  width: 100%;
+  width: 85%; /* 統一固定寬度 */
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 // NFT圖片 - 稍微放大
@@ -67,9 +76,9 @@ const NFTCollection = styled.div`
   margin-top: 2px;
 `;
 
-// 提示信息 - 美化版
+// 提示信息 - 完全重構確保無圓角
 const NFTSelectPrompt = styled.div`
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${(props) => props.theme.spacing.md};
   padding: ${(props) => props.theme.spacing.md};
   color: ${(props) => props.theme.colors.text.secondary};
   height: 60px;
@@ -77,27 +86,55 @@ const NFTSelectPrompt = styled.div`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
-  border-radius: ${(props) => props.theme.borderRadius.medium};
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+  background: rgba(13, 15, 30, 0.3);
   font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* 重要：完全重置所有邊框和圓角相關屬性 */
+  border: none;
+  border-radius: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  /* 修改渲染方式，防止繼承任何邊框效果 */
+  position: static;
+
+  /* 移除所有裝飾性元素 */
+  &::before,
+  &::after {
+    display: none;
+  }
+
+  /* 確保四個角都是直角 */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 `;
 
-// 表單內容容器 - 美化版
+// 表單內容容器 - 強化對齊效果
 const FormContent = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  margin-bottom: ${(props) => props.theme.spacing.sm};
 `;
 
-// 表單組 - 改進樣式
+// 表單組 - 強化寬度控制
 const FormGroup = styled.div`
-  width: 100%;
-  margin-bottom: ${(props) => props.theme.spacing.lg};
+  width: 85%;
+  margin-bottom: ${(props) => props.theme.spacing.sm};
+  margin-left: auto;
+  margin-right: auto;
+  display: block; /* 確保是塊級元素 */
+  box-sizing: border-box; /* 確保寬度計算包含padding和border */
+  max-width: 450px; /* 添加最大寬度限制，確保與按鈕一致 */
 `;
 
 // 標籤 - 居中顯示
@@ -110,33 +147,50 @@ const Label = styled.label`
   width: 100%;
 `;
 
-// 價格輸入容器 - 美化版
+// 價格輸入容器 - 增強寬度控制
 const PriceInputContainer = styled.div`
   display: flex;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
-  border-radius: ${(props) => props.theme.borderRadius.medium};
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  height: 45px;
+  align-items: center; /* 使用center確保垂直居中 */
+  box-sizing: border-box;
+  max-width: 100%; /* 確保不超過父容器 */
+  gap: 4px; /* 使用gap屬性為子元素之間添加統一間隙 */
 `;
 
-// 價格輸入框 - 美化版
-const PriceInput = styled.input`
+// 價格輸入框 - 增加優先級，覆蓋全局樣式
+const PriceInput = styled.input.attrs({ className: "price-input" })`
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid rgba(106, 17, 203, 0.2);
-  background: rgba(30, 36, 68, 0.3);
+  height: 100%;
+  padding: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  line-height: normal; /* 調整為normal避免行高影響 */
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(30, 36, 68, 0.6);
   color: ${(props) => props.theme.colors.text.primary};
-  font-size: 1rem;
-  border-right: none;
-  border-radius: ${(props) => props.theme.borderRadius.medium} 0 0
-    ${(props) => props.theme.borderRadius.medium};
+  font-size: 0.95rem;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100% !important; /* 使用!important確保覆蓋全局樣式 */
+  margin: 0 !important; /* 重置全局邊距 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  -webkit-font-smoothing: antialiased;
 
   &:focus {
     outline: none;
-    background: rgba(30, 36, 68, 0.4);
-    border-color: rgba(106, 17, 203, 0.4);
+    border-color: rgba(106, 17, 203, 0.4) !important;
+    box-shadow: 0 0 0 1px rgba(42, 82, 190, 0.2);
+  }
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.text.secondary}99;
   }
 
   &:disabled {
@@ -155,59 +209,73 @@ const PriceInput = styled.input`
   }
 `;
 
-// 價格單位 - 美化版
+// 價格單位 - 完全重構以確保對齊
 const PriceCurrency = styled.div`
-  padding: 12px 20px;
-  background: rgba(106, 17, 203, 0.2);
-  color: ${(props) => props.theme.colors.text.primary};
-  font-weight: bold;
-  font-size: 1rem;
-  user-select: none;
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-  border: 1px solid rgba(106, 17, 203, 0.2);
-  border-left: none;
-  border-radius: 0 ${(props) => props.theme.borderRadius.medium}
-    ${(props) => props.theme.borderRadius.medium} 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 70px;
+  height: 100%;
+  padding: 0 20px;
+  background: rgba(106, 17, 203, 0.2);
+  color: ${(props) => props.theme.colors.text.primary};
+  font-weight: bold;
+  font-size: 0.95rem;
+  user-select: none;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  min-width: 60px; /* 確保有足夠空間顯示ETH */
+  border-top-right-radius: ${(props) => props.theme.borderRadius.medium};
+  border-bottom-right-radius: ${(props) => props.theme.borderRadius.medium};
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: none;
+  box-sizing: border-box;
+  line-height: 1; /* 設置為1確保文字垂直居中 */
 `;
 
-// 按鈕容器 - 美化版
-const ButtonsContainer = styled.div`
+// 按鈕容器 - 與FormGroup保持一致
+const ButtonContainer = styled.div`
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 450px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
   display: flex;
-  width: 80%;
-  margin: 0 auto;
+  justify-content: center;
 `;
 
-// 自定義主按鈕 - 漸變效果
+// 自定義主按鈕 - 確保寬度統一
 const ListButton = styled(PrimaryButton)`
   width: 100%;
   padding: 12px;
   font-size: 1rem;
   background: linear-gradient(120deg, #6a11cb, #2575fc);
   transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: ${(props) => props.theme.borderRadius.medium};
+  height: 45px; /* 確保與輸入框高度一致 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* 重置margin确保不会影响对齐 */
+  box-sizing: border-box; /* 确保盒模型计算正确 */
 
   &:hover {
     background: linear-gradient(120deg, #5b0fb1, #1f65dd);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(106, 17, 203, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    transform: none;
-    box-shadow: none;
   }
 `;
 
-// 添加狀態消息容器樣式 - 美化版
+// 添加狀態消息容器樣式 - 絕對定位版本
 const StatusMessageContainer = styled.div`
   position: absolute;
-  bottom: -80px;
-  left: 0;
-  width: 100%;
+  left: 50%; /* 水平居中 */
+  transform: translateX(-50%); /* 確保完全居中 */
+  bottom: -120px; /* 顯示在表單下方 */
+  width: 90%; /* 與表單寬度相近 */
+  max-width: 450px; /* 限制最大寬度 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -216,10 +284,15 @@ const StatusMessageContainer = styled.div`
 
 // 自定義狀態消息 - 美化版
 const CustomStatusMessage = styled(StatusMessage)`
-  width: 90%;
-  padding: 14px;
+  width: 100%;
+  padding: 12px;
   border-radius: ${(props) => props.theme.borderRadius.medium};
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  font-size: 1rem;
+  border: 2px solid
+    ${(props) =>
+      props.success ? "rgba(76, 175, 80, 0.5)" : "rgba(244, 67, 54, 0.5)"};
 `;
 
 /**
@@ -339,7 +412,16 @@ const ListNFTForm = () => {
       <FormTitle>NFTを出品する</FormTitle>
 
       {selectedNFT ? (
-        <SelectedNFTInfo>
+        <SelectedNFTInfo
+          // 統一使用85%寬度
+          style={{
+            width: "85%",
+            borderRadius: "8px",
+            marginLeft: "auto",
+            marginRight: "auto",
+            maxWidth: "450px",
+          }}
+        >
           <NFTImage src={selectedNFT.image} alt={selectedNFT.name} />
           <NFTDetails>
             <NFTName>{selectedNFT.name}</NFTName>
@@ -347,7 +429,18 @@ const ListNFTForm = () => {
           </NFTDetails>
         </SelectedNFTInfo>
       ) : (
-        <NFTSelectPrompt>NFTを選択してください</NFTSelectPrompt>
+        <NFTSelectPrompt
+          // 統一使用85%寬度
+          style={{
+            width: "85%",
+            borderRadius: 0,
+            marginLeft: "auto",
+            marginRight: "auto",
+            maxWidth: "450px",
+          }}
+        >
+          NFTを選択してください
+        </NFTSelectPrompt>
       )}
 
       <FormContent>
@@ -363,29 +456,32 @@ const ListNFTForm = () => {
               min="0"
               step="0.01"
               autoComplete="off"
+              className="price-input"
             />
             <PriceCurrency disabled={!selectedNFT}>ETH</PriceCurrency>
           </PriceInputContainer>
         </FormGroup>
 
-        <ButtonsContainer>
+        <ButtonContainer>
           <ListButton onClick={handleSubmit} disabled={isSubmitDisabled}>
             マーケットに出品する
           </ListButton>
-        </ButtonsContainer>
+        </ButtonContainer>
       </FormContent>
 
-      {/* 狀態消息容器 */}
-      <StatusMessageContainer>
-        {listingStatus.show && (
+      {/* 使用絕對定位的狀態消息容器 */}
+      {listingStatus.show && (
+        <StatusMessageContainer>
           <CustomStatusMessage
             success={listingStatus.success}
             fadeOut={listingStatus.fadeOut}
+            centered={true}
+            noArrow={true}
           >
             {listingStatus.message}
           </CustomStatusMessage>
-        )}
-      </StatusMessageContainer>
+        </StatusMessageContainer>
+      )}
     </FormWrapper>
   );
 };
