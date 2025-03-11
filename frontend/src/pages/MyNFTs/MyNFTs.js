@@ -110,14 +110,13 @@ const EmptyState = styled.div`
 
 const ActionMenu = styled.div`
   position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
-  background-color: ${(props) => props.theme.colors.surface};
+  background: linear-gradient(145deg, #2a3142, #383f5e);
+  border: 1px solid rgba(106, 17, 203, 0.2);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   box-shadow: ${(props) => props.theme.shadows.medium};
   padding: ${(props) => props.theme.spacing.sm} 0;
-  z-index: 10;
-  min-width: 120px;
+  z-index: 1000;
+  min-width: 150px;
   max-width: 180px;
   width: auto;
 `;
@@ -128,7 +127,7 @@ const ActionMenuItem = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.primary}22;
+    background-color: rgba(106, 17, 203, 0.2);
     color: ${(props) => props.theme.colors.primary};
   }
 `;
@@ -495,14 +494,13 @@ const MyNFTs = () => {
   const handleNFTAction = (nft, event) => {
     setActiveNFT(nft);
 
-    // 计算菜单位置，将其定位在按钮下方
+    // 計算菜單位置，將其定位在按鈕附近
     if (event && event.currentTarget) {
       const rect = event.currentTarget.getBoundingClientRect();
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
       setMenuPosition({
-        top: rect.bottom + scrollTop,
-        left: rect.left + rect.width / 2 - 90, // 居中显示在按钮下方
+        top: rect.bottom + window.scrollY + 5, // 加上滾動偏移
+        left: rect.left + window.scrollX + rect.width / 2 - 75, // 調整為更好的居中位置
       });
     }
 
@@ -616,6 +614,21 @@ const MyNFTs = () => {
     }
   };
 
+  useEffect(() => {
+    if (showActionMenu) {
+      // 當顯示菜單時，禁用頁面滾動
+      document.body.style.overflow = "hidden";
+    } else {
+      // 當隱藏菜單時，恢復頁面滾動
+      document.body.style.overflow = "";
+    }
+
+    // 組件卸載時清理
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showActionMenu]);
+
   return (
     <PageContainer className="content-container">
       <PageHeader>
@@ -693,17 +706,17 @@ const MyNFTs = () => {
                   right: 0,
                   bottom: 0,
                   left: 0,
-                  zIndex: 9,
+                  zIndex: 999,
+                  overflow: "hidden",
+                  pointerEvents: "all",
                 }}
                 onClick={handleClickOutside}
               />
               <ActionMenu
                 style={{
-                  position: "fixed",
                   top: `${menuPosition.top}px`,
                   left: `${menuPosition.left}px`,
-                  transform: "none",
-                  zIndex: 10,
+                  zIndex: 1000,
                 }}
               >
                 {activeNFT.isListed ? (

@@ -68,7 +68,7 @@ const BaseStyle = createGlobalStyle`
       ${(props) => props.theme.colors.background}F2 100%
     );
     /* 確保內部元素不產生額外滾動條 */
-    overflow-y: visible;
+    overflow-y: hidden;
     overflow-x: hidden;
     position: relative;
   }
@@ -81,7 +81,7 @@ const BaseStyle = createGlobalStyle`
     padding: 0 !important;
     margin: 0 !important;
     /* 保證內部元素不產生滾動條 */
-    overflow-y: visible;
+    overflow-y: hidden;
     overflow-x: hidden;
   }
 

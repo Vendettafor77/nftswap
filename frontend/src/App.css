@@ -230,7 +230,7 @@ body::-webkit-scrollbar-thumb:hover {
 .App {
   position: relative;
   overflow-x: hidden;
-  overflow-y: visible !important; /* 确保内部元素不产生滚动条 */
+  overflow-y: hidden !important; /* 确保内部元素不产生滚动条 */
   width: 100%; /* 確保佔滿寬度 */
 }
 

@@ -278,7 +278,7 @@ const ActionContainer = styled.div`
   margin: 0;
   padding: 0;
   height: 45px; /* 調整為與ListNFTForm中的按鈕高度一致 */
-  position: relative;
+  position: relative; /* 確保作為絕對定位的參考點 */
   z-index: 3;
   flex-shrink: 0;
   margin-top: 0;
@@ -294,6 +294,8 @@ const CardButton = styled(PrimaryButton)`
   padding: ${(props) => props.theme.spacing.sm}
     ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.medium};
+  position: relative; /* 確保按鈕可作為錨點 */
+  z-index: 5; /* 確保按鈕可點擊 */
 `;
 
 // 卡片狀態消息
