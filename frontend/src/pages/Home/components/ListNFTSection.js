@@ -160,7 +160,6 @@ const ListNFTSection = ({ standalone = true }) => {
         onItemAction={onAction}
         selectedNFT={selectedNFT}
       />
-      {selectedNFT && <ListNFTForm nft={selectedNFT} />}
     </Section>
   );
 };

@@ -9,12 +9,27 @@ body,
   max-width: 100%;
 }
 
-/* 特殊樣式，確保滾動條區域與導航欄背景色一致 */
+/* 特殊樣式，設置背景色和基本滾動行為 */
 html {
   background-color: #1c2241 !important;
-  overflow-y: hidden; /* 根據需要顯示滾動條 - 修改為hidden以防止雙滾動條 */
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241 !important; /* 使滾動條可見 */
+  overflow-y: scroll !important; /* 保持滾動行為 */
+}
+
+/* 內容適合視窗時的樣式 */
+html.content-fits-viewport {
+  /* 特殊類名，由ScrollbarManager動態添加/移除 */
+}
+
+/* 內容需要滾動時的樣式 */
+html.content-scrollable {
+  overflow-y: scroll !important;
+}
+
+/* 確保在所有設備上滾動條都正確顯示 */
+@media (max-width: 768px) {
+  html {
+    overflow-y: scroll !important;
+  }
 }
 
 body {
@@ -24,16 +39,11 @@ body {
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* 確保內容不隨滾動條出現/消失而移動 */
-  padding-right: 0 !important;
-  /* 根據需要顯示滾動條 */
-  overflow-y: auto; /* 保留這個設置，使body成為唯一的滾動容器 */
-  /* 确保内容不随滚动条出现/消失而移动 */
+  padding-right: 0 !important; /* 防止內容偏移 */
+  overflow-y: auto !important; /* 確保內容可以滾動 */
   width: 100%;
   min-height: 100vh;
   margin-right: 0 !important;
-  overflow-x: hidden; /* 再次強調防止水平滾動 */
-  /* 添加背景色，確保與導航欄背景色一致 */
   background-color: #1c2241;
 }
 
@@ -42,38 +52,37 @@ code {
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-/* 确保所有容器都使用border-box盒模型 */
+/* 確保所有容器都使用border-box盒模型 */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* 定义滚动条样式 - 只应用于顶层元素 */
-html::-webkit-scrollbar,
+/* 移除滾動條樣式，由GlobalScrollbarStyle接管 */
+/* html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-  /* 確保滾動條背景與導航欄背景一致 */
   background-color: #1c2241;
 }
 
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track {
-  background: #1c2241; /* 與導航欄背景色一致 */
-  border-radius: 0; /* 移除圓角 */
+  background: #1c2241;
+  border-radius: 0;
 }
 
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.5); /* 使滾動條可見 */
-  border-radius: 3px; /* 添加圓角 */
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 3px;
 }
 
 html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7); /* 懸停時變深 */
-}
+  background: rgba(100, 116, 139, 0.7);
+} */
 
 /* App根元素樣式 */
 #root {
@@ -81,24 +90,25 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden; /* 修改為hidden以防止水平滾動 */
+  overflow-x: hidden; /* 防止水平滾動 */
+  overflow-y: hidden; /* 確保root不產生滾動條 */
   width: 100%;
 }
 
-/* 重写滚动条占位宽度，确保稳定布局 */
+/* App容器樣式 */
 .App {
   position: relative;
   overflow-x: hidden;
-  overflow-y: hidden !important; /* 确保内部元素不产生滚动条 */
+  overflow-y: visible !important; /* 允許內容正常延伸 */
   width: 100%;
 }
 
-/* 確保導航欄覆蓋滾動條區域 */
+/* 確保導航欄樣式 */
 .navbar-wrapper {
   width: 100% !important; /* 擴展到全寬 */
   left: 0;
   right: 0; /* 延伸到最右側 */
   top: 0;
   position: fixed;
-  z-index: 999; /* 確保在上層但不遮擋滾動條 */
+  z-index: 999;
 }

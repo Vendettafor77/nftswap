@@ -12,16 +12,19 @@ const PageContainer = styled.div`
   padding: ${(props) => props.theme.spacing.xl};
   /* 確保滾動條不會導致布局偏移 */
   padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
+  padding-top: 0; /* 移除頂部間距 */
+  margin-top: ${(props) => props.theme.spacing.lg}; /* 添加頂部外邊距 */
 `;
 
 // 與MyNFTs頁面類似的標題區域
 const PageHeader = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.xl};
   text-align: center;
+  padding-top: 0; /* 移除頂部間距 */
 `;
 
 const Title = styled.h1`
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.lg};
   font-size: 2.5rem;
   display: flex;
   justify-content: center;

@@ -13,15 +13,18 @@ const MintContainer = styled.div`
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.xl};
   padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
+  padding-top: 0;
+  margin-top: ${(props) => props.theme.spacing.lg};
 `;
 
 const MintHeader = styled.div`
   text-align: center;
   margin-bottom: ${(props) => props.theme.spacing.xl};
+  padding-top: 0;
 `;
 
 const Title = styled.h1`
-  margin-bottom: ${(props) => props.theme.spacing.md};
+  margin-bottom: ${(props) => props.theme.spacing.lg};
   font-size: 2.5rem;
   display: flex;
   justify-content: center;

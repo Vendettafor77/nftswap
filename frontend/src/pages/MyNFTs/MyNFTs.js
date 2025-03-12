@@ -12,16 +12,21 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: ${(props) => props.theme.spacing.xl};
   padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
+  min-height: 90vh;
+  position: relative;
+  padding-top: 0;
+  margin-top: ${(props) => props.theme.spacing.lg};
 `;
 
 const PageHeader = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.xl};
   text-align: center;
+  padding-top: 0;
 `;
 
 const Title = styled.h1`
-  margin-bottom: ${(props) => props.theme.spacing.md};
-  height: 50px;
+  margin-bottom: ${(props) => props.theme.spacing.lg};
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +39,7 @@ const GradientTitle = ({ children }) => {
   return (
     <svg
       width="100%"
-      height="50"
+      height="60"
       style={{
         maxWidth: "400px",
         overflow: "visible",
@@ -49,7 +54,7 @@ const GradientTitle = ({ children }) => {
       </defs>
       <text
         x="50%"
-        y="36"
+        y="42"
         fill={`url(#${uniqueId})`}
         fontWeight="600"
         fontSize="2.5rem"
@@ -73,6 +78,8 @@ const Subtitle = styled.p`
   color: ${(props) => props.theme.colors.text.secondary};
   max-width: 700px;
   margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
 `;
 
 const FilterBarContainer = styled.div`
@@ -111,24 +118,29 @@ const EmptyState = styled.div`
 const ActionMenu = styled.div`
   position: absolute;
   background: linear-gradient(145deg, #2a3142, #383f5e);
-  border: 1px solid rgba(106, 17, 203, 0.2);
+  border: 1px solid rgba(106, 17, 203, 0.3);
   border-radius: ${(props) => props.theme.borderRadius.medium};
-  box-shadow: ${(props) => props.theme.shadows.medium};
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   padding: ${(props) => props.theme.spacing.sm} 0;
   z-index: 1000;
   min-width: 150px;
   max-width: 180px;
   width: auto;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  backdrop-filter: blur(4px);
 `;
 
 const ActionMenuItem = styled.div`
   padding: ${(props) => `${props.theme.spacing.sm} ${props.theme.spacing.md}`};
   color: ${(props) => props.theme.colors.text.primary};
   cursor: pointer;
+  transition: all 0.15s ease;
 
   &:hover {
-    background-color: rgba(106, 17, 203, 0.2);
-    color: ${(props) => props.theme.colors.primary};
+    background-color: rgba(101, 14, 145, 0.55);
+    color: white;
   }
 `;
 
@@ -352,7 +364,7 @@ const CustomStatusMessage = styled(StatusMessage)`
   width: 100%;
 `;
 
-// 模拟用户拥有的NFT数据
+// 修改模擬數據，增加卡片數量
 const mockUserNFTs = [
   {
     contractAddress: "0x123...abc",
@@ -387,6 +399,121 @@ const mockUserNFTs = [
     contractAddress: "0x789...ghi",
     tokenId: "042",
     name: "Doodle #042",
+    collection: "Doodles",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  // 新增更多NFT卡片
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "222",
+    name: "WTFape #222",
+    collection: "WTFape コレクション",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.4",
+  },
+  {
+    contractAddress: "0x456...def",
+    tokenId: "002",
+    name: "サムライNFT #002",
+    collection: "Samurai Collection",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  {
+    contractAddress: "0x789...ghi",
+    tokenId: "043",
+    name: "Doodle #043",
+    collection: "Doodles",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "1.2",
+  },
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "454",
+    name: "WTFape #454",
+    collection: "WTFape コレクション",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  {
+    contractAddress: "0x456...def",
+    tokenId: "003",
+    name: "サムライNFT #003",
+    collection: "Samurai Collection",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.6",
+  },
+  {
+    contractAddress: "0x789...ghi",
+    tokenId: "044",
+    name: "Doodle #044",
+    collection: "Doodles",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "223",
+    name: "WTFape #223",
+    collection: "WTFape コレクション",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.7",
+  },
+  {
+    contractAddress: "0x456...def",
+    tokenId: "004",
+    name: "サムライNFT #004",
+    collection: "Samurai Collection",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  {
+    contractAddress: "0x789...ghi",
+    tokenId: "045",
+    name: "Doodle #045",
+    collection: "Doodles",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "0.9",
+  },
+  {
+    contractAddress: "0x123...abc",
+    tokenId: "455",
+    name: "WTFape #455",
+    collection: "WTFape コレクション",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: false,
+  },
+  {
+    contractAddress: "0x456...def",
+    tokenId: "005",
+    name: "サムライNFT #005",
+    collection: "Samurai Collection",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    isListed: true,
+    price: "1.1",
+  },
+  {
+    contractAddress: "0x789...ghi",
+    tokenId: "046",
+    name: "Doodle #046",
     collection: "Doodles",
     image:
       "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
@@ -490,17 +617,27 @@ const MyNFTs = () => {
       return 0;
     });
 
-  // 处理NFT操作
+  // 處理NFT操作，修復菜單定位問題
   const handleNFTAction = (nft, event) => {
+    event.stopPropagation();
     setActiveNFT(nft);
 
-    // 計算菜單位置，將其定位在按鈕附近
+    // 計算菜單位置，確保顯示在按鈕正下方而不是卡片右下角
     if (event && event.currentTarget) {
-      const rect = event.currentTarget.getBoundingClientRect();
+      const button = event.currentTarget;
+      const rect = button.getBoundingClientRect();
+
+      // 這裡的關鍵是找到按鈕相對於其父容器的位置
+      const pageContainer = document.querySelector(".content-container");
+      const containerRect = pageContainer.getBoundingClientRect();
+
+      // 計算相對於PageContainer的位置
+      const relativeTop = rect.bottom - containerRect.top + 20; // 按鈕下方5px
+      const relativeLeft = rect.left - containerRect.left + rect.width / 2 - 75; // 水平居中
 
       setMenuPosition({
-        top: rect.bottom + window.scrollY + 5, // 加上滾動偏移
-        left: rect.left + window.scrollX + rect.width / 2 - 75, // 調整為更好的居中位置
+        top: relativeTop,
+        left: relativeLeft,
       });
     }
 
@@ -520,7 +657,9 @@ const MyNFTs = () => {
   };
 
   // 关闭操作菜单
-  const handleClickOutside = () => {
+  const handleClickOutside = (e) => {
+    // 確保點擊事件正確處理
+    e.stopPropagation();
     setShowActionMenu(false);
   };
 
@@ -567,7 +706,7 @@ const MyNFTs = () => {
         show: true,
         success: true,
         fadeOut: false,
-        message: "購入成功！", // 修改為與購入成功相同的文字
+        message: "転送成功！", // 修改為與転送成功相同的文字
       });
 
       // 成功時，3秒後開始淡出動畫
@@ -614,195 +753,222 @@ const MyNFTs = () => {
     }
   };
 
-  useEffect(() => {
-    if (showActionMenu) {
-      // 當顯示菜單時，禁用頁面滾動
-      document.body.style.overflow = "hidden";
-    } else {
-      // 當隱藏菜單時，恢復頁面滾動
-      document.body.style.overflow = "";
-    }
+  const closeTransferModal = () => {
+    setShowTransferModal(false);
+  };
 
-    // 組件卸載時清理
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [showActionMenu]);
+  // 移除滾動事件監聽器，允許菜單保持打開
+  useEffect(() => {
+    // 這裡不再添加自動關閉菜單的滾動監聽器
+    // 滾動時菜單保持打開，位置將跟隨滾動（因為使用了基於視窗的fixed定位）
+  }, [showActionMenu, activeNFT]);
+
+  // 處理取消出品的函數
+  const handleRevoke = (nft) => {
+    // 實現取消出品的邏輯
+    alert(`取消出品：${nft.name}`); // 臨時測試用，實際應調用合約方法
+    setShowActionMenu(false);
+  };
 
   return (
-    <PageContainer className="content-container">
-      <PageHeader>
-        <Title>
-          <GradientTitle>マイNFT</GradientTitle>
-        </Title>
-        <Subtitle>
-          あなたのウォレットにあるすべてのNFTをここで確認できます。
-        </Subtitle>
-      </PageHeader>
+    <>
+      <PageContainer className="content-container">
+        <PageHeader>
+          <Title>
+            <GradientTitle>マイNFT</GradientTitle>
+          </Title>
+          <Subtitle>
+            あなたのウォレットにあるすべてのNFTをここで確認できます。
+          </Subtitle>
+        </PageHeader>
 
-      {loading ? (
-        <LoadingState>
-          <h3>NFTを読み込み中...</h3>
-          <p>お持ちのNFTを取得しています。しばらくお待ちください。</p>
-        </LoadingState>
-      ) : (
-        <>
-          <FilterBar
-            searchTerm={searchTerm}
-            onSearchChange={handleSearchChange}
-            searchPlaceholder="NFTを検索..."
-            filters={[
-              {
-                value: collectionFilter,
-                options: [
-                  { value: "all", label: "すべてのコレクション" },
-                  ...collections.map((collection) => ({
-                    value: collection,
-                    label: collection,
-                  })),
-                ],
-                onChange: setCollectionFilter,
-              },
-              {
-                value: sortBy,
-                options: [
-                  { value: "recent", label: "最新順" },
-                  { value: "name_asc", label: "名前（A-Z）" },
-                  { value: "name_desc", label: "名前（Z-A）" },
-                ],
-                onChange: setSortBy,
-              },
-            ]}
-          />
-
-          {filteredNFTs.length > 0 ? (
-            <NFTGrid
-              items={filteredNFTs}
-              actionText="操作"
-              onItemAction={(nft, event) => handleNFTAction(nft, event)}
-              renderStatus={(nft) =>
-                nft.statusMessage
-                  ? {
-                      message: nft.statusMessage,
-                      success: nft.statusType === "success",
-                      fadeOut: nft.fadeOut,
-                    }
-                  : null
-              }
+        {loading ? (
+          <LoadingState>
+            <h3>NFTを読み込み中...</h3>
+            <p>お持ちのNFTを取得しています。しばらくお待ちください。</p>
+          </LoadingState>
+        ) : (
+          <>
+            <FilterBar
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+              searchPlaceholder="NFTを検索..."
+              filters={[
+                {
+                  value: collectionFilter,
+                  options: [
+                    { value: "all", label: "すべてのコレクション" },
+                    ...collections.map((collection) => ({
+                      value: collection,
+                      label: collection,
+                    })),
+                  ],
+                  onChange: setCollectionFilter,
+                },
+                {
+                  value: sortBy,
+                  options: [
+                    { value: "recent", label: "最新順" },
+                    { value: "name_asc", label: "名前（A-Z）" },
+                    { value: "name_desc", label: "名前（Z-A）" },
+                  ],
+                  onChange: setSortBy,
+                },
+              ]}
             />
-          ) : (
-            <EmptyState>
-              <h3>NFTが見つかりません</h3>
-              <p>NFTをミントするか、他のユーザーから購入してください。</p>
-            </EmptyState>
-          )}
 
-          {showActionMenu && activeNFT && (
-            <>
-              <div
-                style={{
-                  position: "fixed",
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  zIndex: 999,
-                  overflow: "hidden",
-                  pointerEvents: "all",
+            {filteredNFTs.length > 0 ? (
+              <NFTGrid
+                items={filteredNFTs}
+                actionText="操作"
+                onItemAction={(nft, event) => {
+                  if (event) {
+                    event.preventDefault(); // 防止默認行為
+                    event.stopPropagation(); // 阻止事件冒泡
+                    handleNFTAction(nft, event);
+                  }
                 }}
-                onClick={handleClickOutside}
+                renderStatus={(nft) =>
+                  nft.statusMessage
+                    ? {
+                        message: nft.statusMessage,
+                        success: nft.statusType === "success",
+                        fadeOut: nft.fadeOut,
+                      }
+                    : null
+                }
               />
-              <ActionMenu
-                style={{
-                  top: `${menuPosition.top}px`,
-                  left: `${menuPosition.left}px`,
-                  zIndex: 1000,
-                }}
-              >
-                {activeNFT.isListed ? (
-                  <ActionMenuItem onClick={() => handleRevoke(activeNFT)}>
-                    出品を取り消す
-                  </ActionMenuItem>
-                ) : (
-                  <>
-                    <ActionMenuItem onClick={() => handleListNFT(activeNFT)}>
-                      マーケットに出品
-                    </ActionMenuItem>
-                    <ActionMenuItem onClick={() => handleTransfer(activeNFT)}>
-                      転送する
-                    </ActionMenuItem>
-                  </>
-                )}
-                <ActionMenuItem
-                  onClick={() => navigate(`/history?nft=${activeNFT.tokenId}`)}
-                >
-                  履歴ページへ
-                </ActionMenuItem>
-              </ActionMenu>
-            </>
-          )}
-        </>
-      )}
-
-      {showTransferModal && activeNFT && (
-        <>
-          <ModalOverlay onClick={() => setShowTransferModal(false)} />
-          <TransferModal>
-            <CloseButton onClick={() => setShowTransferModal(false)} />
-            <h3>NFTを転送</h3>
-            <NFTPreview>
-              <img src={activeNFT.image} alt={activeNFT.name} />
-              <div>
-                <h4>{activeNFT.name}</h4>
-                <p>{activeNFT.collection}</p>
-              </div>
-            </NFTPreview>
-            <TransferInput
-              placeholder="受取人のアドレスを入力"
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-            />
-            <TransferButton
-              onClick={handleTransferSubmit}
-              fullWidth
-              disabled={!recipientAddress.trim()}
-            >
-              転送する
-            </TransferButton>
-
-            {transferStatus.show && (
-              <CustomStatusMessage
-                success={transferStatus.success}
-                fadeOut={transferStatus.fadeOut}
-                noArrow={false} // 顯示箭頭
-                centered={true} // 居中顯示
-              >
-                {transferStatus.message}
-              </CustomStatusMessage>
+            ) : (
+              <EmptyState>
+                <h3>NFTが見つかりません</h3>
+                <p>NFTをミントするか、他のユーザーから購入してください。</p>
+              </EmptyState>
             )}
-          </TransferModal>
-        </>
-      )}
 
-      {/* 模態框外的全局提示消息 */}
-      {transferStatus.show && !showTransferModal && (
-        <StatusMessage
-          success={transferStatus.success}
-          fadeOut={transferStatus.fadeOut}
-          style={{
-            position: "fixed",
-            top: "20px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 1100,
-            minWidth: "300px",
-            maxWidth: "80%",
-          }}
-        >
-          {transferStatus.message}
-        </StatusMessage>
-      )}
-    </PageContainer>
+            {showActionMenu && activeNFT && (
+              <>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    zIndex: 999,
+                    pointerEvents: "all",
+                  }}
+                  onClick={handleClickOutside}
+                />
+                <ActionMenu
+                  style={{
+                    position: "absolute",
+                    top: `${menuPosition.top}px`,
+                    left: `${menuPosition.left}px`,
+                    zIndex: 1000,
+                  }}
+                >
+                  {activeNFT.isListed ? (
+                    <ActionMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation(); // 阻止事件冒泡
+                        handleRevoke(activeNFT);
+                      }}
+                    >
+                      出品を取り消す
+                    </ActionMenuItem>
+                  ) : (
+                    <>
+                      <ActionMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation(); // 阻止事件冒泡
+                          handleListNFT(activeNFT);
+                        }}
+                      >
+                        マーケットに出品
+                      </ActionMenuItem>
+                      <ActionMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation(); // 阻止事件冒泡
+                          handleTransfer(activeNFT);
+                        }}
+                      >
+                        転送する
+                      </ActionMenuItem>
+                    </>
+                  )}
+                  <ActionMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation(); // 阻止事件冒泡
+                      navigate(`/history?nft=${activeNFT.tokenId}`);
+                    }}
+                  >
+                    履歴ページへ
+                  </ActionMenuItem>
+                </ActionMenu>
+              </>
+            )}
+          </>
+        )}
+
+        {showTransferModal && activeNFT && (
+          <>
+            <ModalOverlay onClick={closeTransferModal} />
+            <TransferModal>
+              <CloseButton onClick={closeTransferModal} />
+              <h3>NFTを転送</h3>
+              <NFTPreview>
+                <img src={activeNFT.image} alt={activeNFT.name} />
+                <div>
+                  <h4>{activeNFT.name}</h4>
+                  <p>{activeNFT.collection}</p>
+                </div>
+              </NFTPreview>
+              <TransferInput
+                placeholder="受取人のアドレスを入力"
+                value={recipientAddress}
+                onChange={(e) => setRecipientAddress(e.target.value)}
+              />
+              <TransferButton
+                onClick={handleTransferSubmit}
+                fullWidth
+                disabled={!recipientAddress.trim()}
+              >
+                転送する
+              </TransferButton>
+
+              {transferStatus.show && (
+                <CustomStatusMessage
+                  success={transferStatus.success}
+                  fadeOut={transferStatus.fadeOut}
+                  noArrow={false}
+                  centered={true}
+                >
+                  {transferStatus.message}
+                </CustomStatusMessage>
+              )}
+            </TransferModal>
+          </>
+        )}
+
+        {transferStatus.show && !showTransferModal && (
+          <StatusMessage
+            success={transferStatus.success}
+            fadeOut={transferStatus.fadeOut}
+            style={{
+              position: "fixed",
+              top: "20px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1100,
+              minWidth: "300px",
+              maxWidth: "80%",
+            }}
+          >
+            {transferStatus.message}
+          </StatusMessage>
+        )}
+      </PageContainer>
+    </>
   );
 };
 

@@ -95,6 +95,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  aspect-ratio: 1 / 1.6; /* 調整卡片寬高比例，使其更高一些 */
 
   ${(props) => !props.isSelected && cardAnimationStyles}
 
@@ -190,8 +191,8 @@ const CardContent = styled.div`
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
-  height: auto;
-  min-height: 120px; /* 減少最小高度 */
+  height: 45%; /* 調整內容區域高度比例 */
+  min-height: 140px; /* 增加最小高度 */
 `;
 
 // 添加卡片信息部分容器

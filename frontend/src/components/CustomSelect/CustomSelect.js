@@ -54,7 +54,7 @@ const SelectOptions = styled.div`
   border: 1px solid rgba(106, 17, 203, 0.4);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   margin-top: 4px;
-  max-height: 200px;
+  max-height: 600px;
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 9999; /* 保持高z-index */
@@ -62,6 +62,7 @@ const SelectOptions = styled.div`
   /* 自定義滾動條 */
   &::-webkit-scrollbar {
     width: 6px;
+    display: block;
   }
 
   &::-webkit-scrollbar-track {
@@ -70,8 +71,15 @@ const SelectOptions = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(106, 17, 203, 0.4);
+    background: rgba(106, 17, 203, 0.15);
     border-radius: 3px;
+    min-height: 30px;
+    visibility: visible;
+    display: block;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(106, 17, 203, 0.3);
   }
 `;
 

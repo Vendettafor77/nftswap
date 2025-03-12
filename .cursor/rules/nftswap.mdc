@@ -3,6 +3,12 @@ description: nftswap
 globs: 
 alwaysApply: true
 ---
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+
 ### 當前進度檢查
 
 1. **合約部分**：已完成編寫與測試。

@@ -18,9 +18,7 @@ const BaseStyle = createGlobalStyle`
 
   html {
     background-color: ${(props) => props.theme.colors.background};
-    /* 確保滾動條僅在需要時顯示 */
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* 移除限制滾動條的設置，讓GlobalScrollbarStyle接管 */
     width: 100%;
     height: 100%;
     scrollbar-width: thin;
@@ -50,7 +48,7 @@ const BaseStyle = createGlobalStyle`
       ${(props) => props.theme.colors.background} 0%,
       ${(props) => props.theme.colors.background}F2 100%
     );
-    /* 確保滾動條只在頂層顯示 */
+    /* 允許滾動，但保留其他樣式 */
     overflow-x: hidden;
     width: 100%;
     padding: 0 !important;
@@ -67,8 +65,7 @@ const BaseStyle = createGlobalStyle`
       ${(props) => props.theme.colors.background} 0%,
       ${(props) => props.theme.colors.background}F2 100%
     );
-    /* 確保內部元素不產生額外滾動條 */
-    overflow-y: hidden;
+    /* 不限制垂直滾動 */
     overflow-x: hidden;
     position: relative;
   }
@@ -80,36 +77,12 @@ const BaseStyle = createGlobalStyle`
     width: 100%;
     padding: 0 !important;
     margin: 0 !important;
-    /* 保證內部元素不產生滾動條 */
-    overflow-y: hidden;
+    /* 確保App允許內容延伸 */
+    overflow-y: visible !important;
     overflow-x: hidden;
   }
 
-  /* 滾動條只設置在頂層元素 */
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    display: block !important;
-    background-color: #1c2241; /* 與導航欄背景一致 */
-  }
-
-  html::-webkit-scrollbar-track,
-  body::-webkit-scrollbar-track {
-    background: #1c2241; /* 與導航欄背景一致 */
-    border-radius: 0;
-  }
-
-  html::-webkit-scrollbar-thumb,
-  body::-webkit-scrollbar-thumb {
-    background: rgba(100, 116, 139, 0.5);
-    border-radius: 3px;
-  }
-
-  html::-webkit-scrollbar-thumb:hover,
-  body::-webkit-scrollbar-thumb:hover {
-    background: rgba(100, 116, 139, 0.7);
-  }
+  /* 移除滾動條樣式相關代碼，由GlobalScrollbarStyle處理 */
 
   /* 確保導航欄樣式正確 */
   .navbar-wrapper {

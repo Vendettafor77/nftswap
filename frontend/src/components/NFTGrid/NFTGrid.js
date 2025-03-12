@@ -31,6 +31,7 @@ const Grid = styled.div`
   /* 確保卡片最小寬度，防止擠壓變形 */
   & > div {
     min-width: 260px;
+    height: auto;
   }
 
   @media (min-width: 1920px) {

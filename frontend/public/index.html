@@ -3,8 +3,9 @@
   lang="ja"
   style="
     background-color: #1c2241;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241;
+    /* 移除滾動條相關樣式，由GlobalScrollbarStyle接管 */
+    /* scrollbar-width: thin;
+    scrollbar-color: rgba(100, 116, 139, 0.5) #1c2241; */
   "
 >
   <head>
@@ -22,20 +23,20 @@
     />
     <title>NFTスワップ</title>
     <style>
-      /* 直接在HTML中添加樣式，確保滾動條區域與導航欄背景色一致 */
-      html::-webkit-scrollbar,
+      /* 移除滾動條樣式，由GlobalScrollbarStyle接管 */
+      /* html::-webkit-scrollbar,
       body::-webkit-scrollbar {
         width: 6px;
         height: 6px;
-        background-color: #1c2241; /* 與導航欄背景一致 */
+        background-color: #1c2241;
         display: block !important;
         position: fixed;
-        z-index: 1000 !important; /* 確保滾動條在最上層 */
+        z-index: 1000 !important;
       }
 
       html::-webkit-scrollbar-track,
       body::-webkit-scrollbar-track {
-        background: #1c2241; /* 與導航欄背景一致 */
+        background: #1c2241;
         border-radius: 0;
         z-index: 1000 !important;
       }
@@ -51,7 +52,7 @@
       body::-webkit-scrollbar-thumb:hover {
         background: rgba(100, 116, 139, 0.7);
         z-index: 1000 !important;
-      }
+      } */
 
       body {
         background-color: #1c2241;

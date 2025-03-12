@@ -7,6 +7,10 @@ export const NFTGridContainer = styled.div`
   padding: ${(props) => props.theme.spacing.sm};
   margin-top: ${(props) => props.theme.spacing.sm};
 
+  > div {
+    height: 100%;
+  }
+
   @media (min-width: 1920px) {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }

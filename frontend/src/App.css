@@ -26,6 +26,7 @@ body {
   max-width: 100%;
   width: 100%;
   overscroll-behavior: none; /* 防止過度滾動 */
+  overflow-y: auto; /* 確保body可以滾動 */
 }
 
 /* 導航欄容器包裝器 - 確保覆蓋滾動條區域 */
@@ -52,6 +53,8 @@ body {
   box-sizing: border-box;
   position: relative;
   overflow-x: hidden;
+  /* 確保App容器不產生自己的滾動條，但允許內容延伸 */
+  overflow-y: visible !important;
 }
 
 /* 內容區域樣式 */
@@ -64,6 +67,8 @@ body {
   margin-top: 80px; /* 根據導航欄高度調整，稍微增加間距 */
   box-sizing: border-box;
   overflow-x: hidden;
+  /* 允許內容正常延伸 */
+  overflow-y: visible;
 }
 
 /* 確保全寬元素占據整個視口寬度 */
@@ -192,30 +197,6 @@ input:not(.price-input):not(.search-input):not(.transfer-input) {
   box-sizing: border-box;
 }
 
-/* 定义滚动条样式 - 只应用于顶层元素 */
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.1);
-  border-radius: 3px;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.5);
-  border-radius: 3px;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
-}
-
 /* App根元素樣式 */
 #root {
   min-height: 100vh;
@@ -230,7 +211,6 @@ body::-webkit-scrollbar-thumb:hover {
 .App {
   position: relative;
   overflow-x: hidden;
-  overflow-y: hidden !important; /* 确保内部元素不产生滚动条 */
   width: 100%; /* 確保佔滿寬度 */
 }
 
