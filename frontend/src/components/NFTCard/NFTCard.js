@@ -7,6 +7,7 @@ import {
   SecondaryButton,
 } from "../styled/Button";
 import { StatusMessage } from "../styled/StatusMessage";
+import GradientText from "../styled/GradientText";
 
 // 邊框流光動畫
 const borderGlow = keyframes`
@@ -217,45 +218,17 @@ const NFTName = styled.h3`
   padding-top: 0;
 `;
 
-// 在NFTCard组件中使用SVG文本渲染NFT名称
+// 使用共享的GradientText組件替代原有的NFTNameSVG
 const NFTNameSVG = ({ children, id }) => {
-  // 為每個卡片生成唯一的漸變ID
-  const gradientId = `nftGradient-${id}`;
-
   return (
-    <svg
-      width="100%"
+    <GradientText
+      id={`nftGradient-${id}`}
+      fontSize="1.1rem"
       height="26"
-      style={{
-        overflow: "visible",
-        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
-      }}
+      letterSpacing="0.01em"
     >
-      <defs>
-        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6a11cb" />
-          <stop offset="100%" stopColor="#2575fc" />
-        </linearGradient>
-      </defs>
-      <text
-        x="0"
-        y="18"
-        fill={`url(#${gradientId})`}
-        fontWeight="600"
-        fontSize="1.1rem"
-        fontFamily="inherit"
-        letterSpacing="0.01em"
-        dominantBaseline="middle"
-        style={{
-          fontFamily: "inherit",
-          textRendering: "optimizeLegibility",
-          shapeRendering: "geometricPrecision",
-          opacity: "0.95",
-        }}
-      >
-        {children}
-      </text>
-    </svg>
+      {children}
+    </GradientText>
   );
 };
 
@@ -319,6 +292,7 @@ const NFTCard = ({
   statusMessage,
   customActionButton,
   isSelected,
+  id,
 }) => {
   // 使用實際 NFT 數據，而不是測試數據
   const nftData = nft;
@@ -326,9 +300,8 @@ const NFTCard = ({
   const getActionText =
     typeof actionText === "function"
       ? () => actionText(nftData)
-      : () => actionText;
+      : () => actionText || "操作";
 
-  // 處理按鈕點擊
   const handleAction = (event) => {
     if (onAction) {
       onAction(nftData, event);
@@ -336,7 +309,7 @@ const NFTCard = ({
   };
 
   return (
-    <Card isSelected={isSelected}>
+    <Card isSelected={isSelected} id={id}>
       <ImageContainer>
         <Image src={nftData.image} alt={nftData.name} />
         {nftData.isListed && <ListingBadge>出品中</ListingBadge>}
@@ -357,46 +330,20 @@ const NFTCard = ({
           <NFTCollection>{nftData.collection}</NFTCollection>
         </InfoContainer>
         <ActionContainer>
-          {onAction && !statusMessage && customActionButton && (
-            <div
-              style={{
-                width: "100%",
-                height: "42px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                padding: 0,
-                margin: 0,
-              }}
-              onClick={(e) => handleAction(e)}
-            >
-              {customActionButton()}
-            </div>
-          )}
-          {onAction && !statusMessage && !customActionButton && (
-            <CardButton onClick={(e) => handleAction(e)}>
-              {getActionText()}
-            </CardButton>
-          )}
-          {statusMessage && (
+          {statusMessage ? (
             <CardStatusMessage
               success={statusMessage.success}
               fadeOut={statusMessage.fadeOut}
-              fullWidth
-              noArrow={
-                statusMessage.noArrow !== undefined
-                  ? statusMessage.noArrow
-                  : true
-              }
-              centered={
-                statusMessage.centered !== undefined
-                  ? statusMessage.centered
-                  : false
-              }
-              {...(statusMessage.style || {})}
+              style={statusMessage.style}
+              centered={statusMessage.centered}
+              noArrow={statusMessage.noArrow}
             >
               {statusMessage.message}
             </CardStatusMessage>
+          ) : customActionButton ? (
+            customActionButton()
+          ) : (
+            <CardButton onClick={handleAction}>{getActionText()}</CardButton>
           )}
         </ActionContainer>
       </CardContent>

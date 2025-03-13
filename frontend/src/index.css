@@ -12,25 +12,11 @@ body,
 /* 特殊樣式，設置背景色和基本滾動行為 */
 html {
   background-color: #1c2241 !important;
-  overflow-y: scroll !important; /* 保持滾動行為 */
+  /* 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
+  scroll-behavior: smooth; /* 平滑滾動 */
 }
 
-/* 內容適合視窗時的樣式 */
-html.content-fits-viewport {
-  /* 特殊類名，由ScrollbarManager動態添加/移除 */
-}
-
-/* 內容需要滾動時的樣式 */
-html.content-scrollable {
-  overflow-y: scroll !important;
-}
-
-/* 確保在所有設備上滾動條都正確顯示 */
-@media (max-width: 768px) {
-  html {
-    overflow-y: scroll !important;
-  }
-}
+/* 移除所有滾動相關樣式，由 GlobalScrollbarStyle.js 統一管理 */
 
 body {
   margin: 0;
@@ -40,12 +26,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding-right: 0 !important; /* 防止內容偏移 */
-  overflow-y: auto !important; /* 確保內容可以滾動 */
+  /* 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
   width: 100%;
   min-height: 100vh;
   margin-right: 0 !important;
   background-color: #1c2241;
 }
+
+/* 以下滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
 
 code {
   font-family:
@@ -59,31 +47,6 @@ code {
   box-sizing: border-box;
 }
 
-/* 移除滾動條樣式，由GlobalScrollbarStyle接管 */
-/* html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: #1c2241;
-}
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  background: #1c2241;
-  border-radius: 0;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.5);
-  border-radius: 3px;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
-} */
-
 /* App根元素樣式 */
 #root {
   min-height: 100vh;
@@ -91,7 +54,7 @@ body::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   position: relative;
   overflow-x: hidden; /* 防止水平滾動 */
-  overflow-y: hidden; /* 確保root不產生滾動條 */
+  /* 確保root不產生滾動條，已由 GlobalScrollbarStyle.js 統一管理 */
   width: 100%;
 }
 
@@ -99,7 +62,7 @@ body::-webkit-scrollbar-thumb:hover {
 .App {
   position: relative;
   overflow-x: hidden;
-  overflow-y: visible !important; /* 允許內容正常延伸 */
+  /* 滾動行為已由 GlobalScrollbarStyle.js 統一管理 */
   width: 100%;
 }
 

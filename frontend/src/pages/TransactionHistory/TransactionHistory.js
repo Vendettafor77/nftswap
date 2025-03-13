@@ -4,6 +4,7 @@ import { HeroSection } from "../../components/styled";
 import FilterBar from "../../components/Filters/FilterBar";
 import TransactionCard from "./components/TransactionCard";
 import { mockTransactions } from "../../data/mockData"; // 暫時使用模擬數據
+import GradientText from "../../components/styled/GradientText";
 
 // 與現有頁面一致的佈局容器
 const PageContainer = styled.div`
@@ -32,45 +33,18 @@ const Title = styled.h1`
   height: 60px;
 `;
 
-// 使用與NFTCard相同的SVG漸變文字
+// 使用共享的GradientText組件替代原有的GradientTitle
 const GradientTitle = ({ children }) => {
-  const uniqueId = `transaction-title-gradient-${Math.random().toString(36).substring(7)}`;
-
   return (
-    <svg
-      width="100%"
+    <GradientText
+      fontSize="2.5rem"
       height="60"
-      style={{
-        maxWidth: "400px",
-        overflow: "visible",
-        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
-      }}
+      maxWidth="400px"
+      centered={true}
+      id={`transaction-title-${Math.random().toString(36).substring(7)}`}
     >
-      <defs>
-        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6a11cb" />
-          <stop offset="100%" stopColor="#2575fc" />
-        </linearGradient>
-      </defs>
-      <text
-        x="50%"
-        y="45"
-        fill={`url(#${uniqueId})`}
-        fontWeight="600"
-        fontSize="2.5rem"
-        fontFamily="inherit"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        style={{
-          fontFamily: "inherit",
-          textRendering: "optimizeLegibility",
-          shapeRendering: "geometricPrecision",
-          opacity: "0.95",
-        }}
-      >
-        {children}
-      </text>
-    </svg>
+      {children}
+    </GradientText>
   );
 };
 
@@ -122,45 +96,18 @@ const EmptyState = styled.div`
   }
 `;
 
-// 空狀態的漸變標題
+// 使用共享的GradientText組件替代原有的EmptyGradientTitle
 const EmptyGradientTitle = ({ children }) => {
-  const uniqueId = `empty-title-gradient-${Math.random().toString(36).substring(7)}`;
-
   return (
-    <svg
-      width="100%"
+    <GradientText
+      fontSize="1.8rem"
       height="40"
-      style={{
-        maxWidth: "300px",
-        overflow: "visible",
-        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
-      }}
+      maxWidth="300px"
+      centered={true}
+      id={`empty-title-${Math.random().toString(36).substring(7)}`}
     >
-      <defs>
-        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6a11cb" />
-          <stop offset="100%" stopColor="#2575fc" />
-        </linearGradient>
-      </defs>
-      <text
-        x="50%"
-        y="30"
-        fill={`url(#${uniqueId})`}
-        fontWeight="600"
-        fontSize="1.8rem"
-        fontFamily="inherit"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        style={{
-          fontFamily: "inherit",
-          textRendering: "optimizeLegibility",
-          shapeRendering: "geometricPrecision",
-          opacity: "0.95",
-        }}
-      >
-        {children}
-      </text>
-    </svg>
+      {children}
+    </GradientText>
   );
 };
 

@@ -88,21 +88,6 @@ const EmptyState = styled.div`
   }
 `;
 
-const StandardNFTButton = styled.div`
-  width: 100%;
-  padding: 0;
-  box-sizing: border-box;
-
-  button {
-    height: 45px; /* 与NFTCard中的按钮高度保持一致 */
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: ${(props) => props.theme.spacing.sm}
-      ${(props) => props.theme.spacing.lg};
-  }
-`;
-
 /**
  * NFT卡片網格組件
  * @param {Array} items - NFT卡片數據
@@ -112,6 +97,7 @@ const StandardNFTButton = styled.div`
  * @param {Function} renderActionButton - 自定義按鈕渲染
  * @param {Object} selectedNFT - 已選中的NFT
  * @param {String} className - 附加類名
+ * @param {String} itemIdPrefix - 每個NFT卡片ID的前綴，用於DOM選擇
  * @returns {JSX.Element} NFT卡片網格
  */
 const NFTGrid = ({
@@ -122,9 +108,21 @@ const NFTGrid = ({
   renderActionButton,
   selectedNFT,
   className,
+  itemIdPrefix = "nft-",
 }) => {
+  // 簡化按鈕處理邏輯
   const getCustomButton = (nft) => {
-    return renderActionButton ? renderActionButton(nft) : null;
+    if (!renderActionButton) return null;
+
+    // 簡化點擊處理函數
+    const handleClick = (e) => {
+      if (onItemAction) {
+        onItemAction(nft, e);
+      }
+    };
+
+    // 傳遞點擊處理函數給自定義按鈕渲染器
+    return renderActionButton(nft, handleClick);
   };
 
   return (
@@ -140,21 +138,22 @@ const NFTGrid = ({
             const isNFTSelected =
               selectedNFT && selectedNFT.tokenId === nft.tokenId;
 
+            // 生成唯一ID，用於DOM選擇和滾動定位
+            // 確保優先使用tokenId，因為在跨頁面操作時需要保持一致
+            const nftItemId = `${itemIdPrefix}${nft.tokenId}`;
+
+            console.log("生成NFT元素ID:", nftItemId, "tokenId:", nft.tokenId);
+
             return (
               <NFTCard
                 key={nft.id || nft.tokenId}
+                id={nftItemId} // 添加ID屬性
                 nft={nft}
                 actionText={actionText}
                 onAction={onItemAction}
                 statusMessage={renderStatus ? renderStatus(nft) : null}
                 customActionButton={
-                  renderActionButton
-                    ? () => (
-                        <StandardNFTButton>
-                          {getCustomButton(nft)}
-                        </StandardNFTButton>
-                      )
-                    : null
+                  renderActionButton ? () => getCustomButton(nft) : null
                 }
                 isSelected={isNFTSelected}
               />

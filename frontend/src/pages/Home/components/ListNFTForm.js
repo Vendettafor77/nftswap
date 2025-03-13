@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { PrimaryButton } from "../../../components/styled/Button";
 import { StatusMessage } from "../../../components/styled/StatusMessage";
 import { selectedNFTRef } from "./sharedState";
+import GradientText from "../../../components/styled/GradientText";
 
 // 表單容器 - 美化版
 const FormWrapper = styled.div`
@@ -21,9 +22,19 @@ const FormTitle = styled.h3`
   font-size: 1.4rem;
   text-align: center;
   width: 100%;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  padding-top: ${(props) => props.theme.spacing.xs};
+  padding-bottom: ${(props) => props.theme.spacing.xs};
+`;
+
+// 表單標題 - 居中顯示並增加顯眼度
+const FormTitleOld = styled.h3`
+  color: ${(props) => props.theme.colors.text.primary};
+  margin: 0 0 ${(props) => props.theme.spacing.md} 0;
+  font-size: 1.4rem;
+  text-align: center;
+  width: 100%;
+
   font-weight: 600;
   padding-top: ${(props) => props.theme.spacing.xs};
   padding-bottom: ${(props) => props.theme.spacing.xs};
@@ -63,9 +74,6 @@ const NFTDetails = styled.div`
 // NFT名稱 - 漸變效果
 const NFTName = styled.div`
   font-weight: bold;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   font-size: 1rem;
 `;
 
@@ -409,7 +417,16 @@ const ListNFTForm = () => {
 
   return (
     <FormWrapper>
-      <FormTitle>NFTを出品する</FormTitle>
+      <FormTitle>
+        <GradientText
+          fontSize="1.4rem"
+          height="30"
+          centered={true}
+          id={`form-title-${Math.random().toString(36).substring(7)}`}
+        >
+          NFTを出品する
+        </GradientText>
+      </FormTitle>
 
       {selectedNFT ? (
         <SelectedNFTInfo
@@ -424,7 +441,16 @@ const ListNFTForm = () => {
         >
           <NFTImage src={selectedNFT.image} alt={selectedNFT.name} />
           <NFTDetails>
-            <NFTName>{selectedNFT.name}</NFTName>
+            <NFTName>
+              <GradientText
+                fontSize="1rem"
+                height="24"
+                fontWeight="bold"
+                id={`selected-nft-${selectedNFT.id || selectedNFT.tokenId}`}
+              >
+                {selectedNFT.name}
+              </GradientText>
+            </NFTName>
             <NFTCollection>{selectedNFT.collection}</NFTCollection>
           </NFTDetails>
         </SelectedNFTInfo>

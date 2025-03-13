@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   PrimaryButton,
@@ -7,6 +7,8 @@ import {
 } from "../../components/styled/Button";
 import { StatusMessage } from "../../components/styled/StatusMessage";
 import { EthSymbol } from "../../components/NFTCard/NFTCard";
+import GradientText from "../../components/styled/GradientText";
+import { myNFTs, findNFTByTokenId } from "../../data/mockData";
 
 const MintContainer = styled.div`
   max-width: 800px;
@@ -32,46 +34,19 @@ const Title = styled.h1`
   height: 60px;
 `;
 
-// 使用與NFTCard相同的SVG漸變文字
+// 使用共享的GradientText組件替代原有的GradientTitle
 const GradientTitle = ({ children, className, fontSize = "2.5rem" }) => {
-  const uniqueId = `title-gradient-${Math.random().toString(36).substring(7)}`;
-
   return (
-    <svg
-      width="100%"
+    <GradientText
+      fontSize={fontSize}
       height={fontSize === "2.5rem" ? "60" : "40"}
-      style={{
-        maxWidth: fontSize === "2.5rem" ? "600px" : "300px",
-        overflow: "visible",
-        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
-      }}
+      maxWidth={fontSize === "2.5rem" ? "600px" : "300px"}
+      centered={fontSize === "2.5rem"}
+      id={`title-gradient-${Math.random().toString(36).substring(7)}`}
       className={className}
     >
-      <defs>
-        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6a11cb" />
-          <stop offset="100%" stopColor="#2575fc" />
-        </linearGradient>
-      </defs>
-      <text
-        x={fontSize === "2.5rem" ? "50%" : "0"}
-        y={fontSize === "2.5rem" ? "45" : "30"}
-        fill={`url(#${uniqueId})`}
-        fontWeight="600"
-        fontSize={fontSize}
-        fontFamily="inherit"
-        textAnchor={fontSize === "2.5rem" ? "middle" : "start"}
-        dominantBaseline="middle"
-        style={{
-          fontFamily: "inherit",
-          textRendering: "optimizeLegibility",
-          shapeRendering: "geometricPrecision",
-          opacity: "0.95",
-        }}
-      >
-        {children}
-      </text>
-    </svg>
+      {children}
+    </GradientText>
   );
 };
 
@@ -249,44 +224,10 @@ const NavigationButtons = styled.div`
   margin-top: ${(props) => props.theme.spacing.md};
 `;
 
-// 示例NFT数据
-const nftData = [
-  {
-    tokenId: "221",
-    image:
-      "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "453",
-    image:
-      "https://i.seadn.io/gcs/files/697ac9124075fe018f07313739769b11.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "874",
-    image:
-      "https://i.seadn.io/gcs/files/d3b1a773118e400b2d5f77bbc4aa9e17.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "612",
-    image:
-      "https://i.seadn.io/gcs/files/e1a31407b6968de5079ea112e45610df.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "197",
-    image:
-      "https://i.seadn.io/gcs/files/ce84942656d53eabd17d4cd311f79536.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "308",
-    image:
-      "https://i.seadn.io/gcs/files/dc6f0c6a33c5fe2c02cf1350dd8b828a.png?auto=format&dpr=1&w=1000",
-  },
-  {
-    tokenId: "759",
-    image:
-      "https://i.seadn.io/gcs/files/03c44f5f83805652ba076c41fa43c4b1.png?auto=format&dpr=1&w=1000",
-  },
-];
+// 從myNFTs中過濾出WTFape集合的NFT作為可鑄造的NFT示例
+const nftData = myNFTs.filter(
+  (nft) => nft.collection === "WTFape コレクション"
+);
 
 const MintWTFape = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

@@ -1,9 +1,7 @@
 /* App.css */
-/* 設置全局滾動條 - 僅在頂層元素 */
+/* 設置全局樣式 - 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
 :root {
-  /* 計算滾動條寬度的CSS變量 */
-  --scrollbar-width: calc(100vw - 100%);
-  --scrollbar-compensation: calc(0px - var(--scrollbar-width));
+  /* 移除滾動條寬度的計算變量 */
   margin: 0;
   padding: 0;
   width: 100%;
@@ -26,7 +24,7 @@ body {
   max-width: 100%;
   width: 100%;
   overscroll-behavior: none; /* 防止過度滾動 */
-  overflow-y: auto; /* 確保body可以滾動 */
+  /* 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
 }
 
 /* 導航欄容器包裝器 - 確保覆蓋滾動條區域 */
@@ -53,8 +51,7 @@ body {
   box-sizing: border-box;
   position: relative;
   overflow-x: hidden;
-  /* 確保App容器不產生自己的滾動條，但允許內容延伸 */
-  overflow-y: visible !important;
+  /* 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
 }
 
 /* 內容區域樣式 */
@@ -67,8 +64,7 @@ body {
   margin-top: 80px; /* 根據導航欄高度調整，稍微增加間距 */
   box-sizing: border-box;
   overflow-x: hidden;
-  /* 允許內容正常延伸 */
-  overflow-y: visible;
+  /* 滾動條樣式已移至 GlobalScrollbarStyle.js 統一管理 */
 }
 
 /* 確保全寬元素占據整個視口寬度 */
@@ -92,8 +88,8 @@ body {
   padding: 20px;
   font-family: Arial, sans-serif;
   box-sizing: border-box;
-  /* 補償滾動條寬度 */
-  padding-right: calc(20px + 6px);
+  /* 移除固定補償量，由 GlobalScrollbarStyle.js 統一管理 */
+  padding-right: 20px;
 }
 
 h1 {
@@ -194,7 +190,7 @@ input:not(.price-input):not(.search-input):not(.transfer-input) {
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
 /* App根元素樣式 */
@@ -216,18 +212,24 @@ input:not(.price-input):not(.search-input):not(.transfer-input) {
 
 /* 確保導航欄覆蓋滾動條區域 */
 .navbar-wrapper {
-  width: calc(100% - 6px) !important; /* 確保與navbar-container-wrapper一致 */
-  min-width: 0 !important; /* 防止最小寬度限制 */
+  width: 100% !important; /* 使用100%寬度 */
   max-width: 100% !important; /* 防止最大寬度限制 */
-  height: auto !important; /* 確保高度自適應內容 */
-  min-height: 60px !important; /* 提供最小高度 */
-  left: 0;
-  right: 6px; /* 為滾動條預留6px寬度 */
+  left: 0 !important;
+  right: 0 !important; /* 延伸到最右側 */
   top: 0;
   position: fixed;
   z-index: 1000;
-  /* 移除可能的固定寬度設定 */
-  max-width: none;
+}
+
+/* 修正內容容器，確保計算一致 */
+.content-container {
+  box-sizing: border-box !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 20px !important;
+  padding-right: 26px !important; /* 20px + 固定滾動條寬度6px */
 }
 
 /* 特定針對搜索框的樣式 */

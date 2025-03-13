@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import NFTGrid from "../../../components/NFTGrid/NFTGrid";
 import { myNFTs } from "../../../data/mockData";
@@ -67,6 +67,8 @@ const ButtonWrapper = styled.div`
 const ListNFTSection = ({ standalone = true }) => {
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  // 添加一個參考，用於存儲NFT網格的DOM元素
+  const nftGridRef = useRef(null);
 
   const filteredNFTs = myNFTs.filter((nft) =>
     searchTerm
@@ -78,16 +80,80 @@ const ListNFTSection = ({ standalone = true }) => {
     setSearchTerm(value);
   }, []);
 
-  // 同步選中狀態
+  // 滾動到選中的NFT
+  const scrollToSelectedNFT = useCallback(() => {
+    console.log("嘗試滾動到選中的NFT:", selectedNFT?.tokenId);
+    if (selectedNFT && nftGridRef.current) {
+      // 尋找選中NFT的元素
+      const nftElement = document.getElementById(
+        `nft-item-${selectedNFT.tokenId}`
+      );
+      if (nftElement) {
+        console.log("找到NFT元素，開始滾動");
+        // 使用scrollIntoView將元素滾動到視圖中
+        nftElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center", // 確保元素在視圖中央
+        });
+      } else {
+        console.log("未找到NFT元素:", `nft-item-${selectedNFT.tokenId}`);
+        // 調試：打印所有帶nft-item前綴的元素
+        document.querySelectorAll('[id^="nft-item-"]').forEach((el) => {
+          console.log("找到元素ID:", el.id);
+        });
+      }
+    }
+  }, [selectedNFT]);
+
+  // 同步選中狀態並處理外部跳轉自動滾動
   useEffect(() => {
+    console.log("useEffect執行, selectedNFT:", selectedNFT?.tokenId);
+    console.log("selectedNFTRef.current:", selectedNFTRef.current?.tokenId);
+
     // 監聽清除事件
     const handleNFTCleared = () => {
       setSelectedNFT(null);
     };
 
-    // 初始載入時檢查是否有預選的NFT
-    if (selectedNFTRef.current && !selectedNFT) {
+    // 初始載入時檢查是否有預選的NFT（從外部跳轉）
+    const hasExternalSelection = selectedNFTRef.current && !selectedNFT;
+
+    if (hasExternalSelection) {
+      console.log(
+        "檢測到外部選擇，設置選中NFT:",
+        selectedNFTRef.current.tokenId
+      );
       setSelectedNFT(selectedNFTRef.current);
+
+      // 使用requestAnimationFrame確保在下一個渲染幀中執行滾動
+      requestAnimationFrame(() => {
+        console.log("執行即時滾動");
+        // 立即檢查元素並滾動，不再使用延遲
+        const element = document.getElementById(
+          `nft-item-${selectedNFTRef.current.tokenId}`
+        );
+        if (element) {
+          console.log("找到元素並滾動:", element.id);
+          element.scrollIntoView({ behavior: "auto", block: "center" }); // 使用auto代替smooth實現無延遲滾動
+        } else {
+          console.log("仍未找到元素");
+          // 如果確實找不到元素，可以再嘗試一次（可能DOM還沒完全更新）
+          requestAnimationFrame(() => {
+            const retryElement = document.getElementById(
+              `nft-item-${selectedNFTRef.current.tokenId}`
+            );
+            if (retryElement) {
+              console.log("重試後找到元素並滾動:", retryElement.id);
+              retryElement.scrollIntoView({
+                behavior: "auto",
+                block: "center",
+              });
+            } else {
+              console.log("重試後仍未找到元素");
+            }
+          });
+        }
+      });
     }
 
     window.addEventListener("nft-cleared", handleNFTCleared);
@@ -97,16 +163,20 @@ const ListNFTSection = ({ standalone = true }) => {
     };
   }, [selectedNFT]);
 
-  // 渲染按鈕函數 - 使用React.memo優化性能
+  // 渲染按鈕函數 - 接收點擊處理函數，確保按鈕能正確處理選擇事件
   const renderActionButton = useCallback(
-    (nft) => {
+    (nft, onClick) => {
       const isSelected = selectedNFT?.tokenId === nft.tokenId;
       return (
         <ButtonWrapper>
           {isSelected ? (
-            <SelectedButton fullWidth>選択済み</SelectedButton>
+            <SelectedButton fullWidth onClick={onClick}>
+              選択済み
+            </SelectedButton>
           ) : (
-            <StandardButton fullWidth>選択する</StandardButton>
+            <StandardButton fullWidth onClick={onClick}>
+              選択する
+            </StandardButton>
           )}
         </ButtonWrapper>
       );
@@ -153,13 +223,16 @@ const ListNFTSection = ({ standalone = true }) => {
           },
         ]}
       />
-      <NFTGrid
-        items={filteredNFTs}
-        actionText="選択する"
-        renderActionButton={renderActionButton}
-        onItemAction={onAction}
-        selectedNFT={selectedNFT}
-      />
+      <div ref={nftGridRef}>
+        <NFTGrid
+          items={filteredNFTs}
+          actionText="選択する"
+          renderActionButton={renderActionButton}
+          onItemAction={onAction}
+          selectedNFT={selectedNFT}
+          itemIdPrefix="nft-item-" // 添加前綴，用於生成唯一ID
+        />
+      </div>
     </Section>
   );
 };

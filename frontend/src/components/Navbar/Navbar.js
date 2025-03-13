@@ -1,7 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import "./Navbar.css"; // 使用獨立的CSS文件
 import { clearSelectedNFT } from "../../pages/Home/components/sharedState";
+import GradientText from "../styled/GradientText";
+
+// 用於替換現有 CSS .logo 類的 styled-component
+const LogoContainer = styled(Link)`
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+`;
 
 /**
  * 主導航欄組件

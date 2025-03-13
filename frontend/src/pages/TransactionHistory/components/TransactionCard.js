@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { EthSymbol } from "../../../components/NFTCard/NFTCard";
 import { formatDate } from "../../../utils/dateUtils"; // 需要實現此函數
+import GradientText from "../../../components/styled/GradientText";
 
 // 導入原始NFTName組件
 import { default as NFTCardComponent } from "../../../components/NFTCard/NFTCard";
@@ -234,47 +235,15 @@ const TransactionCard = ({ transaction }) => {
         </TransactionType>
 
         <TextWrapper>
-          <svg
-            width="100%"
+          <GradientText
+            id={`tx-gradient-${transaction.id}`}
+            fontSize="1.1rem"
             height="26"
-            style={{
-              overflow: "visible",
-              marginTop: "-2px" /* 微調垂直位置 */,
-              filter:
-                "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))" /* 添加微妙的陰影 */,
-            }}
+            letterSpacing="0.01em"
+            style={{ marginTop: "-2px" }}
           >
-            <defs>
-              <linearGradient
-                id={`tx-gradient-${transaction.id}`}
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
-              >
-                <stop offset="0%" stopColor="#6a11cb" />
-                <stop offset="100%" stopColor="#2575fc" />
-              </linearGradient>
-            </defs>
-            <text
-              x="0"
-              y="18"
-              fill={`url(#tx-gradient-${transaction.id})`}
-              fontWeight="600"
-              fontSize="1.1rem"
-              fontFamily="inherit"
-              letterSpacing="0.01em"
-              dominantBaseline="middle"
-              style={{
-                fontFamily: "inherit" /* 使用全局字體設置 */,
-                textRendering: "optimizeLegibility",
-                shapeRendering: "geometricPrecision",
-                opacity: "0.95" /* 輕微調整不透明度以匹配原始效果 */,
-              }}
-            >
-              {transaction.nftName}
-            </text>
-          </svg>
+            {transaction.nftName}
+          </GradientText>
         </TextWrapper>
 
         <TransactionDetails>

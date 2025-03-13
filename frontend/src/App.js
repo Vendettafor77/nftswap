@@ -3,7 +3,6 @@ import { ThemeProvider } from "styled-components";
 import theme from "./theme";
 import GlobalStyle from "./components/styled/GlobalStyle";
 import GlobalScrollbarStyle from "./components/styled/GlobalScrollbarStyle";
-import CustomScrollbar from "./components/CustomScrollbar";
 import AppRoutes from "./routes";
 import Navbar from "./components/Navbar/Navbar";
 import { BackgroundDecoration } from "./components/BackgroundEffect";
@@ -34,7 +33,6 @@ const App = () => {
       <FontProvider>
         <GlobalStyle />
         <GlobalScrollbarStyle />
-        <CustomScrollbar />
         {/* 導航欄 */}
         <div className="navbar-container-wrapper" style={navbarContainerStyle}>
           <Navbar />

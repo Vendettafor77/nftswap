@@ -6,6 +6,9 @@ import { PrimaryButton as Button } from "../../components/styled/Button";
 import FilterBar from "../../components/Filters/FilterBar";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import { StatusMessage } from "../../components/styled/StatusMessage";
+import GradientText from "../../components/styled/GradientText";
+import { selectedNFTRef } from "../../pages/Home/components/sharedState";
+import { myNFTs } from "../../data/mockData";
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -32,45 +35,18 @@ const Title = styled.h1`
   align-items: center;
 `;
 
-// 使用與NFTCard相同的SVG漸變文字
+// 使用共享的GradientText組件替代原有的GradientTitle
 const GradientTitle = ({ children }) => {
-  const uniqueId = `mynft-title-gradient-${Math.random().toString(36).substring(7)}`;
-
   return (
-    <svg
-      width="100%"
+    <GradientText
+      fontSize="2.5rem"
       height="60"
-      style={{
-        maxWidth: "400px",
-        overflow: "visible",
-        filter: "drop-shadow(0 0 1px rgba(106, 17, 203, 0.15))",
-      }}
+      maxWidth="400px"
+      centered={true}
+      id={`mynft-title-${Math.random().toString(36).substring(7)}`}
     >
-      <defs>
-        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#6a11cb" />
-          <stop offset="100%" stopColor="#2575fc" />
-        </linearGradient>
-      </defs>
-      <text
-        x="50%"
-        y="42"
-        fill={`url(#${uniqueId})`}
-        fontWeight="600"
-        fontSize="2.5rem"
-        fontFamily="inherit"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        style={{
-          fontFamily: "inherit",
-          textRendering: "optimizeLegibility",
-          shapeRendering: "geometricPrecision",
-          opacity: "0.95",
-        }}
-      >
-        {children}
-      </text>
-    </svg>
+      {children}
+    </GradientText>
   );
 };
 
@@ -127,9 +103,71 @@ const ActionMenu = styled.div`
   max-width: 180px;
   width: auto;
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity 0.3s ease,
+    transform 0.3s ease;
   backdrop-filter: blur(4px);
+  transform-origin: ${(props) =>
+    props.flipUp ? "bottom center" : "top center"};
+  animation: ${(props) => (props.flipUp ? "popUpFromBottom" : "popDownFromTop")}
+    0.3s ease forwards;
+
+  @keyframes popDownFromTop {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes popUpFromBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* 確保菜單在頁面底部也能完整顯示 */
+  max-height: calc(90vh - 20px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* 添加三角形指示器 */
+  &::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+  }
+
+  /* 根據 flipUp 屬性決定三角形位置 */
+  ${(props) =>
+    props.flipUp
+      ? `
+    &::before {
+      border-top: 8px solid #383f5e;
+      border-bottom: none;
+      bottom: -8px;
+    }
+  `
+      : `
+    &::before {
+      border-bottom: 8px solid #383f5e;
+      border-top: none;
+      top: -8px;
+    }
+  `}
 `;
 
 const ActionMenuItem = styled.div`
@@ -137,10 +175,36 @@ const ActionMenuItem = styled.div`
   color: ${(props) => props.theme.colors.text.primary};
   cursor: pointer;
   transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background-color: rgba(101, 14, 145, 0.55);
     color: white;
+  }
+
+  &:active {
+    background-color: rgba(101, 14, 145, 0.75);
+    transform: scale(0.98);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+  }
+
+  &:last-child::after {
+    display: none;
   }
 `;
 
@@ -211,9 +275,7 @@ const TransferModal = styled.div`
     font-size: 1.5rem;
     margin-bottom: ${(props) => props.theme.spacing.md};
     text-align: center;
-    background: linear-gradient(120deg, #6a11cb, #2575fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
     position: relative;
     display: inline-block;
     width: 100%;
@@ -341,16 +403,27 @@ const NFTPreview = styled.div`
   }
 
   div {
-    h4 {
-      font-size: 1.2rem;
-      margin-bottom: ${(props) => props.theme.spacing.sm};
-    }
+    width: 100%;
 
     p {
       color: ${(props) => props.theme.colors.text.secondary};
     }
   }
 `;
+
+// 使用共享的GradientText組件替代原有的NFTNamePreviewSVG
+const NFTNamePreviewSVG = ({ children }) => {
+  return (
+    <GradientText
+      fontSize="1.2rem"
+      height="30"
+      marginBottom="8px"
+      id={`transfer-nft-${Math.random().toString(36).substring(7)}`}
+    >
+      {children}
+    </GradientText>
+  );
+};
 
 const TransferStatusMessage = styled.div.attrs((props) => ({
   className: `transfer-status ${props.success ? "success" : "error"}`,
@@ -363,185 +436,6 @@ const CustomStatusMessage = styled(StatusMessage)`
   margin-top: ${(props) => props.theme.spacing.md};
   width: 100%;
 `;
-
-// 修改模擬數據，增加卡片數量
-const mockUserNFTs = [
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "221",
-    name: "WTFape #221",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.5",
-  },
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "453",
-    name: "WTFape #453",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x456...def",
-    tokenId: "001",
-    name: "サムライNFT #001",
-    collection: "Samurai Collection",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.8",
-  },
-  {
-    contractAddress: "0x789...ghi",
-    tokenId: "042",
-    name: "Doodle #042",
-    collection: "Doodles",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  // 新增更多NFT卡片
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "222",
-    name: "WTFape #222",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.4",
-  },
-  {
-    contractAddress: "0x456...def",
-    tokenId: "002",
-    name: "サムライNFT #002",
-    collection: "Samurai Collection",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x789...ghi",
-    tokenId: "043",
-    name: "Doodle #043",
-    collection: "Doodles",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "1.2",
-  },
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "454",
-    name: "WTFape #454",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x456...def",
-    tokenId: "003",
-    name: "サムライNFT #003",
-    collection: "Samurai Collection",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.6",
-  },
-  {
-    contractAddress: "0x789...ghi",
-    tokenId: "044",
-    name: "Doodle #044",
-    collection: "Doodles",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "223",
-    name: "WTFape #223",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.7",
-  },
-  {
-    contractAddress: "0x456...def",
-    tokenId: "004",
-    name: "サムライNFT #004",
-    collection: "Samurai Collection",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x789...ghi",
-    tokenId: "045",
-    name: "Doodle #045",
-    collection: "Doodles",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.9",
-  },
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "455",
-    name: "WTFape #455",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x456...def",
-    tokenId: "005",
-    name: "サムライNFT #005",
-    collection: "Samurai Collection",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "1.1",
-  },
-  {
-    contractAddress: "0x789...ghi",
-    tokenId: "046",
-    name: "Doodle #046",
-    collection: "Doodles",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-];
-
-const mockWTFapes = [
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "222",
-    name: "WTFape #222",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: false,
-  },
-  {
-    contractAddress: "0x123...abc",
-    tokenId: "454",
-    name: "WTFape #454",
-    collection: "WTFape コレクション",
-    image:
-      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    isListed: true,
-    price: "0.3",
-  },
-];
 
 const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
@@ -565,15 +459,29 @@ const MyNFTs = () => {
   // 从所有NFT中提取集合列表
   const collections = [...new Set(nfts.map((nft) => nft.collection))];
 
-  // 模拟从区块链上获取用户的NFT
+  // 模拟从区块链上获取用户的NFT，現在使用集中的myNFTs而不是本地模擬數據
   useEffect(() => {
     const fetchUserNFTs = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setNfts([...mockUserNFTs, ...mockWTFapes]);
+        // 移除等待時間，直接加載數據
+        // await new Promise((resolve) => setTimeout(resolve, 1500));
+
+        // 為了模擬一些NFT已上架的情況，我們將添加isListed和price屬性到導入的myNFTs
+        const processedNFTs = myNFTs.map((nft) => {
+          // 隨機決定某些NFT是否已上架
+          const isListed = Math.random() > 0.7;
+          return {
+            ...nft,
+            isListed,
+            price: isListed ? (Math.random() * 2 + 0.1).toFixed(2) : null,
+          };
+        });
+
+        setNfts(processedNFTs);
+        // 立即設置加載狀態為false
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching NFTs:", error);
-      } finally {
         setLoading(false);
       }
     };
@@ -632,12 +540,32 @@ const MyNFTs = () => {
       const containerRect = pageContainer.getBoundingClientRect();
 
       // 計算相對於PageContainer的位置
-      const relativeTop = rect.bottom - containerRect.top + 20; // 按鈕下方5px
       const relativeLeft = rect.left - containerRect.left + rect.width / 2 - 75; // 水平居中
 
+      // 檢查是否需要向上顯示菜單
+      const windowHeight = window.innerHeight;
+      const menuHeight = 150; // 估計菜單高度，可以根據實際情況調整
+      const isBottomOverflow = rect.bottom + menuHeight + 10 > windowHeight;
+
+      // 根據是否溢出決定菜單位置
+      let topPosition;
+      if (isBottomOverflow) {
+        // 向上顯示，與按鈕頂部對齊
+        topPosition = rect.top - containerRect.top - menuHeight - 10;
+      } else {
+        // 向下顯示，與按鈕底部對齊
+        topPosition = rect.bottom - containerRect.top + 25;
+      }
+
+      // 確保菜單不會超出頁面頂部
+      if (topPosition < 0) {
+        topPosition = 10; // 給頁面頂部留出一些空間
+      }
+
       setMenuPosition({
-        top: relativeTop,
+        top: topPosition,
         left: relativeLeft,
+        flipUp: isBottomOverflow,
       });
     }
 
@@ -646,7 +574,16 @@ const MyNFTs = () => {
 
   // 处理上架NFT
   const handleListNFT = (nft) => {
-    window.location.href = `/list-nft?contract=${nft.contractAddress}&tokenId=${nft.tokenId}`;
+    // 將選中的NFT保存到sharedState中的selectedNFTRef
+    selectedNFTRef.current = nft;
+
+    // 觸發自定義事件通知其他組件
+    window.dispatchEvent(new CustomEvent("nft-selected"));
+
+    // 導航到主頁的ListNFT標籤頁
+    navigate("/?tab=listnft");
+
+    // 隱藏操作菜單
     setShowActionMenu(false);
   };
 
@@ -847,25 +784,13 @@ const MyNFTs = () => {
 
             {showActionMenu && activeNFT && (
               <>
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0,
-                    zIndex: 999,
-                    pointerEvents: "all",
-                  }}
-                  onClick={handleClickOutside}
-                />
+                <ModalOverlay onClick={() => setShowActionMenu(false)} />
                 <ActionMenu
                   style={{
-                    position: "absolute",
                     top: `${menuPosition.top}px`,
                     left: `${menuPosition.left}px`,
-                    zIndex: 1000,
                   }}
+                  flipUp={menuPosition.flipUp}
                 >
                   {activeNFT.isListed ? (
                     <ActionMenuItem
@@ -919,7 +844,7 @@ const MyNFTs = () => {
               <NFTPreview>
                 <img src={activeNFT.image} alt={activeNFT.name} />
                 <div>
-                  <h4>{activeNFT.name}</h4>
+                  <NFTNamePreviewSVG>{activeNFT.name}</NFTNamePreviewSVG>
                   <p>{activeNFT.collection}</p>
                 </div>
               </NFTPreview>

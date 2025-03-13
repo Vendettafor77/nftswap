@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import styled from "styled-components";
 import NFTGrid from "../../components/NFTGrid/NFTGrid";
 import FilterBar from "../../components/Filters/FilterBar";
@@ -8,6 +8,8 @@ import { HeroSection } from "../../components/styled";
 import { OutlineButton } from "../../components/styled/Button";
 import SectionTitle from "../../components/styled/SectionTitle";
 import ListNFTForm from "./components/ListNFTForm";
+import GradientText from "../../components/styled/GradientText";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // 頁面主容器
 const HomeContainer = styled.div`
@@ -119,9 +121,6 @@ const SidebarTitle = styled.h3`
   padding-top: 0;
   width: 100%; /* 確保完全填充 */
   text-align: center; /* 居中對齊 */
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   font-weight: 600;
 `;
 
@@ -206,9 +205,6 @@ const NFTInfo = styled.div`
 const NFTName = styled.div`
   font-size: 0.9rem;
   font-weight: 500;
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -255,6 +251,29 @@ const Home = () => {
     success: false,
     fadeOut: false,
   });
+
+  // 從URL中獲取查詢參數
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // 在組件掛載時從URL讀取tab參數
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const tabParam = queryParams.get("tab");
+
+    // 如果URL中包含有效的標籤參數，則設置為當前標籤
+    if (tabParam === "listnft" || tabParam === "marketplace") {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
+
+  // 處理標籤切換的函數，更新URL
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+
+    // 更新URL，不刷新頁面
+    navigate(`/?tab=${tabName}`, { replace: true });
+  };
 
   // 將集合緩存為useMemo
   const collections = useMemo(() => {
@@ -370,7 +389,16 @@ const Home = () => {
     if (activeTab === "marketplace") {
       return (
         <>
-          <SidebarTitle>マーケット情報</SidebarTitle>
+          <SidebarTitle>
+            <GradientText
+              fontSize="1.4rem"
+              height="30"
+              centered={true}
+              id={`sidebar-title-${Math.random().toString(36).substring(7)}`}
+            >
+              マーケット情報
+            </GradientText>
+          </SidebarTitle>
 
           {/* 市場統計數據 */}
           <StatItem>
@@ -393,7 +421,16 @@ const Home = () => {
               <NFTListItem key={nft.id}>
                 <NFTThumb src={nft.image} alt={nft.name} />
                 <NFTInfo>
-                  <NFTName>{nft.name}</NFTName>
+                  <NFTName>
+                    <GradientText
+                      fontSize="0.9rem"
+                      height="18"
+                      fontWeight="500"
+                      id={`nft-name-${nft.id}`}
+                    >
+                      {nft.name}
+                    </GradientText>
+                  </NFTName>
                   <NFTPrice>
                     <EthSymbol>Ξ</EthSymbol>
                     {nft.price}
@@ -437,13 +474,15 @@ const Home = () => {
         <TabsContainer>
           <OutlineButton
             active={activeTab === "marketplace"}
-            onClick={() => setActiveTab("marketplace")}
+            onClick={() => handleTabChange("marketplace")}
+            gradient={activeTab === "marketplace"}
           >
-            NFTを閲覧・購入
+            マーケットプレイス
           </OutlineButton>
           <OutlineButton
-            active={activeTab === "list"}
-            onClick={() => setActiveTab("list")}
+            active={activeTab === "listnft"}
+            onClick={() => handleTabChange("listnft")}
+            gradient={activeTab === "listnft"}
           >
             NFTを出品する
           </OutlineButton>
