@@ -146,6 +146,9 @@ contracts/            # 智能合約
 - **StatusMessage** (`components/styled/StatusMessage.js`): 狀態信息提示組件，用於顯示操作成功或失敗
 - **Button** (`components/styled/Button.js`): 包含主要按鈕(PrimaryButton)、輪廓按鈕(OutlineButton)和次要按鈕(SecondaryButton)樣式
 - **TransactionCard** (`pages/TransactionHistory/components/TransactionCard.js`): 顯示交易記錄的卡片組件
+- **IPFSImage** (`components/IPFSImage/IPFSImage.js`): 專門用於顯示IPFS圖片的組件，支持多種IPFS URL格式，自動轉換為HTTP URL並處理加載狀態
+- **NFTMetadata** (`components/NFTMetadata/NFTMetadata.js`): 顯示NFT元數據的組件，包括圖片和屬性，支持從IPFS URL獲取元數據
+- **IPFSExample** (`components/IPFSExample/IPFSExample.js`): IPFS組件使用示例，展示了如何使用IPFSImage和NFTMetadata組件
 
 ### 樣式組件
 
@@ -245,6 +248,16 @@ NFT上架表單，用於設置價格並提交上架。
 **主要函數**:
 
 - `formatDate(dateString)`: 將ISO日期字符串格式化為可讀形式（日本格式）
+
+### ipfsUtils.js (`utils/ipfsUtils.js`)
+
+IPFS相關工具函數，用於處理IPFS地址和元數據。
+
+**主要函數**:
+
+- `getHttpUrl(ipfsUrl, gateway)`: 將IPFS URL轉換為HTTP URL
+- `getImageFromMetadata(metadata, gateway)`: 從NFT元數據中提取圖片URL並轉換為HTTP URL
+- `getMetadataUrl(baseUrl, tokenId, gateway)`: 獲取NFT元數據URL
 
 ## 智能合約
 

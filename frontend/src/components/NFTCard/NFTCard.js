@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { AnimationContext } from "../../contexts/AnimationContext";
 import {
@@ -8,6 +8,8 @@ import {
 } from "../styled/Button";
 import { StatusMessage } from "../styled/StatusMessage";
 import GradientText from "../styled/GradientText";
+import IPFSImage from "../IPFSImage";
+import { getNFTImageUrl } from "../../utils/ipfsUtils";
 
 // 邊框流光動畫
 const borderGlow = keyframes`
@@ -22,6 +24,47 @@ const borderGlow = keyframes`
   100% {
     opacity: 0;
     transform: scale(1.05);
+  }
+`;
+
+// 加載指示器動畫
+const rotate = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+// 加載覆蓋層
+const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 0.9rem;
+  z-index: 4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: ${rotate} 1s ease-in-out infinite;
   }
 `;
 
@@ -284,7 +327,19 @@ const CardStatusMessage = styled(StatusMessage)`
   align-items: center;
 `;
 
-// 修改組件實現
+/**
+ * NFT卡片組件 - 用於顯示單個NFT
+ * @component
+ * @param {Object} props - 組件屬性
+ * @param {Object} props.nft - NFT數據對象
+ * @param {string|function} props.actionText - 操作按鈕文字或返回文字的函數
+ * @param {function} props.onAction - 點擊操作按鈕時的回調函數
+ * @param {Object} props.statusMessage - 狀態消息數據
+ * @param {function} props.customActionButton - 自定義操作按鈕渲染函數
+ * @param {boolean} props.isSelected - 是否被選中
+ * @param {string} props.id - 卡片ID
+ * @returns {React.ReactElement} NFT卡片組件
+ */
 const NFTCard = ({
   nft,
   actionText,
@@ -296,6 +351,88 @@ const NFTCard = ({
 }) => {
   // 使用實際 NFT 數據，而不是測試數據
   const nftData = nft;
+  const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 2;
+  const LOAD_TIMEOUT = 10000; // 10秒超時
+
+  useEffect(() => {
+    let timeoutId;
+    let isMounted = true; // 防止組件卸載後設置狀態
+
+    const loadImageUrl = async () => {
+      if (retryCount > MAX_RETRIES) {
+        console.warn(
+          `超過最大重試次數(${MAX_RETRIES})，停止嘗試加載NFT #${nftData.tokenId}的圖片`
+        );
+        if (isMounted) {
+          setLoading(false);
+          setLoadError(true);
+        }
+        return;
+      }
+
+      try {
+        if (isMounted) {
+          setLoading(true);
+          setLoadError(false);
+        }
+
+        // 設置超時定時器
+        timeoutId = setTimeout(() => {
+          if (isMounted) {
+            console.warn(
+              `加載NFT #${nftData.tokenId}的圖片超時，嘗試重試(${retryCount + 1}/${MAX_RETRIES})`
+            );
+            setRetryCount((prev) => prev + 1);
+          }
+        }, LOAD_TIMEOUT);
+
+        // 使用優化後的函數獲取圖片URL
+        const result = await getNFTImageUrl(nftData);
+
+        // 清除超時定時器
+        clearTimeout(timeoutId);
+
+        if (isMounted) {
+          if (result.error) {
+            // 處理錯誤情況
+            setLoadError(true);
+            console.error(
+              `獲取NFT #${nftData.tokenId}圖片失敗: ${result.error}`
+            );
+          } else {
+            // 設置圖片URL
+            setImageUrl(result.url);
+          }
+          // 根據返回的isLoading狀態設置加載狀態
+          setLoading(result.isLoading);
+        }
+      } catch (error) {
+        console.error("獲取NFT圖片失敗:", error);
+
+        // 清除超時定時器
+        clearTimeout(timeoutId);
+
+        if (isMounted) {
+          setLoadError(true);
+          setLoading(false);
+          // 嘗試重試
+          setRetryCount((prev) => prev + 1);
+        }
+      }
+    };
+
+    loadImageUrl();
+
+    // 清理函數
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [nftData, retryCount]);
 
   const getActionText =
     typeof actionText === "function"
@@ -311,7 +448,34 @@ const NFTCard = ({
   return (
     <Card isSelected={isSelected} id={id}>
       <ImageContainer>
-        <Image src={nftData.image} alt={nftData.name} />
+        <IPFSImage
+          src={
+            imageUrl !== null && imageUrl !== undefined
+              ? imageUrl
+              : nftData.image || ""
+          }
+          alt={
+            nftData.name || `NFT #${nftData.tokenId || nftData.id || "Unknown"}`
+          }
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          hoverEffect={!loading && !loadError}
+          errorText="画像の読み込みに失敗しました"
+          backgroundColor="rgba(0, 0, 0, 0.05)"
+          borderRadius="12px"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+        />
+        {loading && (
+          <LoadingOverlay>
+            読み込み中...
+            {retryCount > 0 ? ` (リトライ ${retryCount}/${MAX_RETRIES})` : ""}
+          </LoadingOverlay>
+        )}
         {nftData.isListed && <ListingBadge>出品中</ListingBadge>}
         {nftData.price && (
           <PriceTag>

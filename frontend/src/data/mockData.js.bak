@@ -21,44 +21,11 @@ export const NFT_COLLECTIONS = [
  */
 export const myNFTs = [
   {
-    tokenId: "0",
-    name: "WTFape #0",
-    collection: "WTFape コレクション",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "1",
-    name: "WTFape #1",
-    collection: "WTFape コレクション",
-    image: "ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "2",
-    name: "サムライNFT",
-    collection: "Samurai Collection",
-    image: "ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi",
-    contractAddress: "0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "3",
-    name: "WTFape #3",
-    collection: "WTFape コレクション",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
     tokenId: "221",
     name: "WTFape #221",
     collection: "WTFape コレクション",
     image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
   {
     tokenId: "453",
@@ -66,7 +33,13 @@ export const myNFTs = [
     collection: "WTFape コレクション",
     image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
+  },
+  {
+    tokenId: "001",
+    name: "サムライNFT",
+    collection: "Samurai Collection",
+    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    contractAddress: "0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03",
   },
   {
     tokenId: "785",
@@ -74,120 +47,109 @@ export const myNFTs = [
     collection: "WTFape コレクション",
     image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
   {
     tokenId: "612",
     name: "WTFape #612",
     collection: "WTFape コレクション",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
 ];
 
 /**
- * 市場中的 NFT 列表
+ * 市場上銷售的NFT列表
  * @type {Array<Object>}
  */
 export const marketNFTs = [
   {
-    tokenId: "123",
-    name: "WTFape #123",
+    id: "1",
+    tokenId: "221",
+    name: "WTFape #221",
     collection: "WTFape コレクション",
-    price: "0.55",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x1234567890123456789012345678901234567890",
+    price: "0.25",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x7a86C6eA37F51a9B15aEb408b7c9702e8A718045",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
   {
-    tokenId: "456",
-    name: "WTFape #456",
+    id: "2",
+    tokenId: "453",
+    name: "WTFape #453",
     collection: "WTFape コレクション",
-    price: "0.34",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x2345678901234567890123456789012345678901",
+    price: "0.31",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x3bE4890086D61dCC39D5b27f31e64E194fEaE78B",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
   {
-    tokenId: "789",
-    name: "WTFape #789",
+    id: "3",
+    tokenId: "874",
+    name: "WTFape #874",
     collection: "WTFape コレクション",
-    price: "0.29",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x3456789012345678901234567890123456789012",
+    price: "0.18",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x4A82692bB5E1e8e7B24DAfd6e8D7E67c2f5EEdDa",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
   },
   {
-    tokenId: "234",
-    name: "WTFape #234",
-    collection: "WTFape コレクション",
-    price: "0.12",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x4567890123456789012345678901234567890123",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "567",
-    name: "WTFape #567",
-    collection: "WTFape コレクション",
-    price: "0.42",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x5678901234567890123456789012345678901234",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "890",
-    name: "WTFape #890",
-    collection: "WTFape コレクション",
-    price: "0.35",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x6789012345678901234567890123456789012345",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "345",
-    name: "WTFape #345",
-    collection: "WTFape コレクション",
-    price: "0.51",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x7890123456789012345678901234567890123456",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "678",
-    name: "WTFape #678",
-    collection: "WTFape コレクション",
-    price: "0.27",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x8901234567890123456789012345678901234567",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
-    tokenId: "901",
-    name: "WTFape #901",
-    collection: "WTFape コレクション",
-    price: "0.38",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
-    seller: "0x9012345678901234567890123456789012345678",
-    contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
-  },
-  {
+    id: "4",
     tokenId: "612",
     name: "WTFape #612",
     collection: "WTFape コレクション",
-    image: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    price: "0.52",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x9c92c2eA0bb7b7cC7C49E97FBc87fbEa856Aac73",
     contractAddress: "0x23581767a106ae21c074b2276D25e5C3e136a68b",
-    metadataBaseUrl: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
+  },
+  {
+    id: "5",
+    tokenId: "002",
+    name: "Doodle #123",
+    collection: "Doodles Collection",
+    price: "1.52",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x9c92c2eA0bb7b7cC7C49E97FBc87fbEa856Aac73",
+    contractAddress: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+  },
+  {
+    id: "6",
+    tokenId: "003",
+    name: "Doodle #456",
+    collection: "Doodles Collection",
+    price: "2.01",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x4A82692bB5E1e8e7B24DAfd6e8D7E67c2f5EEdDa",
+    contractAddress: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+  },
+  {
+    id: "7",
+    tokenId: "004",
+    name: "Doodle #789",
+    collection: "Doodles Collection",
+    price: "1.25",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x3bE4890086D61dCC39D5b27f31e64E194fEaE78B",
+    contractAddress: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+  },
+  {
+    id: "8",
+    tokenId: "005",
+    name: "Azuki #345",
+    collection: "Azuki",
+    price: "3.75",
+    image:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    seller: "0x7a86C6eA37F51a9B15aEb408b7c9702e8A718045",
+    contractAddress: "0xED5AF388653567Af2F388E6224dC7C4b3241C544",
   },
 ];
 
@@ -201,7 +163,8 @@ export const mockTransactions = [
     type: "purchase",
     nftName: "Bored Ape #123",
     nftCollection: "Bored Ape Yacht Club",
-    nftImage: "ipfs://QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
+    nftImage:
+      "https://ipfs.io/ipfs/QmRRPWG96cmgTn2qSzjwr2qvfNEuhunv6FNeMFGa9bx6mQ",
     price: 2.5,
     date: "2023-03-15T14:22:30Z",
     from: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
@@ -213,7 +176,8 @@ export const mockTransactions = [
     type: "sale",
     nftName: "Crypto Punk #456",
     nftCollection: "CryptoPunks",
-    nftImage: "ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi",
+    nftImage:
+      "https://ipfs.io/ipfs/QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi",
     price: 3.2,
     date: "2023-03-10T09:45:12Z",
     from: "0xYourAddress", // 當前用戶地址
@@ -225,7 +189,8 @@ export const mockTransactions = [
     type: "mint",
     nftName: "WTFApe #789",
     nftCollection: "WTFApe",
-    nftImage: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
+    nftImage:
+      "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq",
     price: 0.1, // 鑄造費用
     date: "2023-03-01T18:11:05Z",
     from: "0x0000000000000000000000000000000000000000", // 零地址表示鑄造
@@ -237,7 +202,8 @@ export const mockTransactions = [
     type: "transfer",
     nftName: "Doodle #234",
     nftCollection: "Doodles",
-    nftImage: "ipfs://QmPMc4tcBsMqLRuCQtPmPe84bpSjrC3Ky7t3JWuHXYB4aS/234",
+    nftImage:
+      "https://ipfs.io/ipfs/QmPMc4tcBsMqLRuCQtPmPe84bpSjrC3Ky7t3JWuHXYB4aS/234",
     price: 0, // 轉移沒有價格
     date: "2023-02-25T22:30:45Z",
     from: "0xYourAddress", // 當前用戶地址
@@ -249,7 +215,8 @@ export const mockTransactions = [
     type: "purchase",
     nftName: "Azuki #567",
     nftCollection: "Azuki",
-    nftImage: "ipfs://QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/567",
+    nftImage:
+      "https://ipfs.io/ipfs/QmYDvPAXtiJg7s8JdRBSLWdgSphQdac8j1YuQNNxcGE1hg/567",
     price: 1.8,
     date: "2023-02-20T10:35:22Z",
     from: "0x8731d54E9D02c286767d56ac03e8037C07e01e98",
@@ -261,7 +228,8 @@ export const mockTransactions = [
     type: "mint",
     nftName: "WTFApe #142",
     nftCollection: "WTFApe",
-    nftImage: "ipfs://QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/142",
+    nftImage:
+      "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/142",
     price: 0.1,
     date: "2023-02-15T16:28:30Z",
     from: "0x0000000000000000000000000000000000000000",
@@ -273,7 +241,8 @@ export const mockTransactions = [
     type: "sale",
     nftName: "Cool Cat #321",
     nftCollection: "Cool Cats",
-    nftImage: "ipfs://QmdTtQXUNuLYwX52r5KHUKm8taSv8eFhkj3iCmrLiUXS9k/321",
+    nftImage:
+      "https://ipfs.io/ipfs/QmdTtQXUNuLYwX52r5KHUKm8taSv8eFhkj3iCmrLiUXS9k/321",
     price: 1.2,
     date: "2023-02-10T08:12:45Z",
     from: "0xYourAddress",
@@ -339,7 +308,7 @@ export const listedNFTs = [
       { trait_type: "Mouth", value: "Grin" },
     ],
   },
-];
+  // ... 其他項目保持不變
 
 // 交易记录数据
 export const transactionHistory = [
