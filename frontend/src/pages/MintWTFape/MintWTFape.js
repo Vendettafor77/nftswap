@@ -208,13 +208,13 @@ const CollectionStatsList = styled.div`
   gap: ${(props) => props.theme.spacing.sm};
 `;
 
-// 收藏信息項 - 簡化背景
+// 收藏信息項 - 統一邊框樣式
 const CollectionStat = styled.div`
   text-align: center;
   padding: ${(props) => props.theme.spacing.sm};
   background: rgba(15, 18, 31, 0.8);
   border-radius: ${(props) => props.theme.borderRadius.small};
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(106, 17, 203, 0.2) !important;
 `;
 
 // 收藏信息數值
@@ -303,14 +303,14 @@ const NFTDescriptionText = styled.p`
   margin-bottom: ${(props) => props.theme.spacing.md};
 `;
 
-// 特徴列表容器 - 簡化背景
+// 特徴列表容器 - 統一邊框樣式
 const FeaturesContainer = styled.div`
   background: rgba(15, 18, 31, 0.6);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   padding: ${(props) => props.theme.spacing.sm}
     ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(106, 17, 203, 0.2);
 `;
 
 // 屬性標題
@@ -330,14 +330,14 @@ const FeaturesList = styled.ul`
   gap: ${(props) => props.theme.spacing.sm};
 `;
 
-// 屬性項目 - 簡化背景和邊框
+// 屬性項目 - 統一邊框樣式
 const FeatureItem = styled.li`
   display: flex;
   flex-direction: column;
   padding: ${(props) => props.theme.spacing.sm};
   border-radius: ${(props) => props.theme.borderRadius.small};
   background: rgba(15, 18, 31, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(106, 17, 203, 0.2);
 `;
 
 // 屬性名稱
@@ -354,7 +354,7 @@ const FeatureValue = styled.span`
   font-size: 0.95rem;
 `;
 
-// Token ID 輸入區域 - 簡化背景
+// Token ID 輸入區域 - 使用內聯樣式確保優先級
 const TokenIdInputContainer = styled.div`
   background: rgba(15, 18, 31, 0.6);
   border-radius: ${(props) => props.theme.borderRadius.medium};
@@ -364,59 +364,62 @@ const TokenIdInputContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-
-  &:focus-within {
-    border-color: ${(props) => props.theme.colors.primary};
-    /* 減少陰影強度 */
-    box-shadow: 0 0 0 1px ${(props) => props.theme.colors.primary}22;
-  }
+  border: 1px solid rgba(106, 17, 203, 0.2) !important;
+  overflow: hidden;
+  width: 100%;
 `;
 
 // Token ID 標籤
 const TokenIdLabel = styled.label`
-  font-weight: 500;
-  margin-right: ${(props) => props.theme.spacing.md};
+  font-weight: 600;
+  font-size: 1rem;
   color: ${(props) => props.theme.colors.text.primary};
   white-space: nowrap;
 `;
 
-// 自定義輸入框 - 簡化樣式和效果
+// 自定義輸入框 - 使用更強大的樣式選擇器確保不被覆蓋
 const CustomInput = styled.input.attrs({
   type: "text",
-  placeholder: "NFTのTokenIDを入力",
+  placeholder: "TokenIDを入力",
+  className: "token-id-input",
 })`
-  background: rgba(15, 18, 31, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${(props) => props.theme.borderRadius.small};
-  color: ${(props) => props.theme.colors.text.primary};
-  padding: 8px 12px;
-  width: 100%;
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease;
-  /* 簡化過渡效果 */
-
-  &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
-    /* 減少陰影強度 */
-    box-shadow: none;
+  &&& {
+    background: rgba(15, 18, 31, 0.8) !important;
+    border: 2px solid rgba(87, 5, 175, 0.42) !important;
+    border-radius: 4px !important;
+    color: ${(props) => props.theme.colors.text.primary};
+    padding: 8px 12px;
+    width: 100px;
+    min-width: 100px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: right;
+    margin-left: auto;
+    box-shadow: none !important;
   }
 
-  &::placeholder {
+  &&&:focus {
+    outline: none;
+    border: 2px solid rgba(27, 151, 185, 0.72) !important;
+    box-shadow: 0 0 0 1px rgba(0, 201, 255, 0.3) !important;
+  }
+
+  &&&::placeholder {
     color: ${(props) => props.theme.colors.text.secondary}88;
+    text-align: right;
+    font-size: 0.95rem;
+    font-weight: normal;
   }
 `;
 
-// 價格信息區 - 移除漸變背景，使用純色
+// 價格信息區 - 調整背景色和邊框，與其他元素保持一致性
 const PriceInfoContainer = styled.div`
-  background: rgba(106, 17, 203, 0.1);
-  /* 移除漸變背景 */
+  background: rgba(15, 18, 31, 0.6);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   padding: ${(props) => props.theme.spacing.sm}
     ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(106, 17, 203, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -481,7 +484,7 @@ const MintProgressLabel = styled.div`
   }
 `;
 
-// 進度條 - 使用純色替代漸變
+// 進度條 - 使用指定的漸變色
 const MintProgressBar = styled.div`
   height: 6px;
   width: 100%;
@@ -494,8 +497,7 @@ const MintProgressBar = styled.div`
     display: block;
     height: 100%;
     width: ${(props) => props.progress || "45%"};
-    background: #6a11cb;
-    /* 移除漸變背景 */
+    background: linear-gradient(120deg, #00ff9d, #00c9ff);
     border-radius: 3px;
   }
 `;
@@ -639,7 +641,14 @@ const MintWTFape = () => {
 
   // 處理TokenID輸入
   const handleTokenIdChange = (e) => {
-    const value = e.target.value;
+    // 只允許輸入數字，並限制範圍為0-9999
+    let value = e.target.value.replace(/[^0-9]/g, "");
+
+    // 如果輸入的數字大於9999，則截斷為9999
+    if (value !== "" && parseInt(value) > 9999) {
+      value = "9999";
+    }
+
     setTokenId(value);
 
     // 嘗試根據輸入的tokenId找到對應的NFT
@@ -918,14 +927,40 @@ const MintWTFape = () => {
                   </FeaturesList>
                 </FeaturesContainer>
 
-                <TokenIdInputContainer>
+                <TokenIdInputContainer
+                  style={{ border: "1px solid rgba(106, 17, 203, 0.2)" }}
+                >
                   <TokenIdLabel>Token ID:</TokenIdLabel>
-                  <CustomInput value={tokenId} onChange={handleTokenIdChange} />
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      width: "50%",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    <CustomInput
+                      value={tokenId}
+                      onChange={handleTokenIdChange}
+                      autoComplete="off"
+                      style={{
+                        border: "2px solid #6a11cb",
+                        background: "rgba(15, 18, 31, 0.8)",
+                        textAlign: "right",
+                        width: "100px",
+                        padding: "8px 12px",
+                        fontSize: "1.2rem",
+                        fontWeight: "700",
+                        borderRadius: "4px",
+                        color: "white",
+                      }}
+                    />
+                  </div>
                 </TokenIdInputContainer>
 
                 <PriceInfoContainer>
                   <PriceLabel>価格:</PriceLabel>
-                  <PriceValue>
+                  <PriceValue style={{ paddingRight: "12px" }}>
                     <EthSymbol
                       style={{
                         fontSize: "1.2rem",
