@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { EthSymbol } from "../../../components/NFTCard/NFTCard";
 import { formatDate } from "../../../utils/dateUtils"; // 需要實現此函數
 import GradientText from "../../../components/styled/GradientText";
+import IPFSImage from "../../../components/IPFSImage";
+import { getNFTImageUrl } from "../../../utils/ipfsUtils";
 
 // 導入原始NFTName組件
 import { default as NFTCardComponent } from "../../../components/NFTCard/NFTCard";
@@ -40,12 +42,6 @@ const NFTThumbnail = styled.div`
   flex-shrink: 0;
   background: ${(props) => props.theme.colors.background};
   position: relative;
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 `;
 
 // 交易信息區
@@ -167,6 +163,58 @@ const Address = styled.span`
  * @returns {JSX.Element} 交易卡片
  */
 const TransactionCard = ({ transaction }) => {
+  const [imageUrl, setImageUrl] = useState(transaction.nftImage);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 使用useEffect獲取正確的IPFS圖片URL
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      try {
+        console.log("正在處理交易卡片圖片:", transaction.nftImage);
+
+        // 構建包含必要信息的NFT對象
+        // 注意：交易數據結構可能與標準NFT不同，我們需要處理這些差異
+        const nftData = {
+          tokenId: transaction.tokenId || "", // 交易記錄可能沒有tokenId
+          metadataBaseUrl: transaction.metadataBaseUrl || "", // 交易記錄可能沒有metadataBaseUrl
+          image: transaction.nftImage, // 使用原始圖片作為備用
+          // 添加更多可能的字段來幫助ipfsUtils處理URL
+          contractAddress: transaction.contractAddress,
+          collection: transaction.nftCollection,
+        };
+
+        // 即使沒有metadataBaseUrl和tokenId，也嘗試使用image字段處理URL
+        const imageResult = await getNFTImageUrl(nftData);
+
+        if (imageResult.url) {
+          console.log("成功獲取處理後的交易圖片URL:", imageResult.url);
+          setImageUrl(imageResult.url);
+        } else if (transaction.nftImage) {
+          // 如果getNFTImageUrl無法處理，但我們有原始URL，直接使用getHttpUrl處理
+          console.log("使用getHttpUrl直接處理nftImage:", transaction.nftImage);
+          const { getHttpUrl } = await import("../../../utils/ipfsUtils");
+          const directUrl = getHttpUrl(transaction.nftImage);
+          if (directUrl) {
+            setImageUrl(directUrl);
+          }
+        }
+      } catch (error) {
+        console.error(`獲取交易圖片失敗: ${error.message}`);
+        // 保留原始圖片URL作為備用
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImageUrl();
+  }, [
+    transaction.nftImage,
+    transaction.tokenId,
+    transaction.metadataBaseUrl,
+    transaction.contractAddress,
+    transaction.nftCollection,
+  ]);
+
   // 根據交易類型獲取對應的文本
   const getTypeText = (type) => {
     switch (type) {
@@ -226,7 +274,17 @@ const TransactionCard = ({ transaction }) => {
   return (
     <Card>
       <NFTThumbnail>
-        <Image src={transaction.nftImage} alt={transaction.nftName} />
+        <IPFSImage
+          src={imageUrl}
+          alt={transaction.nftName}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          errorText="画像を読み込めません"
+          borderRadius="8px"
+          backgroundColor="rgba(0, 0, 0, 0.05)"
+          hoverEffect={true}
+        />
       </NFTThumbnail>
 
       <TransactionInfo>

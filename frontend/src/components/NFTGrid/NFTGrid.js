@@ -98,6 +98,7 @@ const EmptyState = styled.div`
  * @param {Object} selectedNFT - 已選中的NFT
  * @param {String} className - 附加類名
  * @param {String} itemIdPrefix - 每個NFT卡片ID的前綴，用於DOM選擇
+ * @param {String} imageUrlKey - 指定NFT對象中用於圖片URL的屬性名，默認為"image"
  * @returns {JSX.Element} NFT卡片網格
  */
 const NFTGrid = ({
@@ -109,6 +110,7 @@ const NFTGrid = ({
   selectedNFT,
   className,
   itemIdPrefix = "nft-",
+  imageUrlKey = "image",
 }) => {
   // 簡化按鈕處理邏輯
   const getCustomButton = (nft) => {
@@ -142,13 +144,20 @@ const NFTGrid = ({
             // 確保優先使用tokenId，因為在跨頁面操作時需要保持一致
             const nftItemId = `${itemIdPrefix}${nft.tokenId}`;
 
+            // 創建帶有自定義圖片URL的NFT數據對象
+            const nftWithImageUrl = {
+              ...nft,
+              // 如果指定的imageUrlKey存在，則使用該字段的值作為圖片URL
+              imageUrl: nft[imageUrlKey] || nft.image,
+            };
+
             console.log("生成NFT元素ID:", nftItemId, "tokenId:", nft.tokenId);
 
             return (
               <NFTCard
                 key={nft.tokenId}
                 id={nftItemId}
-                nft={nft}
+                nft={nftWithImageUrl}
                 actionText={actionText}
                 onAction={onItemAction}
                 statusMessage={renderStatus ? renderStatus(nft) : null}

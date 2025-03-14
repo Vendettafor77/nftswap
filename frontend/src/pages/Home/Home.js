@@ -10,6 +10,8 @@ import SectionTitle from "../../components/styled/SectionTitle";
 import ListNFTForm from "./components/ListNFTForm";
 import GradientText from "../../components/styled/GradientText";
 import { useLocation, useNavigate } from "react-router-dom";
+import IPFSImage from "../../components/IPFSImage";
+import { getNFTImageUrl } from "../../utils/ipfsUtils";
 
 // 頁面主容器
 const HomeContainer = styled.div`
@@ -187,12 +189,12 @@ const NFTListItem = styled.div`
   }
 `;
 
-// 小型NFT圖片
-const NFTThumb = styled.img`
+// 小型NFT圖片容器
+const NFTThumbContainer = styled.div`
   width: 36px;
   height: 36px;
   border-radius: ${(props) => props.theme.borderRadius.small};
-  object-fit: cover;
+  overflow: hidden;
   margin-right: ${(props) => props.theme.spacing.sm};
 `;
 
@@ -286,6 +288,39 @@ const Home = () => {
       .sort((a, b) => parseFloat(b.price) - parseFloat(a.price))
       .slice(0, 3);
   }, []);
+
+  // 存儲處理後的NFT圖片URL
+  const [processedImageUrls, setProcessedImageUrls] = useState({});
+
+  // 在組件掛載時預處理熱門NFT的圖片URL
+  useEffect(() => {
+    const fetchPopularNFTImages = async () => {
+      const imageUrlsMap = {};
+
+      // 使用Promise.all同時處理所有熱門NFT的圖片
+      await Promise.all(
+        popularNFTs.map(async (nft) => {
+          try {
+            // 使用getNFTImageUrl函數獲取正確的圖片URL
+            const imageResult = await getNFTImageUrl(nft);
+            if (imageResult.url) {
+              imageUrlsMap[nft.tokenId] = imageResult.url;
+            } else {
+              // 如果無法獲取，則使用原始圖片作為後備
+              imageUrlsMap[nft.tokenId] = nft.image;
+            }
+          } catch (error) {
+            console.error(`獲取NFT #${nft.tokenId}圖片失敗:`, error);
+            imageUrlsMap[nft.tokenId] = nft.image;
+          }
+        })
+      );
+
+      setProcessedImageUrls(imageUrlsMap);
+    };
+
+    fetchPopularNFTImages();
+  }, [popularNFTs]);
 
   // 優化過濾和排序邏輯
   const filteredNFTs = useMemo(() => {
@@ -399,24 +434,20 @@ const Home = () => {
               fontSize="1.4rem"
               height="30"
               centered={true}
-              id={`sidebar-title-${Math.random().toString(36).substring(7)}`}
+              id="sidebar-title"
             >
               マーケット情報
             </GradientText>
           </SidebarTitle>
-
-          {/* 市場統計數據 */}
           <StatItem>
-            <StatLabel>総NFT数:</StatLabel>
-            <StatValue>{marketNFTs.length}点</StatValue>
+            <StatLabel>総上場数:</StatLabel>
+            <StatValue>{marketNFTs.length}</StatValue>
           </StatItem>
           <StatItem>
-            <StatLabel>表示中:</StatLabel>
-            <StatValue>{filteredNFTs.length}点</StatValue>
-          </StatItem>
-          <StatItem>
-            <StatLabel>コレクション数:</StatLabel>
-            <StatValue>{collections.length}</StatValue>
+            <StatLabel>平均価格:</StatLabel>
+            <StatValue>
+              <EthSymbol>Ξ</EthSymbol> 1.25
+            </StatValue>
           </StatItem>
 
           {/* 熱門NFT */}
@@ -424,7 +455,14 @@ const Home = () => {
           <PopularNFTList>
             {popularNFTs.map((nft) => (
               <NFTListItem key={nft.tokenId}>
-                <NFTThumb src={nft.image} alt={nft.name} />
+                <NFTThumbContainer>
+                  <IPFSImage
+                    src={processedImageUrls[nft.tokenId] || nft.image}
+                    alt={nft.name}
+                    width="100%"
+                    height="100%"
+                  />
+                </NFTThumbContainer>
                 <NFTInfo>
                   <NFTName>
                     <GradientText
@@ -445,8 +483,6 @@ const Home = () => {
             ))}
           </PopularNFTList>
 
-          {/* 活動信息 */}
-          <SectionHeading>最新情報</SectionHeading>
           <StatItem>
             <StatLabel>次回のドロップ:</StatLabel>
             <StatValue>3日後</StatValue>

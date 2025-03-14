@@ -4,6 +4,8 @@ import { PrimaryButton } from "../../../components/styled/Button";
 import { StatusMessage } from "../../../components/styled/StatusMessage";
 import { selectedNFTRef } from "./sharedState";
 import GradientText from "../../../components/styled/GradientText";
+import IPFSImage from "../../../components/IPFSImage";
+import { getNFTImageUrl } from "../../../utils/ipfsUtils";
 
 // 表單容器 - 美化版
 const FormWrapper = styled.div`
@@ -57,12 +59,12 @@ const SelectedNFTInfo = styled.div`
 `;
 
 // NFT圖片 - 稍微放大
-const NFTImage = styled.img`
+const NFTImageContainer = styled.div`
   width: 40px;
   height: 40px;
   border-radius: ${(props) => props.theme.borderRadius.small};
   margin-right: ${(props) => props.theme.spacing.md};
-  object-fit: cover;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
@@ -316,11 +318,15 @@ const ListNFTForm = () => {
     fadeOut: false,
     message: "",
   });
+  // 添加處理後的圖片URL狀態
+  const [processedImageUrl, setProcessedImageUrl] = useState(null);
 
   // 使用更可靠的方式監控外部NFT選擇變化
   const updateSelectedNFT = useCallback(() => {
     if (selectedNFTRef.current) {
       setSelectedNFT(selectedNFTRef.current);
+      // 重置處理後的圖片URL
+      setProcessedImageUrl(null);
     }
   }, []);
 
@@ -328,6 +334,7 @@ const ListNFTForm = () => {
   const clearSelectedNFT = useCallback(() => {
     setSelectedNFT(null);
     setPrice("");
+    setProcessedImageUrl(null);
   }, []);
 
   // 組件掛載和更新時同步選中狀態
@@ -346,6 +353,37 @@ const ListNFTForm = () => {
       window.removeEventListener("nft-cleared", clearSelectedNFT);
     };
   }, [updateSelectedNFT, clearSelectedNFT, selectedNFT]);
+
+  // 當選中的NFT變化時，處理圖片URL
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      if (selectedNFT && selectedNFT.image) {
+        try {
+          console.log(
+            `正在處理ListNFTForm中選中的NFT圖片: ${selectedNFT.image}`
+          );
+          // 使用getNFTImageUrl函數獲取可訪問的HTTP URL
+          const imageResult = await getNFTImageUrl(selectedNFT);
+          if (imageResult.url) {
+            console.log(`成功獲取處理後的圖片URL: ${imageResult.url}`);
+            setProcessedImageUrl(imageResult.url);
+          } else {
+            console.warn(`獲取圖片URL失敗，使用原始URL: ${selectedNFT.image}`);
+            // 如果無法獲取處理後的URL，則使用原始URL
+            setProcessedImageUrl(selectedNFT.image);
+          }
+        } catch (error) {
+          console.error(`獲取NFT圖片失敗: ${error.message}`);
+          // 如果出現錯誤，則使用原始URL
+          setProcessedImageUrl(selectedNFT.image);
+        }
+      }
+    };
+
+    if (selectedNFT) {
+      fetchImageUrl();
+    }
+  }, [selectedNFT]);
 
   const handleSubmit = async () => {
     if (!selectedNFT || !price) {
@@ -439,7 +477,14 @@ const ListNFTForm = () => {
             maxWidth: "450px",
           }}
         >
-          <NFTImage src={selectedNFT.image} alt={selectedNFT.name} />
+          <NFTImageContainer>
+            <IPFSImage
+              src={processedImageUrl || selectedNFT.image}
+              alt={selectedNFT.name}
+              height="40px"
+              width="40px"
+            />
+          </NFTImageContainer>
           <NFTDetails>
             <NFTName>
               <GradientText

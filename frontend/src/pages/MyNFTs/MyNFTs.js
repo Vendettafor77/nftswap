@@ -9,6 +9,8 @@ import { StatusMessage } from "../../components/styled/StatusMessage";
 import GradientText from "../../components/styled/GradientText";
 import { selectedNFTRef } from "../../pages/Home/components/sharedState";
 import { myNFTs } from "../../data/mockData";
+import IPFSImage from "../../components/IPFSImage";
+import { getNFTImageUrl } from "../../utils/ipfsUtils";
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -411,7 +413,7 @@ const NFTPreview = styled.div`
   }
 `;
 
-// 使用共享的GradientText組件替代原有的NFTNamePreviewSVG
+// 預覽圖片組件更新
 const NFTNamePreviewSVG = ({ children }) => {
   return (
     <GradientText
@@ -437,6 +439,50 @@ const CustomStatusMessage = styled(StatusMessage)`
   width: 100%;
 `;
 
+const NFTCollection = styled.p`
+  color: ${(props) => props.theme.colors.text.secondary};
+  margin-top: ${(props) => props.theme.spacing.sm};
+`;
+
+const ModalCloseButton = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.text.secondary};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: ${(props) => props.theme.colors.text.primary};
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 2px;
+    background-color: currentColor;
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+`;
+
 const MyNFTs = () => {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -456,26 +502,32 @@ const MyNFTs = () => {
   });
   const navigate = useNavigate();
 
-  // 从所有NFT中提取集合列表
+  // 從所有NFT中提取集合列表
   const collections = [...new Set(nfts.map((nft) => nft.collection))];
 
   // 模拟从区块链上获取用户的NFT，現在使用集中的myNFTs而不是本地模擬數據
   useEffect(() => {
     const fetchUserNFTs = async () => {
       try {
-        // 移除等待時間，直接加載數據
-        // await new Promise((resolve) => setTimeout(resolve, 1500));
-
         // 為了模擬一些NFT已上架的情況，我們將添加isListed和price屬性到導入的myNFTs
-        const processedNFTs = myNFTs.map((nft) => {
-          // 隨機決定某些NFT是否已上架
-          const isListed = Math.random() > 0.7;
-          return {
-            ...nft,
-            isListed,
-            price: isListed ? (Math.random() * 2 + 0.1).toFixed(2) : null,
-          };
-        });
+        const processedNFTs = await Promise.all(
+          myNFTs.map(async (nft) => {
+            // 隨機決定某些NFT是否已上架
+            const isListed = Math.random() > 0.7;
+
+            // 使用getNFTImageUrl預處理圖片URL
+            const imageResult = await getNFTImageUrl(nft);
+
+            return {
+              ...nft,
+              isListed,
+              price: isListed ? (Math.random() * 2 + 0.1).toFixed(2) : null,
+              processedImage: imageResult.url || nft.image, // 保留原始URL作為備用
+              imageLoading: false,
+              imageError: imageResult.error,
+            };
+          })
+        );
 
         setNfts(processedNFTs);
         // 立即設置加載狀態為false
@@ -774,6 +826,7 @@ const MyNFTs = () => {
                       }
                     : null
                 }
+                imageUrlKey="processedImage" // 使用預處理好的圖片URL
               />
             ) : (
               <EmptyState>
@@ -839,13 +892,21 @@ const MyNFTs = () => {
           <>
             <ModalOverlay onClick={closeTransferModal} />
             <TransferModal>
-              <CloseButton onClick={closeTransferModal} />
+              <ModalCloseButton onClick={closeTransferModal}>
+                ×
+              </ModalCloseButton>
               <h3>NFTを転送</h3>
               <NFTPreview>
-                <img src={activeNFT.image} alt={activeNFT.name} />
+                <IPFSImage
+                  src={activeNFT.processedImage || activeNFT.image}
+                  alt={activeNFT.name}
+                  width="100%"
+                  height="100%"
+                  objectFit="cover"
+                />
                 <div>
                   <NFTNamePreviewSVG>{activeNFT.name}</NFTNamePreviewSVG>
-                  <p>{activeNFT.collection}</p>
+                  <NFTCollection>{activeNFT.collection}</NFTCollection>
                 </div>
               </NFTPreview>
               <TransferInput

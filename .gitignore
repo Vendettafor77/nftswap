@@ -36,8 +36,6 @@ coverage.json
 .DS_Store
 .idea
 .vscode
-.VSCodeCounter
-.cursor
 *.suo
 *.ntvs*
 *.njsproj
