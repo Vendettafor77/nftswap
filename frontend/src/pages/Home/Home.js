@@ -307,7 +307,7 @@ const Home = () => {
           return parseFloat(a.price) - parseFloat(b.price);
         if (sortBy === "price_high")
           return parseFloat(b.price) - parseFloat(a.price);
-        return parseInt(b.id) - parseInt(a.id);
+        return parseInt(b.tokenId || "0") - parseInt(a.tokenId || "0");
       });
   }, [searchTerm, collectionFilter, sortBy]);
 
@@ -329,9 +329,10 @@ const Home = () => {
   const handleBuy = useCallback(async (nft) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
+      // 儲存購買狀態時使用tokenId，保持一致性
       setPurchaseStatus({
         show: true,
-        nftId: nft.id,
+        nftId: nft.tokenId, // 只使用tokenId
         success: true,
         fadeOut: false,
       });
@@ -353,7 +354,7 @@ const Home = () => {
     } catch (error) {
       setPurchaseStatus({
         show: true,
-        nftId: nft.id,
+        nftId: nft.tokenId, // 只使用tokenId
         success: false,
         fadeOut: false,
       });
@@ -363,7 +364,11 @@ const Home = () => {
   // 創建渲染狀態的函數，避免在JSX中定義函數
   const renderNftStatus = useCallback(
     (nft) => {
-      if (purchaseStatus.show && purchaseStatus.nftId === nft.id) {
+      // 確保進行正確的ID比較，只使用tokenId進行匹配
+      const nftIdentifier = nft.tokenId;
+      const statusIdentifier = purchaseStatus.nftId;
+
+      if (purchaseStatus.show && statusIdentifier === nftIdentifier) {
         return {
           success: purchaseStatus.success,
           message: purchaseStatus.success ? "購入成功！" : "購入失敗",
@@ -418,7 +423,7 @@ const Home = () => {
           <SectionHeading>人気のNFT</SectionHeading>
           <PopularNFTList>
             {popularNFTs.map((nft) => (
-              <NFTListItem key={nft.id}>
+              <NFTListItem key={nft.tokenId}>
                 <NFTThumb src={nft.image} alt={nft.name} />
                 <NFTInfo>
                   <NFTName>
@@ -426,7 +431,7 @@ const Home = () => {
                       fontSize="0.9rem"
                       height="18"
                       fontWeight="500"
-                      id={`nft-name-${nft.id}`}
+                      id={`nft-name-${nft.tokenId}`}
                     >
                       {nft.name}
                     </GradientText>

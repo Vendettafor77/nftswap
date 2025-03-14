@@ -356,7 +356,6 @@ const NFTCard = ({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const MAX_RETRIES = 2;
-  const LOAD_TIMEOUT = 10000; // 10秒超時
 
   useEffect(() => {
     let timeoutId;
@@ -380,7 +379,7 @@ const NFTCard = ({
           setLoadError(false);
         }
 
-        // 設置超時定時器
+        // 設置超時定時器，使用IPFSImage中的超時值（1000毫秒）
         timeoutId = setTimeout(() => {
           if (isMounted) {
             console.warn(
@@ -388,7 +387,7 @@ const NFTCard = ({
             );
             setRetryCount((prev) => prev + 1);
           }
-        }, LOAD_TIMEOUT);
+        }, 1000); // 使用與IPFSImage一致的超時時間（1秒）
 
         // 使用優化後的函數獲取圖片URL
         const result = await getNFTImageUrl(nftData);
@@ -454,9 +453,7 @@ const NFTCard = ({
               ? imageUrl
               : nftData.image || ""
           }
-          alt={
-            nftData.name || `NFT #${nftData.tokenId || nftData.id || "Unknown"}`
-          }
+          alt={nftData.name || `NFT #${nftData.tokenId || "Unknown"}`}
           width="100%"
           height="100%"
           objectFit="cover"
@@ -487,9 +484,7 @@ const NFTCard = ({
       <CardContent>
         <InfoContainer>
           <NFTName>
-            <NFTNameSVG id={nftData.id || nftData.tokenId}>
-              {nftData.name}
-            </NFTNameSVG>
+            <NFTNameSVG id={nftData.tokenId}>{nftData.name}</NFTNameSVG>
           </NFTName>
           <NFTCollection>{nftData.collection}</NFTCollection>
         </InfoContainer>

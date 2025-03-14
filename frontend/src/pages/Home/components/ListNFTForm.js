@@ -446,7 +446,7 @@ const ListNFTForm = () => {
                 fontSize="1rem"
                 height="24"
                 fontWeight="bold"
-                id={`selected-nft-${selectedNFT.id || selectedNFT.tokenId}`}
+                id={`selected-nft-${selectedNFT.tokenId}`}
               >
                 {selectedNFT.name}
               </GradientText>

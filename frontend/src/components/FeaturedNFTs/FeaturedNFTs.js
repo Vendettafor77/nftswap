@@ -86,7 +86,7 @@ const MoreButton = styled(Link)`
 // 示例NFT数据
 const featuredNfts = [
   {
-    id: "1",
+    tokenId: "1",
     name: "Mystic Ape #124",
     image:
       "https://i.seadn.io/gcs/files/ce84942656d53eabd17d4cd311f79536.png?auto=format&dpr=1&w=1000",
@@ -94,7 +94,7 @@ const featuredNfts = [
     owner: "0x7a86C6eA37F51a9B15aEb408b7c9702e8A718045",
   },
   {
-    id: "2",
+    tokenId: "2",
     name: "Cyber Punk #087",
     image:
       "https://i.seadn.io/gcs/files/dc6f0c6a33c5fe2c02cf1350dd8b828a.png?auto=format&dpr=1&w=1000",
@@ -102,7 +102,7 @@ const featuredNfts = [
     owner: "0x3bE4890086D61dCC39D5b27f31e64E194fEaE78B",
   },
   {
-    id: "3",
+    tokenId: "3",
     name: "WTFape #221",
     image:
       "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
@@ -110,7 +110,7 @@ const featuredNfts = [
     owner: "0x4A82692bB5E1e8e7B24DAfd6e8D7E67c2f5EEdDa",
   },
   {
-    id: "4",
+    tokenId: "4",
     name: "Doodle #713",
     image:
       "https://i.seadn.io/gcs/files/03c44f5f83805652ba076c41fa43c4b1.png?auto=format&dpr=1&w=1000",
@@ -125,7 +125,7 @@ const FeaturedNFTs = () => {
       <SectionTitle>已上架的热门NFT</SectionTitle>
       <NFTGrid>
         {featuredNfts.map((nft) => (
-          <NFTCard key={nft.id}>
+          <NFTCard key={nft.tokenId}>
             <NFTImage src={nft.image} alt={nft.name} />
             <NFTInfo>
               <NFTName>{nft.name}</NFTName>

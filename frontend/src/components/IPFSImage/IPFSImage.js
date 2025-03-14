@@ -91,7 +91,7 @@ const ErrorPlaceholder = styled.div`
   justify-content: center;
   align-items: center;
   background-color: transparent;
-   color: white; /* 文字填充顏色 */
+  color: white; /* 文字填充顏色 */
   font-size: 1rem;
   padding: 10px;
   text-align: center;
@@ -99,8 +99,8 @@ const ErrorPlaceholder = styled.div`
   font-weight: 600;
 
   /* 紫色邊框（通過 text-shadow 實現） */
-  text-shadow: 
-    -1px -1px 0 rgb(157, 96, 214),  
+  text-shadow:
+    -1px -1px 0 rgb(157, 96, 214),
     1px -1px 0 rgb(157, 96, 214),
     -1px 1px 0 rgb(157, 96, 214),
     1px 1px 0 rgb(157, 96, 214);
@@ -155,9 +155,9 @@ const IPFSImage = ({
   const [gatewayIndex, setGatewayIndex] = useState(-1); // -1表示使用默認網關
   const [useFallbackImage, setUseFallbackImage] = useState(false);
 
-  const MAX_RETRIES = 2; // 減少每個網關的最大重試次數，加快失敗檢測
+  const MAX_RETRIES = 1; // 減少每個網關的最大重試次數，加快失敗檢測
   const MAX_GATEWAY_ATTEMPTS = ALTERNATE_IPFS_GATEWAYS.length; // 最大網關嘗試次數
-  const LOAD_TIMEOUT = 5000; // 5秒加載超時
+  const LOAD_TIMEOUT = 1000; // 1秒加載超時
 
   useEffect(() => {
     if (!src) {

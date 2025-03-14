@@ -1,19 +1,46 @@
+# 依赖
 node_modules
+package-lock.json
+yarn.lock
+.pnp
+.pnp.js
+
+# 环境变量
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Hardhat files
-/cache
-/artifacts
+# 日志
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# TypeChain files
-/typechain
-/typechain-types
+# 构建输出
+dist
+build
+out
 
-# solidity-coverage files
-/coverage
-/coverage.json
+# 区块链/Hardhat特定
+artifacts
+cache
+typechain
+typechain-types
+coverage
+coverage.json
 
-# Hardhat Ignition default folder for deployments against a local node
-ignition/deployments/chain-31337
-src/artifacts
+# 本地开发
+.DS_Store
+.idea
+.vscode
+.VSCodeCounter
+.cursor
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 

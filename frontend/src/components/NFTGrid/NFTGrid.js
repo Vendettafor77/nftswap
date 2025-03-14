@@ -146,8 +146,8 @@ const NFTGrid = ({
 
             return (
               <NFTCard
-                key={nft.id || nft.tokenId}
-                id={nftItemId} // 添加ID屬性
+                key={nft.tokenId}
+                id={nftItemId}
                 nft={nft}
                 actionText={actionText}
                 onAction={onItemAction}
