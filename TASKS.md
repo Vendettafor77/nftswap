@@ -1,315 +1,247 @@
-## 1. **前端功能模塊完善**
+# NFT交易平台開發任務清單
 
-### 1.1 錢包連接功能
+## 1. **智能合約中間層開發**
+
+### 1.1 ethers v6中間層構建 ⚠️ 優先
+
+- **現狀**：⏳ 基本框架已存在，需要使用ethers v6重構
+- **任務**：
+  - ⏳ 重構現有`nftSwap.js`以使用ethers v6最新特性
+  - ⏳ 添加事件監聽功能，處理合約事件
+  - ⏳ 實現錯誤處理和用戶友好的錯誤提示
+  - ⏳ 提供完整的交易狀態跟蹤（待處理、確認中、已確認、失敗）
+- **文件**：
+  - ⏳ `frontend/src/utils/contractUtils.js` (新建)
+  - ⏳ `frontend/src/utils/nftSwap.js` (更新)
+  - ⏳ `frontend/src/hooks/useContract.js` (新建)
+
+### 1.2 合約函數封裝
+
+- **現狀**：⏳ 基本函數已存在，需要擴展和優化
+- **任務**：
+  - ⏳ 為所有合約函數創建完整的封裝
+  - ⏳ 添加參數驗證和類型檢查
+  - ⏳ 實現更精確的錯誤處理和錯誤信息本地化
+  - ⏳ 添加交易參數定制選項（如gas限制、優先級費用）
+- **文件**：
+  - ⏳ `frontend/src/utils/nftSwapFunctions.js` (新建)
+  - ✅ `frontend/src/utils/venApeFunctions.js` (已完成)
+
+### 1.3 IPFS集成與中間層
+
+- **現狀**：⏳ 已有基本ipfsUtils.js，需要擴展功能
+- **任務**：
+  - ⏳ 完善IPFS文件上傳功能
+  - ⏳ 創建NFT元數據生成和上傳函數
+  - ⏳ 實現多IPFS網關備份機制
+  - ⏳ 添加文件緩存和加載優化
+- **文件**：
+  - ⏳ `frontend/src/utils/ipfsUploadUtils.js` (新建)
+  - ⏳ `frontend/src/utils/ipfsUtils.js` (更新)
+
+### 1.4 交易監聽與狀態管理
+
+- **現狀**：⏳ 尚未開始實現
+- **任務**：
+  - ⏳ 創建通用交易狀態跟蹤hook
+  - ⏳ 實現針對特定事件（上架、購買、鑄造）的監聽機制
+  - ⏳ 創建交易通知系統
+  - ⏳ 實現交易歷史記錄本地存儲
+- **文件**：
+  - ⏳ `frontend/src/hooks/useTransactionStatus.js` (新建)
+  - ⏳ `frontend/src/hooks/useContractEvent.js` (新建)
+  - ⏳ `frontend/src/contexts/TransactionContext.js` (新建)
+
+---
+
+## 2. **前端功能整合**
+
+### 2.1 錢包連接優化
 
 - **現狀**：✅ 基本功能已實現
 - **任務**：
-  - ✅ 檢查並完善 `components/Navbar` 中的錢包連接組件
-  - ✅ 創建/完善 `utils/walletUtils.js` 處理錢包交互邏輯
-  - ✅ 實現錢包地址展示和餘額顯示功能
+  - ⏳ 與ethers v6中間層整合
+  - ⏳ 添加多錢包支持（MetaMask, WalletConnect等）
+  - ⏳ 實現斷開重連和會話持久化
+  - ⏳ 優化移動設備上的錢包交互
 - **文件**：
-  - ✅ `frontend/src/components/Navbar/WalletConnectButton.js`
-  - ✅ `frontend/src/utils/walletUtils.js`
+  - ⏳ `frontend/src/utils/walletUtils.js` (更新)
+  - ⏳ `frontend/src/contexts/WalletContext.js` (更新)
 
-### 1.2 NFT瀏覽與購買
+### 2.2 NFT瀏覽與購買
 
 - **現狀**：✅ 核心功能已實現
 - **任務**：
-  - ✅ 完善 `NFTCard` 中的購買按鈕和交互邏輯
-  - ✅ 確保 `NFTGrid` 正確響應篩選條件
-  - ✅ 完善 `nftSwap.js` 中的購買交易邏輯
+  - ⏳ 與新的ethers v6中間層整合
+  - ⏳ 優化購買流程的用戶體驗
+  - ⏳ 添加交易狀態實時顯示
+  - ⏳ 實現購買成功後的自動刷新
 - **文件**：
-  - ✅ `frontend/src/components/NFTCard/NFTCard.js`
-  - ✅ `frontend/src/components/NFTGrid/NFTGrid.js`
-  - ✅ `frontend/src/utils/nftSwap.js` (購買函數)
+  - ⏳ `frontend/src/pages/Home/Home.js` (更新購買邏輯)
+  - ⏳ `frontend/src/components/NFTCard/NFTCard.js` (更新狀態顯示)
 
-### 1.3 搜索與過濾功能
+### 2.3 NFT鑄造功能
 
 - **現狀**：✅ 基本功能已實現
 - **任務**：
-  - ✅ 確保搜索欄正確工作
-  - ✅ 完善收藏集過濾功能
-  - ✅ 確保排序功能（最新、價格高低）正常工作
+  - ⏳ 與新的ethers v6中間層整合
+  - ⏳ 優化鑄造過程中的狀態顯示
+  - ⏳ 添加IPFS元數據上傳功能
+  - ⏳ 實現自定義NFT屬性設置
 - **文件**：
-  - ✅ `frontend/src/components/Filters/FilterBar.js`
-  - ✅ `frontend/src/pages/Home/Home.js` (過濾邏輯)
+  - ⏳ `frontend/src/pages/MintVenAPE/MintVenAPE.js` (更新)
 
-### 1.4 NFT鑄造功能
+### 2.4 NFT上架與管理
 
-- **現狀**：✅ 基本功能已實現
+- **現狀**：⏳ 基本功能已實現，需要整合
 - **任務**：
-  - ✅ 確保ID輸入、隨機生成、ID切換功能正常
-  - ✅ 完善鑄造交易提交邏輯
-  - ✅ 優化交易確認和狀態提示
+  - ⏳ 與新的ethers v6中間層整合
+  - ⏳ 優化上架、撤回、轉移功能
+  - ⏳ 添加批量操作功能
+  - ⏳ 實現NFT價格更新功能
 - **文件**：
-  - ✅ `frontend/src/pages/MintWTFape/MintWTFape.js`
-  - ✅ `frontend/src/utils/nftSwap.js` (鑄造函數)
+  - ⏳ `frontend/src/pages/MyNFTs/MyNFTs.js` (更新)
+  - ⏳ `frontend/src/pages/Home/components/ListNFTSection.js` (更新)
 
-### 1.5 我的NFT管理
+### 2.5 交易記錄查看
 
-- **現狀**：⏳ 基本功能已實現，需優化體驗
+- **現狀**：⏳ 基本框架已存在，需要整合
 - **任務**：
-  - ✅ 確保NFT列表正確顯示用戶擁有的NFT
-  - ⏳ 完善NFT操作按鈕（上架、撤回、轉移）
-  - ⏳ 優化頁面響應性
+  - ⏳ 與新的ethers v6中間層和事件系統整合
+  - ⏳ 實現實時交易記錄更新
+  - ⏳ 添加區塊鏈瀏覽器鏈接
+  - ⏳ 優化交易記錄顯示和過濾
 - **文件**：
-  - ⏳ `frontend/src/pages/MyNFTs/MyNFTs.js`
-  - ⏳ `frontend/src/components/NFTCard/NFTCard.js` (操作按鈕)
-
-### 1.6 NFT上架出售
-
-- **現狀**：⏳ 基本功能已實現，需優化體驗
-- **任務**：
-  - ✅ 確保NFT選擇功能正常
-  - ⏳ 完善價格設置表單
-  - ✅ 確保上架交易提交邏輯
-- **文件**：
-  - ⏳ `frontend/src/components/ListNFT/ListNFTForm.js`
-  - ⏳ `frontend/src/pages/Home/components/ListNFTSection.js`
-  - ✅ `frontend/src/utils/nftSwap.js` (上架函數)
-
-### 1.7 NFT撤回功能
-
-- **現狀**：⏳ 基本功能已實現，需優化體驗
-- **任務**：
-  - ⏳ 確保撤回按鈕在已上架NFT卡片上正確顯示
-  - ✅ 完善撤回交易提交邏輯
-  - ⏳ 優化撤回後的狀態更新
-- **文件**：
-  - ⏳ `frontend/src/pages/MyNFTs/MyNFTs.js` (撤回邏輯)
-  - ✅ `frontend/src/utils/nftSwap.js` (撤回函數)
-
-### 1.8 NFT轉移功能
-
-- **現狀**：⏳ 基本功能已實現，需完善體驗
-- **任務**：
-  - ⏳ 創建/完善轉移彈窗組件
-  - ⏳ 實現地址輸入和驗證
-  - ✅ 完善轉移交易提交邏輯
-- **文件**：
-  - ⏳ `frontend/src/components/TransferModal.js`
-  - ✅ `frontend/src/utils/nftSwap.js` (轉移函數)
-
-### 1.9 交易記錄查看
-
-- **現狀**：⏳ 基本框架已存在，需完善功能和體驗
-- **任務**：
-  - ⏳ 完善交易記錄卡片組件
-  - ⏳ 確保搜索、過濾和排序功能正常
-  - ⏳ 優化交易類型顯示和地址格式化
-- **文件**：
-  - ⏳ `frontend/src/pages/TransactionHistory/TransactionHistory.js`
-  - ⏳ `frontend/src/pages/TransactionHistory/components/TransactionCard.js`
+  - ⏳ `frontend/src/pages/TransactionHistory/TransactionHistory.js` (更新)
 
 ---
 
-## 2. **前端組件與工具完善**
+## 3. **新功能開發**
 
-### 2.1 狀態提示組件
+### 3.1 批量操作功能
 
-- **現狀**：✅ 基本功能已實現
+- **現狀**：⏳ 尚未開始實現
 - **任務**：
-  - ✅ 完善成功/失敗提示組件
-  - ✅ 確保交易等待狀態正確顯示
+  - ⏳ 實現批量NFT選擇機制
+  - ⏳ 添加批量上架功能
+  - ⏳ 添加批量轉移功能
+  - ⏳ 添加批量價格更新功能
 - **文件**：
-  - ✅ `frontend/src/components/styled/StatusMessage.js`
+  - ⏳ `frontend/src/components/BatchOperations/BatchOperationsBar.js` (新建)
+  - ⏳ `frontend/src/hooks/useBatchOperations.js` (新建)
 
-### 2.2 合約交互工具
+### 3.2 高級NFT篩選
 
-- **現狀**：✅ 基本功能已實現
+- **現狀**：⏳ 基本篩選已實現，需要擴展
 - **任務**：
-  - ✅ 確保所有合約交互函數正確實現
-  - ✅ 優化錯誤處理
-  - ⏳ 完善事件監聽邏輯
+  - ⏳ 添加基於屬性的高級篩選
+  - ⏳ 實現價格範圍篩選
+  - ⏳ 添加收藏和最近查看功能
+  - ⏳ 優化篩選UI/UX
 - **文件**：
-  - ✅ `frontend/src/utils/nftSwap.js`
+  - ⏳ `frontend/src/components/Filters/AdvancedFilterBar.js` (新建)
+  - ⏳ `frontend/src/hooks/useAdvancedFilters.js` (新建)
 
-### 2.3 日期和格式化工具
+### 3.3 NFT收藏集管理
 
-- **現狀**：✅ 基本功能已實現
+- **現狀**：⏳ 尚未開始實現
 - **任務**：
-  - ✅ 確保日期格式化符合日語習慣
-  - ✅ 添加地址格式化工具函數
+  - ⏳ 創建收藏集管理界面
+  - ⏳ 實現收藏集創建和編輯功能
+  - ⏳ 添加收藏集統計和分析
+  - ⏳ 優化收藏集瀏覽體驗
 - **文件**：
-  - ✅ `frontend/src/utils/dateUtils.js`
-  - ✅ `frontend/src/utils/formatUtils.js`
-
-### 2.4 IPFS集成
-
-- **現狀**：✅ 核心功能已實現
-- **任務**：
-  - ✅ 創建IPFS交互工具函數
-  - ✅ 實現IPFS URL轉換功能
-  - ✅ 創建IPFSImage組件用於顯示IPFS圖片
-  - ✅ 創建NFTMetadata組件用於顯示NFT元數據
-  - ✅ 創建示例頁面展示IPFS組件功能
-  - ✅ 完善與智能合約的集成
-  - ⏳ 實現元數據上傳功能
-- **文件**：
-  - ✅ `frontend/src/utils/ipfsUtils.js`
-  - ✅ `frontend/src/components/IPFSImage/IPFSImage.js`
-  - ✅ `frontend/src/components/NFTMetadata/NFTMetadata.js`
-  - ✅ `frontend/src/components/IPFSExample/IPFSExample.js`
-  - ⏳ `frontend/src/utils/ipfsUploadUtils.js` (待創建)
+  - ⏳ `frontend/src/pages/Collections/Collections.js` (新建)
+  - ⏳ `frontend/src/components/CollectionCard/CollectionCard.js` (新建)
 
 ---
 
-## 3. **UI/UX優化**
+## 4. **性能與用戶體驗優化**
 
-### 3.1 日語本地化
+### 4.1 前端性能優化
 
-- **現狀**：⏳ 部分已實現，需擴展覆蓋範圍
+- **現狀**：⏳ 初步優化已完成，需要進一步提升
 - **任務**：
-  - ⏳ 確保所有用戶可見文本使用日語
-  - ⏳ 創建/完善日語翻譯資源
+  - ⏳ 實現組件懶加載
+  - ⏳ 優化大列表渲染（虛擬滾動）
+  - ⏳ 添加數據緩存機制
+  - ⏳ 優化圖片加載策略
 - **文件**：
-  - ⏳ `frontend/src/data/translations.js`
+  - ⏳ `frontend/src/components/VirtualScroll/VirtualNFTGrid.js` (新建)
+  - ⏳ `frontend/src/hooks/useVirtualization.js` (新建)
+  - ⏳ `frontend/src/utils/cacheUtils.js` (新建)
 
-### 3.2 響應式設計優化
+### 4.2 移動端優化
 
-- **現狀**：⏳ 基本響應式已實現，需提升移動端體驗
+- **現狀**：⏳ 基本響應式設計已實現，需要專門優化
 - **任務**：
-  - ⏳ 優化在各種屏幕尺寸下的顯示
-  - ⏳ 完善移動端交互體驗
+  - ⏳ 優化移動端佈局和交互
+  - ⏳ 添加移動設備專用功能（如手勢操作）
+  - ⏳ 優化移動端上的錢包交互
+  - ⏳ 改善移動端的加載性能
 - **文件**：
-  - ⏳ 全局樣式和各組件樣式文件
+  - ⏳ `frontend/src/styles/MobileStyles.js` (新建)
+  - ⏳ `frontend/src/hooks/useResponsive.js` (新建)
 
-### 3.3 動畫效果
+### 4.3 錯誤處理與反饋
 
-- **現狀**：✅ 基本動畫效果已實現
+- **現狀**：⏳ 基本錯誤處理已實現，需要改進
 - **任務**：
-  - ✅ 完善頁面切換動畫
-  - ✅ 優化交互反饋動畫
+  - ⏳ 創建全局錯誤處理系統
+  - ⏳ 優化錯誤和成功提示UI
+  - ⏳ 實現分級錯誤處理（用戶級/開發者級）
+  - ⏳ 添加錯誤報告機制
 - **文件**：
-  - ✅ `frontend/src/components/BackgroundEffect.js`
-  - ✅ `frontend/src/contexts/AnimationContext.js`
+  - ⏳ `frontend/src/contexts/ErrorContext.js` (新建)
+  - ⏳ `frontend/src/components/Feedback/ErrorMessage.js` (新建)
+  - ⏳ `frontend/src/components/Feedback/SuccessMessage.js` (新建)
 
 ---
 
-## 4. **智能合約對接**
+## 5. **測試與部署**
 
-### 4.1 合約函數測試
+### 5.1 單元測試
 
-- **現狀**：✅ 已完成
+- **現狀**：⏳ 尚未開始實現
 - **任務**：
-  - ✅ 測試所有合約函數
-  - ✅ 確保與前端的正確交互
+  - ⏳ 為核心合約函數編寫單元測試
+  - ⏳ 為關鍵UI組件編寫測試
+  - ⏳ 創建專門的工具函數測試
+  - ⏳ 設置自動化測試流程
 - **文件**：
-  - ✅ `contracts/NFTSwap.sol`
-  - ✅ `contracts/WTFApe.sol`
-  - ✅ `test/` 目錄下的測試文件
+  - ⏳ `frontend/src/__tests__/` (新建測試目錄)
 
-### 4.2 ABI更新
+### 5.2 集成測試
 
-- **現狀**：✅ 已完成
+- **現狀**：⏳ 尚未開始實現
 - **任務**：
-  - ✅ 確保最新的合約ABI被正確導入
+  - ⏳ 創建端到端測試
+  - ⏳ 測試完整用戶流程
+  - ⏳ 設置測試環境與模擬數據
+  - ⏳ 自動化集成測試
 - **文件**：
-  - ✅ `frontend/src/abis/` 目錄下的ABI文件
+  - ⏳ `frontend/src/__tests__/integration/` (新建)
 
-### 4.3 合約事件監聽
-
-- **現狀**：⏳ 基本功能已實現，需優化體驗
-- **任務**：
-  - ⏳ 實現對關鍵合約事件的監聽
-  - ⏳ 優化前端事件響應邏輯
-- **文件**：
-  - ⏳ `frontend/src/utils/nftSwap.js` (事件監聽部分)
-
----
-
-## 5. **測試與修復**
-
-### 5.1 功能測試
-
-- **現狀**：⏳ 正在進行
-- **任務**：
-  - ⏳ 測試所有用戶操作流程
-  - ⏳ 記錄並修復發現的問題
-- **涉及文件**：
-  - ⏳ 所有前端頁面和組件
-
-### 5.2 連接測試
-
-- **現狀**：⏳ 正在進行
-- **任務**：
-  - ⏳ 測試前端與合約的所有交互功能
-  - ⏳ 優化錯誤處理和用戶提示
-- **涉及文件**：
-  - ⏳ `frontend/src/utils/nftSwap.js`
-  - ⏳ 所有調用合約函數的組件
-
-### 5.3 性能優化
-
-- **現狀**：⏳ 尚未開始
-- **任務**：
-  - ⏳ 識別並解決性能瓶頸
-  - ⏳ 優化資源加載和渲染性能
-- **涉及文件**：
-  - ⏳ 所有前端組件，特別是列表和網格視圖
-
----
-
-## 6. **部署與文檔**
-
-### 6.1 部署準備
+### 5.3 部署準備
 
 - **現狀**：⏳ 尚未開始
 - **任務**：
   - ⏳ 準備生產環境配置
-  - ⏳ 設置正確的合約地址
+  - ⏳ 優化構建流程
+  - ⏳ 配置多環境部署
+  - ⏳ 設置CI/CD流程
 - **文件**：
-  - ⏳ 環境配置文件
-  - ⏳ `frontend/src/utils/nftSwap.js` (合約地址部分)
-
-### 6.2 文檔更新
-
-- **現狀**：✅ 基本文檔已完善，需同步更新
-- **任務**：
-  - ⏳ 更新README和開發者文檔
-  - ⏳ 完善用戶指南
-- **文件**：
-  - ⏳ `README.md`
-  - ⏳ 其他文檔文件
-
-### 6.3 最終部署
-
-- **現狀**：⏳ 尚未開始
-- **任務**：
-  - ⏳ 部署智能合約到主網
-  - ⏳ 部署前端到生產環境
-- **文件**：
-  - ⏳ 部署腳本和配置
-
----
-
-## 7. **進度追蹤**
-
-### 7.1 模塊完成追蹤
-
-- **現狀**：✅ 已建立TASKS.md進行追蹤
-- **任務**：
-  - ✅ 創建/更新進度追蹤文檔
-  - ⏳ 記錄每個模塊的完成狀態
-- **文件**：
-  - ✅ `TASKS.md`
-
-### 7.2 問題記錄
-
-- **現狀**：⏳ 尚未系統性整理
-- **任務**：
-  - ⏳ 記錄發現的問題和解決方案
-  - ⏳ 更新遺留任務列表
-- **文件**：
-  - ⏳ `ISSUES.md` (創建)
+  - ⏳ `frontend/.env.production` (新建)
+  - ⏳ `scripts/deploy.js` (更新)
 
 ---
 
 ## 執行優先級
 
-1. **核心功能完善**：確保所有基本操作（瀏覽、購買、鑄造、上架、轉移）正常工作
-2. **合約交互完善**：確保所有前端與合約的交互可靠
-3. **IPFS集成**：實現NFT元數據的IPFS存儲和獲取
-4. **UI/UX優化**：完善日語翻譯和用戶體驗
-5. **測試與修復**：全面測試並修復問題
-6. **文檔與部署**：更新文檔並準備部署
+1. **ethers v6中間層構建**：這是最優先任務，所有前端功能都需要與此整合
+2. **合約函數封裝與IPFS集成**：確保所有合約功能可通過中間層可靠訪問
+3. **前端功能整合**：將現有UI與新的中間層連接
+4. **交易監聽與狀態管理**：實現實時交易狀態更新
+5. **新功能開發**：在基礎功能穩定後添加增強功能
+6. **性能優化**：提升應用整體性能和用戶體驗
+7. **測試與部署**：確保應用穩定並準備生產環境部署

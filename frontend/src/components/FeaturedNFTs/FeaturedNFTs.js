@@ -103,7 +103,7 @@ const featuredNfts = [
   },
   {
     tokenId: "3",
-    name: "WTFape #221",
+    name: "VenAPE #221",
     image:
       "https://i.seadn.io/gcs/files/5660af3bbcfb3a83b981e5e56f258df5.png?auto=format&dpr=1&w=1000",
     price: "0.18 ETH",

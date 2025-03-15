@@ -3,7 +3,7 @@ pragma solidity ^0.8.21;
 
 import "./IERC721.sol";
 import "./IERC721Receiver.sol";
-import "./WTFApe.sol";
+import "./VenAPE.sol";
 
 contract NFTSwap is IERC721Receiver {
     event List(
@@ -46,18 +46,21 @@ contract NFTSwap is IERC721Receiver {
     function list(address _nftAddr, uint256 _tokenId, uint256 _price) public {
         require(_nftAddr != address(0), "Invalid NFT address");
         require(_price > 0, "Price must be greater than 0");
-        
+
         IERC721 _nft = IERC721(_nftAddr); // 声明IERC721接口合约变量
         require(_nft.ownerOf(_tokenId) == msg.sender, "Not token owner"); // 檢查 NFT 是否屬於發送者
         require(_nft.getApproved(_tokenId) == address(this), "Need Approval"); // 檢查合約是否已獲得授權
-        
+
         Order storage _order = nftList[_nftAddr][_tokenId];
-        require(_order.owner == address(0) && _order.price == 0, "NFT already listed"); // 確保 NFT 未被掛單
-        
+        require(
+            _order.owner == address(0) && _order.price == 0,
+            "NFT already listed"
+        ); // 確保 NFT 未被掛單
+
         // 先設置訂單信息
         _order.owner = msg.sender;
         _order.price = _price;
-        
+
         // 最後執行 NFT 轉移
         try _nft.safeTransferFrom(msg.sender, address(this), _tokenId) {
             emit List(msg.sender, _nftAddr, _tokenId, _price);

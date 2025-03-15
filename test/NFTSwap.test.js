@@ -2,14 +2,14 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("NFTSwap", function () {
-  let nftSwap, wtfApe, mockNft, owner, addr1, addr2;
+  let nftSwap, venApe, mockNft, owner, addr1, addr2;
 
   beforeEach(async function () {
-    // 部署WTFApe合約
-    const WTFApe = await ethers.getContractFactory("WTFApe");
-    wtfApe = await WTFApe.deploy("WTFApe", "WTF");
-    await wtfApe.waitForDeployment(); // 確認合約部署成功
-    console.log("WTFApe address:", wtfApe.target); // 打印合約地址以檢查是否為 null
+    // 部署VenAPE合約
+    const VenAPE = await ethers.getContractFactory("VenAPE");
+    venApe = await VenAPE.deploy("VenAPE", "VEN");
+    await venApe.waitForDeployment(); // 確認合約部署成功
+    console.log("VenAPE address:", venApe.target); // 打印合約地址以檢查是否為 null
 
     // 部署NFTSwap合約
     const NFTSwap = await ethers.getContractFactory("NFTSwap");
@@ -30,8 +30,8 @@ describe("NFTSwap", function () {
   describe("Basic functions", function () {
     // 在每个测试前准备 NFT
     beforeEach(async function () {
-      await wtfApe.mint(owner.address, 1);
-      await wtfApe.approve(nftSwap.target, 1);
+      await venApe.mint(owner.address, 1);
+      await venApe.approve(nftSwap.target, 1);
     });
 
     /**
@@ -39,8 +39,8 @@ describe("NFTSwap", function () {
      * 確保 NFT 可以正確上架，並記錄正確的所有者和價格
      */
     it("Should list an NFT", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
-      const order = await nftSwap.nftList(wtfApe.target, 1);
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
+      const order = await nftSwap.nftList(venApe.target, 1);
       expect(order.owner).to.equal(owner.address);
       expect(order.price).to.equal(ethers.parseEther("1"));
     });
@@ -50,30 +50,30 @@ describe("NFTSwap", function () {
      * 確保買家可以用正確的價格購買 NFT，並成功轉移所有權
      */
     it("Should purchase an NFT", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 購買NFT
       await nftSwap
         .connect(addr1)
-        .purchase(wtfApe.target, 1, { value: ethers.parseEther("1") });
-      expect(await wtfApe.ownerOf(1)).to.equal(addr1.address);
+        .purchase(venApe.target, 1, { value: ethers.parseEther("1") });
+      expect(await venApe.ownerOf(1)).to.equal(addr1.address);
     });
 
     it("Should revoke a listed NFT", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 撤銷掛單
-      await nftSwap.revoke(wtfApe.target, 1);
-      const order = await nftSwap.nftList(wtfApe.target, 1);
+      await nftSwap.revoke(venApe.target, 1);
+      const order = await nftSwap.nftList(venApe.target, 1);
       expect(order.owner).to.equal(ethers.ZeroAddress);
     });
 
     it("Should update the price of a listed NFT", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 更新價格
-      await nftSwap.update(wtfApe.target, 1, ethers.parseEther("2"));
-      const order = await nftSwap.nftList(wtfApe.target, 1);
+      await nftSwap.update(venApe.target, 1, ethers.parseEther("2"));
+      const order = await nftSwap.nftList(venApe.target, 1);
       expect(order.price).to.equal(ethers.parseEther("2"));
     });
 
@@ -84,19 +84,19 @@ describe("NFTSwap", function () {
      */
     it("Should not allow double listing", async function () {
       // 第一次上架
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
-      
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
+
       // 铸造新的 NFT 并授权
-      await wtfApe.mint(owner.address, 2);
-      await wtfApe.approve(nftSwap.target, 2);
-      
+      await venApe.mint(owner.address, 2);
+      await venApe.approve(nftSwap.target, 2);
+
       // 尝试上架已经在列表中的 NFT (tokenId = 1)
       await expect(
-        nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"))
+        nftSwap.list(venApe.target, 1, ethers.parseEther("1"))
       ).to.be.revertedWith("Not token owner");
-      
+
       // 验证新的 NFT 可以成功上架
-      await nftSwap.list(wtfApe.target, 2, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 2, ethers.parseEther("1"));
     });
 
     /**
@@ -105,18 +105,18 @@ describe("NFTSwap", function () {
      * 原因: 合約中 require(_order.price > 0, "Invalid Price")
      */
     it("Should not allow double purchase", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 購買NFT
       await nftSwap
         .connect(addr1)
-        .purchase(wtfApe.target, 1, { value: ethers.parseEther("1") });
+        .purchase(venApe.target, 1, { value: ethers.parseEther("1") });
 
       // 嘗試再次購買相同的NFT，應該失敗
       await expect(
         nftSwap
           .connect(addr2)
-          .purchase(wtfApe.target, 1, { value: ethers.parseEther("1") })
+          .purchase(venApe.target, 1, { value: ethers.parseEther("1") })
       ).to.be.revertedWith("Invalid Price");
     });
 
@@ -126,25 +126,25 @@ describe("NFTSwap", function () {
      * 原因: 合約中 require(_order.owner == msg.sender, "Not Owner")
      */
     it("Should not allow double revoke", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 撤銷掛單
-      await nftSwap.revoke(wtfApe.target, 1);
+      await nftSwap.revoke(venApe.target, 1);
 
       // 嘗試再次撤銷相同的NFT，應該失敗
-      await expect(nftSwap.revoke(wtfApe.target, 1)).to.be.revertedWith(
+      await expect(nftSwap.revoke(venApe.target, 1)).to.be.revertedWith(
         "Not Owner"
       );
     });
 
     it("Should list NFT with updated price", async function () {
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
 
       // 更新價格
-      await nftSwap.update(wtfApe.target, 1, ethers.parseEther("2"));
+      await nftSwap.update(venApe.target, 1, ethers.parseEther("2"));
 
       // 確認NFT價格已成功更新
-      const order = await nftSwap.nftList(wtfApe.target, 1);
+      const order = await nftSwap.nftList(venApe.target, 1);
       expect(order.price).to.equal(ethers.parseEther("2"));
     });
   });
@@ -152,33 +152,33 @@ describe("NFTSwap", function () {
   // 错误处理测试
   describe("Error handling", function () {
     beforeEach(async function () {
-      await wtfApe.mint(owner.address, 1);
+      await venApe.mint(owner.address, 1);
     });
 
     it("Should not allow listing with zero address", async function () {
-      await wtfApe.approve(nftSwap.target, 1);
+      await venApe.approve(nftSwap.target, 1);
       await expect(
         nftSwap.list(ethers.ZeroAddress, 1, ethers.parseEther("1"))
       ).to.be.revertedWith("Invalid NFT address");
     });
 
     it("Should not allow listing with zero price", async function () {
-      await wtfApe.approve(nftSwap.target, 1);
-      await expect(nftSwap.list(wtfApe.target, 1, 0)).to.be.revertedWith(
+      await venApe.approve(nftSwap.target, 1);
+      await expect(nftSwap.list(venApe.target, 1, 0)).to.be.revertedWith(
         "Price must be greater than 0"
       );
     });
 
     it("Should not allow listing by non-owner", async function () {
-      await wtfApe.approve(nftSwap.target, 1);
+      await venApe.approve(nftSwap.target, 1);
       await expect(
-        nftSwap.connect(addr1).list(wtfApe.target, 1, ethers.parseEther("1"))
+        nftSwap.connect(addr1).list(venApe.target, 1, ethers.parseEther("1"))
       ).to.be.revertedWith("Not token owner");
     });
 
     it("Should not allow listing without approval", async function () {
       await expect(
-        nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"))
+        nftSwap.list(venApe.target, 1, ethers.parseEther("1"))
       ).to.be.revertedWith("Need Approval");
     });
 
@@ -198,9 +198,9 @@ describe("NFTSwap", function () {
   // ETH 处理测试
   describe("ETH handling", function () {
     beforeEach(async function () {
-      await wtfApe.mint(owner.address, 1);
-      await wtfApe.approve(nftSwap.target, 1);
-      await nftSwap.list(wtfApe.target, 1, ethers.parseEther("1"));
+      await venApe.mint(owner.address, 1);
+      await venApe.approve(nftSwap.target, 1);
+      await nftSwap.list(venApe.target, 1, ethers.parseEther("1"));
     });
 
     /**
@@ -223,7 +223,7 @@ describe("NFTSwap", function () {
       // 購買 NFT，支付 2 ETH（多付 1 ETH）
       const tx = await nftSwap
         .connect(addr1)
-        .purchase(wtfApe.target, 1, { value: paymentAmount });
+        .purchase(venApe.target, 1, { value: paymentAmount });
 
       const receipt = await tx.wait();
       const gasUsed = receipt.gasUsed * receipt.gasPrice;
@@ -245,7 +245,7 @@ describe("NFTSwap", function () {
       );
 
       // 確認 NFT 所有權已轉移給買家
-      expect(await wtfApe.ownerOf(1)).to.equal(
+      expect(await venApe.ownerOf(1)).to.equal(
         addr1.address,
         "NFT should be transferred to buyer"
       );
@@ -259,7 +259,7 @@ describe("NFTSwap", function () {
       await expect(
         nftSwap
           .connect(addr1)
-          .purchase(wtfApe.target, 1, { value: ethers.parseEther("0.5") })
+          .purchase(venApe.target, 1, { value: ethers.parseEther("0.5") })
       ).to.be.revertedWith("Increase price");
     });
   });

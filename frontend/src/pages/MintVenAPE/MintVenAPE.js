@@ -12,9 +12,9 @@ import { myNFTs } from "../../data/mockData";
 import IPFSImage from "../../components/IPFSImage";
 import { getNFTImageUrl } from "../../utils/ipfsUtils";
 
-// NFT數據（來自WTFape系列）
+// NFT數據（來自VenAPE系列）
 const nftData = myNFTs.filter(
-  (nft) => nft.collection === "WTFape コレクション"
+  (nft) => nft.collection === "VenAPE コレクション"
 );
 
 // 主容器 - 減小最小高度，避免內容溢出
@@ -579,11 +579,11 @@ const FloatingMessage = styled(StatusMessage)`
 `;
 
 /**
- * 優化後的WTFape NFT鑄造頁面
+ * 優化後的VenAPE NFT鑄造頁面
  * 移除了多餘的模糊、動畫和陰影效果，以減輕GPU負擔
  * @returns {JSX.Element} 鑄造頁面組件
  */
-const MintWTFape = () => {
+const MintVenAPE = () => {
   // 狀態管理
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tokenId, setTokenId] = useState("");
@@ -705,7 +705,7 @@ const MintWTFape = () => {
         visible: true,
         success: true,
         fadeOut: false,
-        message: `おめでとうございます！TokenID: ${tokenId}のWTFape NFTのミントに成功しました。`,
+        message: `おめでとうございます！TokenID: ${tokenId}のVenAPE NFTのミントに成功しました。`,
       });
 
       // 3秒後開始淡出動畫
@@ -764,11 +764,11 @@ const MintWTFape = () => {
               centered
               fontWeight="700"
             >
-              WTFape NFTをミントする
+              VenAPE NFTをミントする
             </GradientText>
           </h1>
           <Description>
-            WTFapeは10,000個のユニークに生成されたアートコレクションです。各WTFapeは一意であり、特別な属性と特徴を持っています。
+            VenAPEは10,000個のユニークに生成されたアートコレクションです。各VenAPEは一意であり、特別な属性と特徴を持っています。
           </Description>
         </HeaderSection>
 
@@ -779,7 +779,7 @@ const MintWTFape = () => {
               <NFTImageContainer>
                 <IPFSImage
                   src={processedImageUrl || nftData[currentIndex].image}
-                  alt={`WTFape #${tokenId || "?"}`}
+                  alt={`VenAPE #${tokenId || "?"}`}
                   width="100%"
                   height="100%"
                   objectFit="cover"
@@ -804,7 +804,7 @@ const MintWTFape = () => {
                   >
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                   </svg>
-                  WTFape コレクション
+                  VenAPE コレクション
                 </CollectionTitle>
                 <CollectionStatsList>
                   <CollectionStat>
@@ -887,12 +887,12 @@ const MintWTFape = () => {
                     maxWidth="100%"
                     fontWeight="700"
                   >
-                    WTFape #{tokenId || "?"}
+                    VenAPE #{tokenId || "?"}
                   </GradientText>
                 </NFTTitleContainer>
 
                 <NFTDescriptionText>
-                  WTFapeを所有すると、アートワークの完全な所有権と、コミュニティイベントや将来のプロジェクトエアドロップに参加する特権が得られます。
+                  VenAPEを所有すると、アートワークの完全な所有権と、コミュニティイベントや将来のプロジェクトエアドロップに参加する特権が得られます。
                 </NFTDescriptionText>
 
                 {/* 社區信息卡片 - 替換重複的收藏信息 */}
@@ -1044,7 +1044,7 @@ const MintWTFape = () => {
                         <circle cx="8.5" cy="8.5" r="1.5" />
                         <polyline points="21 15 16 10 5 21" />
                       </svg>
-                      このWTFapeをミントする
+                      このVenAPEをミントする
                     </>
                   )}
                 </PrimaryButton>
@@ -1069,4 +1069,4 @@ const MintWTFape = () => {
   );
 };
 
-export default MintWTFape;
+export default MintVenAPE;

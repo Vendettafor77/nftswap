@@ -62,11 +62,11 @@ const Navbar = () => {
               取引履歴
             </Link>
             <Link
-              to="/mint-wtfape"
+              to="/mint-venape"
               className="nav-link"
               onClick={handleNavClick}
             >
-              Mint WTFape
+              Mint VenAPE
             </Link>
           </div>
 

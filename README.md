@@ -8,7 +8,7 @@
   - [連接錢包](#連接錢包)
   - [瀏覽和購買NFT](#瀏覽和購買nft)
   - [搜索和過濾NFT](#搜索和過濾nft)
-  - [鑄造WTFApe NFT](#鑄造wtfape-nft)
+  - [鑄造VenAPE NFT](#鑄造venape-nft)
   - [管理我的NFT](#管理我的nft)
   - [上架NFT出售](#上架nft出售)
   - [撤回上架的NFT](#撤回上架的nft)
@@ -18,9 +18,10 @@
   - [項目結構](#項目結構)
   - [前端組件](#前端組件)
   - [主要頁面](#主要頁面)
+  - [合約交互中間層](#合約交互中間層)
+  - [狀態管理與Hooks](#狀態管理與hooks)
   - [工具函數](#工具函數)
   - [智能合約](#智能合約)
-  - [狀態管理](#狀態管理)
   - [樣式系統](#樣式系統)
   - [開發和部署](#開發和部署)
 
@@ -31,7 +32,7 @@
 ## 連接錢包
 
 1. 進入網站後，點擊右上角的「錢包連接」按鈕
-2. 選擇您喜歡的錢包提供商（如MetaMask）
+2. 選擇您喜歡的錢包提供商（如MetaMask、WalletConnect）
 3. 按照錢包提示完成授權連接
 4. 連接成功後，右上角會顯示您的錢包地址簡寫和ETH餘額
 
@@ -42,25 +43,28 @@
 3. 點擊NFT卡片上的「購入する」按鈕可以購買該NFT
 4. 確認交易信息，包括支付的ETH數量
 5. 在錢包中核對交易詳情並確認
-6. 交易提交後會顯示「購入成功！」或「購入失敗」的狀態提示
+6. 交易提交後會顯示處理狀態（待處理→確認中→購入成功/失敗）
 7. 購買成功後，NFT將顯示在「我的NFT」頁面中
 
 ## 搜索和過濾NFT
 
-1. 在頁面頂部的搜索欄輸入關鍵詞可即時搜索NFT名稱，搜索結果會隨著輸入內容自動更新
+1. 在頁面頂部的搜索欄輸入關鍵詞可即時搜索NFT名稱
 2. 使用「すべてのコレクション」下拉菜單選擇特定的NFT收藏集
 3. 使用排序選項「最新順」、「価格（安い順）」、「価格（高い順）」對NFT進行排序
-4. 搜索和過濾選項會即時更新顯示結果，右側側邊欄顯示「表示中」NFT數量
+4. 使用價格範圍選擇器設置最低和最高價格過濾
+5. 根據NFT屬性進行高級篩選
+6. 搜索和過濾選項會即時更新顯示結果
 
-## 鑄造WTFApe NFT
+## 鑄造VenAPE NFT
 
-1. 從頂部導航欄選擇「鑄造」頁面
-2. 在鑄造頁面中，輸入您想鑄造的WTFApe ID（0-9999）
-3. 使用「ランダム」按鈕隨機生成ID，或使用「前へ」和「次へ」按鈕切換ID
-4. 查看預覽圖了解NFT的外觀
-5. 點擊「鑄造する」按鈕開始鑄造流程
-6. 在錢包中確認交易
-7. 鑄造完成後，新的WTFApe NFT將添加到您的NFT列表中
+1. 點擊導航欄中的"Mint VenAPE"
+2. 在鑄造頁面中，輸入您想鑄造的VenAPE ID（0-9999）
+3. 點擊"ミント"按鈕
+4. 確認交易詳情
+5. 在您的錢包中確認交易
+6. 等待交易確認
+7. 交易確認後，您將看到成功消息
+8. 鑄造完成後，新的VenAPE NFT將添加到您的NFT列表中
 
 ## 管理我的NFT
 
@@ -68,6 +72,7 @@
 2. 查看您擁有的所有NFT，包括已購買和已鑄造的
 3. 使用搜索框和過濾器找到特定NFT
 4. 每個NFT卡片底部的操作按鈕提供管理選項（上架、轉移等）
+5. 使用批量選擇功能，同時管理多個NFT
 
 ## 上架NFT出售
 
@@ -77,14 +82,16 @@
 4. 點擊「マーケットに出品する」（上架到市場）按鈕
 5. 首次上架需要先授權合約操作您的NFT，確認授權交易
 6. 然後確認上架交易
-7. 交易確認後，您的NFT將顯示在市場上
+7. 系統會顯示上架狀態（處理中→確認中→上架成功/失敗）
+8. 交易確認後，您的NFT將顯示在市場上
 
 ## 撤回上架的NFT
 
 1. 在「我的NFT」頁面找到已上架的NFT
 2. 點擊操作按鈕，選擇「撤回」選項
 3. 確認撤回交易
-4. 交易確認後，NFT將從市場撤回並返回您的NFT列表
+4. 系統會顯示撤回狀態（處理中→確認中→撤回成功/失敗）
+5. 交易確認後，NFT將從市場撤回並返回您的NFT列表
 
 ## 轉移NFT
 
@@ -93,17 +100,18 @@
 3. 在彈出的轉移窗口中，輸入接收者的以太坊地址
 4. 確認轉移操作
 5. 在錢包中確認交易
-6. 交易確認後，NFT將從您的列表中移除並轉移給接收者
+6. 系統會顯示轉移狀態（處理中→確認中→轉移成功/失敗）
+7. 交易確認後，NFT將從您的列表中移除並轉移給接收者
 
 ## 查看交易記錄
 
 1. 點擊頂部導航欄的「取引履歴」進入交易記錄頁面
 2. 查看您的所有NFT交易歷史，包括購買、銷售、鑄造和轉移記錄
 3. 每條交易記錄顯示NFT圖片、名稱、交易類型、價格和日期
-4. 使用搜索欄根據NFT名稱搜索特定交易，搜索結果會隨著輸入內容即時更新
+4. 使用搜索欄根據NFT名稱搜索特定交易
 5. 使用交易類型過濾器（すべての取引、購入、販売、鋳造、転送）篩選特定類型的交易
 6. 使用排序選項（最新順、価格（高い順）、価格（安い順））對交易記錄進行排序
-7. 地址會顯示為簡化格式（前6位和後4位）以便於識別
+7. 點擊交易記錄可查看詳細信息，包括區塊鏈瀏覽器鏈接
 
 ---
 
@@ -118,21 +126,28 @@ frontend/
 │   ├── abis/         # 合約ABI文件
 │   ├── components/   # 可復用組件
 │   ├── contexts/     # React上下文
+│   ├── hooks/        # 自定義hooks
 │   ├── data/         # 模擬數據
 │   ├── pages/        # 頁面組件
 │   │   ├── Home/     # 主頁（市場和出品）
 │   │   ├── MyNFTs/   # 我的NFT頁面
-│   │   ├── MintWTFape/ # 鑄造頁面
+│   │   ├── MintVenAPE/ # 鑄造頁面
 │   │   └── TransactionHistory/ # 交易記錄頁面
 │   ├── styles/       # 全局樣式
 │   ├── theme/        # 主題配置
 │   ├── utils/        # 工具函數
+│   │   ├── contractUtils.js     # 合約通用工具
+│   │   ├── nftSwap.js           # NFTSwap合約中間層
+│   │   ├── nftSwapFunctions.js  # NFTSwap函數封裝
+│   │   ├── venApeFunctions.js   # VenAPE函數封裝
+│   │   ├── ipfsUtils.js         # IPFS交互工具
+│   │   └── ipfsUploadUtils.js   # IPFS上傳工具
 │   ├── App.js        # 應用主組件
 │   ├── index.js      # 入口文件
 │   └── routes.js     # 路由配置
 contracts/            # 智能合約
 ├── NFTSwap.sol       # 交易合約
-├── WTFApe.sol        # NFT合約
+├── VenAPE.sol        # NFT合約
 └── ...               # 其他輔助合約
 ```
 
@@ -142,13 +157,13 @@ contracts/            # 智能合約
 
 - **NFTCard** (`components/NFTCard/NFTCard.js`): 顯示NFT信息的卡片組件，支持狀態顯示和自定義操作按鈕
 - **NFTGrid** (`components/NFTGrid/NFTGrid.js`): 以響應式網格布局展示NFT卡片的組件，支持空狀態顯示
-- **FilterBar** (`components/Filters/FilterBar.js`): 通用過濾和搜索組件，支持自定義過濾器配置，用於市場和交易記錄頁面，提供即時搜索功能
+- **FilterBar** (`components/Filters/FilterBar.js`): 通用過濾和搜索組件，支持自定義過濾器配置
 - **StatusMessage** (`components/styled/StatusMessage.js`): 狀態信息提示組件，用於顯示操作成功或失敗
 - **Button** (`components/styled/Button.js`): 包含主要按鈕(PrimaryButton)、輪廓按鈕(OutlineButton)和次要按鈕(SecondaryButton)樣式
 - **TransactionCard** (`pages/TransactionHistory/components/TransactionCard.js`): 顯示交易記錄的卡片組件
 - **IPFSImage** (`components/IPFSImage/IPFSImage.js`): 專門用於顯示IPFS圖片的組件，支持多種IPFS URL格式，自動轉換為HTTP URL並處理加載狀態
 - **NFTMetadata** (`components/NFTMetadata/NFTMetadata.js`): 顯示NFT元數據的組件，包括圖片和屬性，支持從IPFS URL獲取元數據
-- **IPFSExample** (`components/IPFSExample/IPFSExample.js`): IPFS組件使用示例，展示了如何使用IPFSImage和NFTMetadata組件
+- **BatchOperationsBar** (`components/BatchOperations/BatchOperationsBar.js`): 批量操作工具欄，用於多選NFT進行批量操作
 
 ### 樣式組件
 
@@ -183,10 +198,11 @@ contracts/            # 智能合約
 - `handleListNFT(nft)`: 處理NFT上架
 - `handleTransfer(nft)`: 處理NFT轉移
 - `handleSendNFT(nft)`: 處理NFT發送
+- `handleBatchOperation(operation)`: 處理批量NFT操作
 
-### MintWTFape.js (`pages/MintWTFape/MintWTFape.js`)
+### MintVenAPE.js (`pages/MintVenAPE/MintVenAPE.js`)
 
-WTFApe NFT鑄造頁面，允許用戶選擇ID並鑄造NFT。
+VenAPE NFT鑄造頁面，允許用戶選擇ID並鑄造NFT。
 
 **主要函數**:
 
@@ -206,48 +222,106 @@ WTFApe NFT鑄造頁面，允許用戶選擇ID並鑄造NFT。
 - `updateSortBy()`: 處理排序變更
 - `filteredTransactions`: 基於搜索、過濾和排序條件處理交易記錄
 
-### ListNFTSection.js (`pages/Home/components/ListNFTSection.js`)
+## 合約交互中間層
 
-NFT上架區塊，包含NFT選擇功能。
+### contractUtils.js (`utils/contractUtils.js`)
 
-**主要函數**:
-
-- `onAction(nft)`: 處理NFT選中/取消
-- `renderActionButton(nft)`: 渲染NFT操作按鈕
-
-### ListNFTForm.js (`pages/Home/components/ListNFTForm.js`)
-
-NFT上架表單，用於設置價格並提交上架。
+合約交互基礎工具，提供共用功能。
 
 **主要函數**:
 
-- `handlePriceChange(e)`: 處理價格變更
-- `handleListNFT()`: 處理NFT上架提交
-
-## 工具函數
+- `getProvider()`: 獲取ethers v6 Provider實例
+- `getSigner()`: 獲取當前連接錢包的Signer實例
+- `getContract(address, abi)`: 獲取指定合約實例
+- `handleContractError(error)`: 統一處理合約交互錯誤
+- `formatContractAmount(amount)`: 格式化合約金額（wei與eth的轉換）
+- `listenForTransaction(tx)`: 監聽交易狀態並提供回調
+- `listenForContractEvent(contract, eventName, callback)`: 監聽合約事件
 
 ### nftSwap.js (`utils/nftSwap.js`)
 
-智能合約交互函數。
+NFTSwap 合約的中間層，提供與合約交互的函數。
 
 **主要函數**:
 
-- `getNftSwapContract()`: 獲取NFTSwap合約實例
-- `getWtfApeContract()`: 獲取WTFApe合約實例
-- `mintWtfApe(to, tokenId)`: 鑄造WTFApe NFT
-- `getListedNFTs(nftAddr)`: 獲取上架的NFT列表
-- `listNFT(nftAddr, tokenId, price)`: 上架NFT
-- `revokeNFT(nftAddr, tokenId)`: 撤回上架的NFT
-- `updateNFTPrice(nftAddr, tokenId, newPrice)`: 更新NFT價格
-- `purchaseNFT(nftAddr, tokenId, price)`: 購買NFT
+- `getNFTSwapContract()`: 獲取NFTSwap合約實例
+- `getVenApeContract()`: 獲取VenAPE合約實例
+- `mintVenApe(to, tokenId, options = {})`: 鑄造VenAPE NFT
 
-### dateUtils.js (`utils/dateUtils.js`)
+### nftSwapFunctions.js (`utils/nftSwapFunctions.js`)
 
-日期處理工具函數。
+NFTSwap合約函數的高級封裝，提供更豐富的功能。
 
 **主要函數**:
 
-- `formatDate(dateString)`: 將ISO日期字符串格式化為可讀形式（日本格式）
+- `listNFTWithMetadata(nftAddr, tokenId, price, metadata)`: 上架NFT並關聯元數據
+- `getNFTDetails(nftAddr, tokenId)`: 獲取NFT詳細信息
+- `getUserListedNFTs(userAddress)`: 獲取用戶上架的NFT
+- `getUserPurchasedNFTs(userAddress)`: 獲取用戶購買的NFT
+- `getUserTransactions(userAddress, type)`: 獲取用戶交易記錄
+
+### venApeFunctions.js (`utils/venApeFunctions.js`)
+
+VenAPE函數封裝。
+
+**主要函數**:
+
+- `getVenApeContract()`: 獲取VenAPE合約實例
+- `mintVenApe(to, tokenId, options = {})`: 鑄造VenAPE NFT
+
+## 狀態管理與Hooks
+
+### WalletContext (`contexts/WalletContext.js`)
+
+管理錢包連接狀態和用戶信息。
+
+**主要函數和狀態**:
+
+- `account`: 當前連接的錢包地址
+- `balance`: 當前錢包ETH餘額
+- `connectWallet()`: 連接錢包
+- `disconnectWallet()`: 斷開錢包連接
+- `isConnected`: 錢包連接狀態
+
+### TransactionContext (`contexts/TransactionContext.js`)
+
+管理交易狀態和歷史。
+
+**主要函數和狀態**:
+
+- `addTransaction(tx)`: 添加新交易到跟蹤列表
+- `transactions`: 所有交易記錄
+- `isPending(txHash)`: 檢查交易是否待處理
+- `getTransactionStatus(txHash)`: 獲取交易狀態
+
+### useContract (`hooks/useContract.js`)
+
+合約交互Hook。
+
+**主要函數**:
+
+- `useNftSwapContract()`: 使用NFTSwap合約
+- `useVenApeContract()`: 使用VenAPE合約
+- `useContractFunction(contract, functionName)`: 創建合約函數調用包裝
+
+### useTransactionStatus (`hooks/useTransactionStatus.js`)
+
+交易狀態跟蹤Hook。
+
+**主要函數**:
+
+- `useTransactionStatus(txHash)`: 跟蹤交易狀態
+- `usePendingTransactions()`: 獲取所有待處理交易
+
+### useContractEvent (`hooks/useContractEvent.js`)
+
+合約事件監聽Hook。
+
+**主要函數**:
+
+- `useContractEvent(contract, eventName, callback)`: 監聽合約事件
+
+## 工具函數
 
 ### ipfsUtils.js (`utils/ipfsUtils.js`)
 
@@ -258,6 +332,29 @@ IPFS相關工具函數，用於處理IPFS地址和元數據。
 - `getHttpUrl(ipfsUrl, gateway)`: 將IPFS URL轉換為HTTP URL
 - `getImageFromMetadata(metadata, gateway)`: 從NFT元數據中提取圖片URL並轉換為HTTP URL
 - `getMetadataUrl(baseUrl, tokenId, gateway)`: 獲取NFT元數據URL
+- `fetchMetadata(url)`: 獲取NFT元數據內容
+
+### ipfsUploadUtils.js (`utils/ipfsUploadUtils.js`)
+
+IPFS文件上傳工具。
+
+**主要函數**:
+
+- `uploadFile(file)`: 上傳文件到IPFS
+- `uploadJSON(json)`: 上傳JSON數據到IPFS
+- `uploadImage(image)`: 上傳圖片到IPFS
+- `generateMetadata(name, description, image, attributes)`: 生成NFT元數據
+- `uploadMetadata(metadata)`: 上傳元數據到IPFS
+
+### dateUtils.js (`utils/dateUtils.js`)
+
+日期處理工具函數。
+
+**主要函數**:
+
+- `formatDate(dateString)`: 將ISO日期字符串格式化為可讀形式（日本格式）
+- `formatTransactionDate(timestamp)`: 格式化交易時間戳
+- `getRelativeTime(timestamp)`: 獲取相對時間（如"5分鐘前"）
 
 ## 智能合約
 
@@ -273,21 +370,20 @@ NFT交易市場合約，處理NFT的上架、購買、撤回和價格更新。
 - `update(address _nftAddr, uint256 _tokenId, uint256 _newPrice)`: 更新NFT價格
 - `getListedNFTs(address _nftAddr)`: 獲取指定合約地址上架的所有NFT
 
-### WTFApe.sol
+**主要事件**:
 
-WTFApe NFT合約，繼承自ERC721標準，允許鑄造和管理WTFApe NFT。
+- `List(address indexed seller, address indexed nftAddr, uint256 tokenId, uint256 price)`: NFT上架事件
+- `Purchase(address indexed buyer, address indexed seller, address indexed nftAddr, uint256 tokenId, uint256 price)`: NFT購買事件
+- `Revoke(address indexed seller, address indexed nftAddr, uint256 tokenId)`: NFT撤回事件
+- `Update(address indexed seller, address indexed nftAddr, uint256 tokenId, uint256 newPrice)`: NFT價格更新事件
 
-**主要函數**:
+### VenAPE.sol
 
-- `mint(address to, uint256 tokenId)`: 鑄造新的WTFApe NFT，tokenId範圍為0-9999
-- `_baseURI()`: 返回NFT元數據的IPFS URI
+VenAPE NFT合約，繼承自ERC721標準，允許鑄造和管理VenAPE NFT。
 
-## 狀態管理
+**主要功能**：
 
-項目使用React hooks和context進行狀態管理：
-
-- **AnimationContext** (`contexts/AnimationContext.js`): 管理全局動畫設置
-- 組件內部使用useState、useCallback和useMemo進行本地狀態管理和性能優化
+- `mint(address to, uint256 tokenId)`: 鑄造新的VenAPE NFT，tokenId範圍為0-9999
 
 ## 樣式系統
 
@@ -298,8 +394,6 @@ WTFApe NFT合約，繼承自ERC721標準，允許鑄造和管理WTFApe NFT。
 - 陰影效果（small、medium、large）
 - 邊框半徑（small、medium、large）
 - 響應式斷點（針對不同屏幕尺寸優化）
-- 已優化的搜索交互體驗，防止搜索結果變化時的布局偏移
-- 自定義滾動條樣式，提升視覺美感
 
 ## 開發和部署
 
@@ -312,11 +406,34 @@ WTFApe NFT合約，繼承自ERC721標準，允許鑄造和管理WTFApe NFT。
 
 ### 部署
 
-1. 部署合約: `npx hardhat run scripts/deploy.js --network <network-name>`
-2. 更新前端合約地址:
-   - 在`utils/nftSwap.js`中更新nftSwapAddress和wtfApeAddress
-3. 構建前端: `npm run build`
-4. 部署靜態文件到托管服務
+1. **合約部署**
+
+   - 使用Hardhat部署合約：`npx hardhat run scripts/deploy.js --network <network>`
+   - 記錄部署的合約地址
+
+2. **前端配置**
+
+   - 在`frontend/.env`文件中設置合約地址
+   - 在`utils/nftSwap.js`中更新nftSwapAddress和venApeAddress
+   - 確保ABI文件與合約匹配
+
+3. **前端部署**
+   - 運行`npm run build`生成靜態文件
+   - 將生成的`build`文件夾部署到您的Web服務器
+
+### 環境配置
+
+配置文件位於:
+
+- `.env.development`: 開發環境配置
+- `.env.production`: 生產環境配置
+
+主要配置項:
+
+- `REACT_APP_NFT_SWAP_ADDRESS`: NFTSwap合約地址
+- `REACT_APP_VEN_APE_ADDRESS`: VenAPE合約地址
+- `REACT_APP_IPFS_GATEWAY`: 首選IPFS網關URL
+- `REACT_APP_CHAIN_ID`: 目標區塊鏈網絡ID
 
 ## 技術架構
 
@@ -324,27 +441,62 @@ WTFApe NFT合約，繼承自ERC721標準，允許鑄造和管理WTFApe NFT。
 
 - React.js框架
 - styled-components用於樣式管理
-- ethers.js用於與區塊鏈交互
+- ethers.js v6用於與區塊鏈交互
 - React Router用於頁面路由
 
 ### 智能合約
 
 - Solidity編寫
-- 包含NFTSwap.sol（交易合約）和WTFApe.sol（NFT合約）
+- 包含NFTSwap.sol（交易合約）和VenAPE.sol（NFT合約）
 - 使用Hardhat進行開發和測試
 
-## 智能合約功能
+## ethers v6中間層設計
 
-### NFTSwap.sol
+整個系統採用分層架構設計與區塊鏈互動:
 
-- `list(address _nftAddr, uint256 _tokenId, uint256 _price)`: 上架NFT
-- `purchase(address _nftAddr, uint256 _tokenId)`: 購買NFT
-- `revoke(address _nftAddr, uint256 _tokenId)`: 撤回上架的NFT
-- `update(address _nftAddr, uint256 _tokenId, uint256 _newPrice)`: 更新NFT價格
+1. **基礎層 (contractUtils.js)**
 
-### WTFApe.sol
+   - 提供Provider、Signer獲取
+   - 通用合約實例創建
+   - 錯誤處理和格式化
+   - 事件監聽基礎架構
 
-- `mint(address to, uint256 tokenId)`: 鑄造新的WTFApe NFT，tokenId範圍為0-9999
+2. **合約接口層 (nftSwap.js, venApeFunctions.js)**
+
+   - 直接映射合約方法
+   - 處理參數轉換和結果解析
+   - 提供交易狀態跟蹤
+   - 實現異常處理
+
+3. **業務邏輯層 (nftSwapFunctions.js)**
+
+   - 組合多個合約調用
+   - 實現復雜業務邏輯
+   - 處理元數據和IPFS整合
+   - 提供高級數據查詢
+
+4. **展示層 (React Hooks)**
+   - useContract: 組件級合約訪問
+   - useTransactionStatus: 交易狀態跟蹤
+   - useContractEvent: 事件訂閱
+
+主要特性:
+
+- 完整支持ethers v6最新特性
+- 支持交易確認和狀態跟蹤
+- 內置錯誤處理和本地化錯誤信息
+- 支持批量操作和事件監聽
+- 可配置的交易參數（gas、優先級費用等）
+
+## 用戶互動流程
+
+1. 用戶在UI上發起操作
+2. React組件調用相應hook
+3. Hook調用合約函數封裝
+4. 封裝初始化交易並返回交易對象
+5. TransactionContext跟蹤交易狀態
+6. UI根據交易狀態更新顯示
+7. 合約事件觸發UI刷新
 
 ## 開發者信息
 
