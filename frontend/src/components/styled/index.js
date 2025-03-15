@@ -62,7 +62,7 @@ export const TabsContainer = styled.div`
 // 使用 OutlineButton 替代 Tab
 export const StyledTab = styled(OutlineButton)`
   background: ${(props) =>
-    props.active
+    props.$active
       ? `linear-gradient(120deg, 
           ${props.theme.colors.primary}00 0%, 
           ${props.theme.colors.primary} 25%, 
@@ -71,16 +71,16 @@ export const StyledTab = styled(OutlineButton)`
         )`
       : "transparent"};
   color: ${(props) =>
-    props.active ? "white" : props.theme.colors.text.primary};
+    props.$active ? "white" : props.theme.colors.text.primary};
   border: 2px solid
     ${(props) =>
-      props.active ? "transparent" : props.theme.colors.primary + "55"};
+      props.$active ? "transparent" : props.theme.colors.primary + "55"};
   box-shadow: ${(props) =>
-    props.active ? "0 5px 15px rgba(42, 82, 190, 0.3)" : "none"};
+    props.$active ? "0 5px 15px rgba(42, 82, 190, 0.3)" : "none"};
 
   &:hover {
     background: ${(props) =>
-      props.active
+      props.$active
         ? `linear-gradient(120deg, 
             ${props.theme.colors.primary}00 0%, 
             ${props.theme.colors.primary} 25%, 
@@ -89,7 +89,7 @@ export const StyledTab = styled(OutlineButton)`
           )`
         : `linear-gradient(120deg, transparent, rgba(106, 17, 203, 0.1), transparent)`};
     box-shadow: ${(props) =>
-      props.active
+      props.$active
         ? "0 8px 20px rgba(42, 82, 190, 0.3)"
         : "0 5px 15px rgba(42, 82, 190, 0.1)"};
   }

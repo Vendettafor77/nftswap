@@ -21,6 +21,8 @@ export const ALTERNATE_IPFS_GATEWAYS = [
   "https://gateway.pinata.cloud/ipfs/",
   "https://gateway.ipfs.io/ipfs/",
   "https://ipfs.fleek.co/ipfs/",
+  "https://cloudflare-ipfs.com/ipfs/",
+  "https://ipfs.infura.io/ipfs/",
 ];
 
 /**
@@ -44,60 +46,96 @@ export const DEFAULT_IMAGE =
 export const getHttpUrl = (ipfsUrl, gateway = DEFAULT_IPFS_GATEWAY) => {
   if (!ipfsUrl) return null;
 
-  // 已經是HTTP URL
-  if (ipfsUrl.startsWith("http")) {
-    return ipfsUrl;
-  }
+  try {
+    // 預處理URL，去除可能的前後空格
+    const trimmedUrl = ipfsUrl.trim();
 
-  // 檢查網關是否有效（必須包含ipfs/）
-  let effectiveGateway = gateway;
-  if (!effectiveGateway || !effectiveGateway.includes("/ipfs/")) {
-    console.warn(`網關 "${effectiveGateway}" 無效`);
+    // 處理本地文件路徑
+    if (trimmedUrl.startsWith("/")) {
+      return trimmedUrl;
+    }
 
-    // 檢查備用網關
-    if (ALTERNATE_IPFS_GATEWAYS.length > 0) {
-      // 嘗試找到一個有效的備用網關
-      const validGateway = ALTERNATE_IPFS_GATEWAYS.find(
-        (g) => g && g.includes("/ipfs/")
-      );
-      if (validGateway) {
-        console.log(`使用備用網關: ${validGateway}`);
-        effectiveGateway = validGateway;
+    // 已經是HTTP URL，返回原始URL
+    if (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) {
+      // 檢查URL是否包含ipfs協議部分，如果沒有可能需要修復
+      if (!trimmedUrl.includes("/ipfs/") && trimmedUrl.includes("ipfs.io")) {
+        console.warn(`檢測到可能的不完整IPFS網關URL: ${trimmedUrl}`);
+        // 嘗試修復URL
+        try {
+          const url = new URL(trimmedUrl);
+          // 檢查是否缺少/ipfs/路徑
+          if (!url.pathname.includes("/ipfs/")) {
+            // 添加/ipfs/路徑
+            url.pathname = url.pathname.replace(/^\/?/, "/ipfs/");
+            console.log(`修復後的URL: ${url.toString()}`);
+            return url.toString();
+          }
+        } catch (e) {
+          console.error("URL修復失敗:", e);
+        }
+      }
+      return trimmedUrl;
+    }
+
+    // 檢查網關是否有效（必須包含ipfs/）
+    let effectiveGateway = gateway;
+    if (!effectiveGateway || !effectiveGateway.includes("/ipfs/")) {
+      console.warn(`網關 "${effectiveGateway}" 無效`);
+
+      // 檢查備用網關
+      if (ALTERNATE_IPFS_GATEWAYS.length > 0) {
+        // 嘗試找到一個有效的備用網關
+        const validGateway = ALTERNATE_IPFS_GATEWAYS.find(
+          (g) => g && g.includes("/ipfs/")
+        );
+        if (validGateway) {
+          console.log(`使用備用網關: ${validGateway}`);
+          effectiveGateway = validGateway;
+        } else {
+          console.error("所有網關都無效，無法加載IPFS資源");
+          return null; // 返回null表示無法轉換URL
+        }
       } else {
-        console.error("所有網關都無效，無法加載IPFS資源");
+        console.error("沒有可用的備用網關，無法加載IPFS資源");
         return null; // 返回null表示無法轉換URL
       }
-    } else {
-      console.error("沒有可用的備用網關，無法加載IPFS資源");
-      return null; // 返回null表示無法轉換URL
     }
-  }
-
-  // IPFS協議URL
-  if (ipfsUrl.startsWith("ipfs://")) {
-    // 提取CID
-    const cid = ipfsUrl.substring(7);
 
     // 確保網關URL末尾有斜線
     const normalizedGateway = effectiveGateway.endsWith("/")
       ? effectiveGateway
       : effectiveGateway + "/";
 
-    return normalizedGateway + cid;
+    // IPFS協議URL處理
+    if (trimmedUrl.startsWith("ipfs://ipfs/")) {
+      // 處理特殊情況：ipfs://ipfs/Qm... (雙重ipfs路徑)
+      const cid = trimmedUrl.substring(12); // 移除 "ipfs://ipfs/"
+      return normalizedGateway + cid;
+    } else if (trimmedUrl.startsWith("ipfs://")) {
+      // 標準情況：ipfs://Qm...
+      const cid = trimmedUrl.substring(7); // 移除 "ipfs://"
+      return normalizedGateway + cid;
+    }
+
+    // 直接是CID或路徑
+    if (trimmedUrl.startsWith("Qm") || trimmedUrl.startsWith("baf")) {
+      return normalizedGateway + trimmedUrl;
+    }
+
+    // 檢查是否包含CID格式，但沒有正確的協議前綴
+    const cidMatch = trimmedUrl.match(/Qm[a-zA-Z0-9]{44}/);
+    if (cidMatch) {
+      console.log(`檢測到可能的CID，但格式不正確: ${trimmedUrl}`);
+      return normalizedGateway + cidMatch[0];
+    }
+
+    // 返回原始URL（無法識別的格式）
+    console.warn(`無法識別的IPFS URL格式: ${trimmedUrl}`);
+    return trimmedUrl;
+  } catch (error) {
+    console.error("轉換URL時發生錯誤:", error);
+    return ipfsUrl; // 失敗時返回原始URL
   }
-
-  // 直接是CID或路徑
-  if (ipfsUrl.startsWith("Qm") || ipfsUrl.startsWith("baf")) {
-    // 確保網關URL末尾有斜線
-    const normalizedGateway = effectiveGateway.endsWith("/")
-      ? effectiveGateway
-      : effectiveGateway + "/";
-
-    return normalizedGateway + ipfsUrl;
-  }
-
-  // 返回原始URL
-  return ipfsUrl;
 };
 
 /**
@@ -182,15 +220,38 @@ export const fetchNFTMetadata = async (
       return null;
     }
 
-    // 獲取元數據
-    const response = await fetch(metadataUrl);
-    if (!response.ok) {
-      throw new Error(
-        `獲取元數據失敗: ${response.status} ${response.statusText}`
-      );
-    }
+    // 設置請求超時
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超時
 
-    return await response.json();
+    try {
+      // 獲取元數據
+      const response = await fetch(metadataUrl, {
+        signal: controller.signal,
+        // 添加緩存控制
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
+
+      clearTimeout(timeoutId); // 清除超時
+
+      if (!response.ok) {
+        throw new Error(
+          `獲取元數據失敗: ${response.status} ${response.statusText}`
+        );
+      }
+
+      return await response.json();
+    } catch (fetchError) {
+      if (fetchError.name === "AbortError") {
+        console.warn(`獲取元數據超時: ${metadataUrl}`);
+      } else {
+        console.error(`獲取元數據網絡錯誤:`, fetchError);
+      }
+      throw fetchError;
+    }
   } catch (error) {
     console.error(`獲取NFT #${tokenId}元數據失敗:`, error);
     return null;
@@ -277,6 +338,22 @@ export const getNFTImageUrl = async (nft, gateway = DEFAULT_IPFS_GATEWAY) => {
     console.log(`正在獲取NFT #${nft.tokenId}的圖片`, nft);
     result.isLoading = true;
 
+    // 檢查是否是本地圖片路徑
+    if (nft.image && nft.image.startsWith("/")) {
+      console.log(`檢測到本地圖片路徑: ${nft.image}`);
+      result.url = nft.image;
+      result.isLoading = false;
+      return result;
+    }
+
+    // 檢查是否是HTTP URL
+    if (nft.image && nft.image.startsWith("http")) {
+      console.log(`檢測到HTTP圖片URL: ${nft.image}`);
+      result.url = nft.image;
+      result.isLoading = false;
+      return result;
+    }
+
     // 如果NFT有metadataBaseUrl和tokenId，優先從metadata獲取圖片
     if (nft.metadataBaseUrl && nft.tokenId) {
       try {
@@ -296,7 +373,10 @@ export const getNFTImageUrl = async (nft, gateway = DEFAULT_IPFS_GATEWAY) => {
         console.log(`Metadata URL: ${metadataUrl}`);
 
         // 步驟3：獲取metadata
-        const response = await fetch(metadataUrl);
+        const response = await fetch(metadataUrl, {
+          // 增加fetch超時設置
+          signal: AbortSignal.timeout(10000), // 10秒超時
+        });
         if (!response.ok) {
           throw new Error(`獲取metadata失敗: ${response.status}`);
         }
@@ -339,6 +419,17 @@ export const getNFTImageUrl = async (nft, gateway = DEFAULT_IPFS_GATEWAY) => {
         return result;
       } else {
         console.warn(`無法轉換NFT.image URL: ${nft.image}`);
+      }
+    }
+
+    // 最後的備用方案：使用DEFAULT_IMAGE
+    if (nft.image !== DEFAULT_IMAGE) {
+      console.log(`嘗試使用DEFAULT_IMAGE作為最後的備用方案`);
+      const defaultImageUrl = getHttpUrl(DEFAULT_IMAGE, gateway);
+      if (defaultImageUrl) {
+        result.url = defaultImageUrl;
+        result.isLoading = false;
+        return result;
       }
     }
 

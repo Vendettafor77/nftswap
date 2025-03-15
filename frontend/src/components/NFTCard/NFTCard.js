@@ -91,7 +91,7 @@ const cardAnimationStyles = css`
       rgba(131, 58, 180, 0.6),
       rgba(29, 185, 253, 0.6)
     );
-    border-radius: ${(props) => props.theme.borderRadius.medium};
+    border-radius: 20px; /* 增加外部光暈的圓角，使其與卡片圓角協調 */
     z-index: 2;
     opacity: 0;
     pointer-events: none;
@@ -122,7 +122,7 @@ const Card = styled.div`
     `linear-gradient(145deg, ${props.theme.colors.surface || "#1e2633"}, ${
       props.theme.colors.surface || "#1e2633"
     }F8)`};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
+  border-radius: 16px; /* 四個角都設置圓角 */
   overflow: hidden;
   box-shadow: ${(props) =>
     props.isSelected
@@ -140,6 +140,8 @@ const Card = styled.div`
   flex-direction: column;
   height: 100%;
   aspect-ratio: 1 / 1.6; /* 調整卡片寬高比例，使其更高一些 */
+  padding: 0; /* 確保沒有內邊距 */
+  margin: 0; /* 確保沒有外邊距 */
 
   ${(props) => !props.isSelected && cardAnimationStyles}
 
@@ -154,22 +156,32 @@ const Card = styled.div`
       right: 0;
       bottom: 0;
       z-index: 2;
-      border-radius: ${props.theme.borderRadius.medium};
+      border-radius: 16px; /* 增加圓角尺寸 */
       box-shadow: inset 0 0 0 2px ${props.theme.colors.primary};
       pointer-events: none;
     }
   `}
 `;
 
-// 修改ImageContainer
-const ImageContainer = styled.div`
+// 圖片容器 - 使用簡化的容器
+const NFTImageWrapper = styled.div`
   position: relative;
   width: 100%;
-  padding-top: 100%;
-  background: ${(props) => props.theme.colors.background};
-  border-radius: ${(props) => props.theme.borderRadius.medium};
+  padding-top: 100%; /* 保持1:1的寬高比 */
+  background-color: #1e2633; /* 使用與Card一致的背景色 */
   overflow: hidden;
-  flex-shrink: 0;
+  border-radius: 16px 16px 0 0; /* 只設置上方圓角 */
+`;
+
+// 圖片內容容器 - 絕對定位以填充整個容器
+const NFTImageContent = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px 16px 0 0; /* 只設置上方圓角 */
+  overflow: hidden;
 `;
 
 // 修改Image組件
@@ -184,7 +196,7 @@ const Image = styled.img`
   border-radius: inherit;
   z-index: 1;
 
-  ${ImageContainer}:hover & {
+  ${NFTImageWrapper}:hover & {
     transform: scale(1.02);
   }
 `;
@@ -237,6 +249,7 @@ const CardContent = styled.div`
   flex-grow: 1;
   height: 45%; /* 調整內容區域高度比例 */
   min-height: 140px; /* 增加最小高度 */
+  border-radius: 0 0 16px 16px; /* 只設置下方圓角，上方與圖片容器相連 */
 `;
 
 // 添加卡片信息部分容器
@@ -446,41 +459,45 @@ const NFTCard = ({
 
   return (
     <Card isSelected={isSelected} id={id}>
-      <ImageContainer>
-        <IPFSImage
-          src={
-            imageUrl !== null && imageUrl !== undefined
-              ? imageUrl
-              : nftData.image || ""
-          }
-          alt={nftData.name || `NFT #${nftData.tokenId || "Unknown"}`}
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          hoverEffect={!loading && !loadError}
-          errorText="画像の読み込みに失敗しました"
-          backgroundColor="rgba(0, 0, 0, 0.05)"
-          borderRadius="12px"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-          }}
-        />
-        {loading && (
-          <LoadingOverlay>
-            読み込み中...
-            {retryCount > 0 ? ` (リトライ ${retryCount}/${MAX_RETRIES})` : ""}
-          </LoadingOverlay>
-        )}
-        {nftData.isListed && <ListingBadge>出品中</ListingBadge>}
-        {nftData.price && (
-          <PriceTag>
-            <EthSymbol>Ξ</EthSymbol>
-            {nftData.price}
-          </PriceTag>
-        )}
-      </ImageContainer>
+      <NFTImageWrapper>
+        <NFTImageContent>
+          <IPFSImage
+            src={
+              imageUrl !== null && imageUrl !== undefined
+                ? imageUrl
+                : nftData.image || ""
+            }
+            alt={nftData.name || `NFT #${nftData.tokenId || "Unknown"}`}
+            width="100%"
+            height="100%"
+            objectFit="cover"
+            hoverEffect={!loading && !loadError}
+            errorText="画像の読み込みに失敗しました"
+            backgroundColor="#1e2633"
+            borderRadius="16px 16px 0 0" /* 只設置上方圓角 */
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          {loading && (
+            <LoadingOverlay>
+              読み込み中...
+              {retryCount > 0 ? ` (リトライ ${retryCount}/${MAX_RETRIES})` : ""}
+            </LoadingOverlay>
+          )}
+          {nftData.isListed && <ListingBadge>出品中</ListingBadge>}
+          {nftData.price && (
+            <PriceTag>
+              <EthSymbol>Ξ</EthSymbol>
+              {nftData.price}
+            </PriceTag>
+          )}
+        </NFTImageContent>
+      </NFTImageWrapper>
       <CardContent>
         <InfoContainer>
           <NFTName>

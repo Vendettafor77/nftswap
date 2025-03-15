@@ -514,16 +514,16 @@ const Home = () => {
 
         <TabsContainer>
           <OutlineButton
-            active={activeTab === "marketplace"}
+            $active={activeTab === "marketplace"}
             onClick={() => handleTabChange("marketplace")}
-            gradient={activeTab === "marketplace"}
+            $gradient={activeTab === "marketplace"}
           >
             マーケットプレイス
           </OutlineButton>
           <OutlineButton
-            active={activeTab === "listnft"}
+            $active={activeTab === "listnft"}
             onClick={() => handleTabChange("listnft")}
-            gradient={activeTab === "listnft"}
+            $gradient={activeTab === "listnft"}
           >
             NFTを出品する
           </OutlineButton>

@@ -14,7 +14,7 @@ const baseButtonStyles = css`
   position: relative;
   overflow: hidden;
   border: none;
-  width: ${(props) => (props.fullWidth ? "100%" : "auto")};
+  width: ${(props) => (props.$fullWidth ? "100%" : "auto")};
   height: 45px;
   font-size: 0.95rem;
   margin: 0;
@@ -96,27 +96,31 @@ export const SecondaryButton = styled.button`
 export const OutlineButton = styled.button`
   ${baseButtonStyles}
   background: ${(props) =>
-    props.active
+    props.$active || props.$gradient
       ? "linear-gradient(120deg, #6a11cb 0%, #2575fc 100%)"
-      : props.direction === "prev"
+      : props.$direction === "prev"
         ? "linear-gradient(45deg, #2575fc44, #6a11cb44)"
         : "linear-gradient(45deg, #6a11cb44, #2575fc44)"};
   color: ${(props) =>
-    props.active ? "white" : props.theme.colors.text.primary};
+    props.$active || props.$gradient
+      ? "white"
+      : props.theme.colors.text.primary};
   border: ${(props) =>
-    props.active
+    props.$active || props.$gradient
       ? "none"
-      : `1px solid ${props.direction === "prev" ? "#2575fc33" : "#6a11cb33"}`};
+      : `1px solid ${props.$direction === "prev" ? "#2575fc33" : "#6a11cb33"}`};
 
   &:hover {
     background: ${(props) =>
-      props.active
+      props.$active || props.$gradient
         ? "linear-gradient(120deg, #6a11cb 0%, #2575fc 100%)"
-        : props.direction === "prev"
+        : props.$direction === "prev"
           ? "linear-gradient(45deg, #2575fc66, #6a11cb66)"
           : "linear-gradient(45deg, #6a11cb66, #2575fc66)"};
     box-shadow: ${(props) =>
-      props.active ? "0 5px 15px rgba(106, 17, 203, 0.3)" : "none"};
+      props.$active || props.$gradient
+        ? "0 5px 15px rgba(106, 17, 203, 0.3)"
+        : "none"};
   }
 `;
 
@@ -137,11 +141,11 @@ export const TabButton = styled.button`
   font-size: 1rem;
   font-weight: 600;
   color: ${(props) =>
-    props.active
+    props.$active
       ? props.theme.colors.text.primary
       : props.theme.colors.text.secondary};
   background: ${(props) =>
-    props.active ? props.theme.colors.surface : "transparent"};
+    props.$active ? props.theme.colors.surface : "transparent"};
   border: none;
   border-radius: ${(props) => props.theme.borderRadius.medium};
   cursor: pointer;

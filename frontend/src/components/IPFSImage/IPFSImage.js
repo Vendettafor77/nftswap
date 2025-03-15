@@ -15,13 +15,20 @@ const DEFAULT_FALLBACK_IMAGE = "/グレーちゃん.jpeg";
  */
 const ImageContainer = styled.div`
   position: relative;
-  width: ${(props) => props.width || "100%"};
-  height: ${(props) => props.height || "auto"};
+  width: ${(props) => props.$width || "100%"};
+  height: ${(props) => props.$height || "auto"};
   overflow: hidden;
   border-radius: ${(props) =>
-    props.borderRadius || props.theme.borderRadius.medium};
+    props.$borderRadius || props.theme.borderRadius.medium};
   background-color: ${(props) =>
-    props.backgroundColor || "rgba(0, 0, 0, 0.05)"};
+    props.$backgroundColor || "rgba(0, 0, 0, 0.05)"};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
 `;
 
 /**
@@ -30,14 +37,26 @@ const ImageContainer = styled.div`
 const StyledImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: ${(props) => props.objectFit || "cover"};
+  object-fit: ${(props) => props.$objectFit || "cover"};
   transition:
     transform 0.3s ease,
     opacity 0.3s ease;
-  opacity: ${(props) => (props.isLoaded ? 1 : 0)};
+  opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
+  border-radius: inherit; /* 繼承容器的圓角 */
+  display: block; /* 確保圖片是塊級元素，避免底部間隙 */
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-sizing: border-box;
+  position: absolute; /* 確保圖片絕對定位 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: inherit; /* 繼承背景色 */
 
   ${(props) =>
-    props.hoverEffect &&
+    props.$hoverEffect &&
     `
     &:hover {
       transform: scale(1.05);
@@ -97,6 +116,7 @@ const ErrorPlaceholder = styled.div`
   text-align: center;
   z-index: 3;
   font-weight: 600;
+  border-radius: inherit; /* 繼承容器的圓角 */
 
   /* 紫色邊框（通過 text-shadow 實現） */
   text-shadow:
@@ -104,15 +124,38 @@ const ErrorPlaceholder = styled.div`
     1px -1px 0 rgb(157, 96, 214),
     -1px 1px 0 rgb(157, 96, 214),
     1px 1px 0 rgb(157, 96, 214);
+
+  /* 添加淡入動畫，避免閃現 */
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: 0.5s; /* 延遲顯示錯誤信息 */
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 /**
  * 佔位圖容器樣式
  */
 const FallbackContainer = styled.div`
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
+  border-radius: inherit; /* 繼承容器的圓角 */
+  overflow: hidden; /* 確保內容不會溢出圓角 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 /**
@@ -154,28 +197,46 @@ const IPFSImage = ({
   const [retryCount, setRetryCount] = useState(0);
   const [gatewayIndex, setGatewayIndex] = useState(-1); // -1表示使用默認網關
   const [useFallbackImage, setUseFallbackImage] = useState(false);
+  const [isAttemptingLoad, setIsAttemptingLoad] = useState(true); // 新增狀態：標記是否正在嘗試加載
+  const [showError, setShowError] = useState(false); // 新增狀態：控制錯誤信息顯示
+  const [previousImage, setPreviousImage] = useState(null); // 保存之前加載成功的圖片
 
-  const MAX_RETRIES = 1; // 減少每個網關的最大重試次數，加快失敗檢測
+  const MAX_RETRIES = 2; // 每個網關的最大重試次數
   const MAX_GATEWAY_ATTEMPTS = ALTERNATE_IPFS_GATEWAYS.length; // 最大網關嘗試次數
-  const LOAD_TIMEOUT = 1000; // 1秒加載超時
+  const LOAD_TIMEOUT = 8000; // 增加加載超時到8秒
+  const ERROR_DISPLAY_DELAY = 800; // 錯誤信息顯示延遲（毫秒）
 
   useEffect(() => {
     if (!src) {
       setHasError(true);
       setUseFallbackImage(true);
+      setIsAttemptingLoad(false);
+      // 延遲顯示錯誤信息
+      setTimeout(() => setShowError(true), ERROR_DISPLAY_DELAY);
       return;
     }
 
-    // 重置狀態
-    setIsLoaded(false);
+    // 如果URL没有變化，不重新加載
+    if (src === previousImage) {
+      return;
+    }
+
+    let isMounted = true; // 跟踪組件是否已卸載
+
+    // 重置狀態，但保持之前加載的圖片可見直到新圖片加載成功
     setHasError(false);
     setRetryCount(0);
     setGatewayIndex(-1);
     setUseFallbackImage(false);
+    setIsAttemptingLoad(true);
+    setShowError(false);
+
+    // 保留之前的isLoaded狀態，避免閃爍
+    // 等到新圖片加載成功後再更新isLoaded
 
     // 設置加載超時
     const timeoutId = setTimeout(() => {
-      if (!isLoaded && !hasError) {
+      if (isMounted && !hasError && isAttemptingLoad) {
         console.warn(`IPFSImage: 加載超時 ${src}`);
         handleLoadingFailure();
       }
@@ -185,6 +246,7 @@ const IPFSImage = ({
     tryLoadWithGateway(src, gateway);
 
     return () => {
+      isMounted = false;
       clearTimeout(timeoutId);
     };
   }, [src, gateway]);
@@ -203,6 +265,20 @@ const IPFSImage = ({
         return;
       }
 
+      // 檢查src是否已經是http開頭的URL，如果是，直接使用
+      if (originalSrc.startsWith("http")) {
+        console.log(`IPFSImage: URL已經是HTTP格式，直接使用: ${originalSrc}`);
+        setImageUrl(originalSrc);
+        return;
+      }
+
+      // 檢查是否是本地文件路徑
+      if (originalSrc.startsWith("/")) {
+        console.log(`IPFSImage: 本地文件路徑，直接使用: ${originalSrc}`);
+        setImageUrl(originalSrc);
+        return;
+      }
+
       const httpUrl = getHttpUrl(originalSrc, currentGateway);
 
       // 如果getHttpUrl返回null，表示無法轉換URL
@@ -218,7 +294,17 @@ const IPFSImage = ({
 
       // 添加緩存破壞參數，避免瀏覽器緩存問題
       const cacheBuster = `${httpUrl.includes("?") ? "&" : "?"}cb=${Date.now()}`;
-      setImageUrl(httpUrl + cacheBuster);
+      const finalUrl = httpUrl + cacheBuster;
+
+      // 預加載圖片以檢查是否可訪問
+      const preloadImg = new Image();
+      preloadImg.onload = () => {
+        setImageUrl(finalUrl);
+      };
+      preloadImg.onerror = () => {
+        handleLoadingFailure();
+      };
+      preloadImg.src = finalUrl;
     } catch (error) {
       console.error(`IPFSImage: URL轉換錯誤:`, error);
       handleLoadingFailure();
@@ -243,8 +329,12 @@ const IPFSImage = ({
       tryLoadWithGateway(src, nextGateway);
     } else {
       console.log(`IPFSImage: 所有網關都已嘗試，顯示佔位圖`);
+      setIsAttemptingLoad(false);
       setUseFallbackImage(true);
       setHasError(true);
+
+      // 延遲顯示錯誤信息
+      setTimeout(() => setShowError(true), ERROR_DISPLAY_DELAY);
     }
   };
 
@@ -268,11 +358,29 @@ const IPFSImage = ({
 
   const handleImageLoad = () => {
     console.log(`IPFSImage: 圖片加載成功 ${imageUrl}`);
+    setPreviousImage(src); // 保存成功加載的圖片URL
     setIsLoaded(true);
+    setIsAttemptingLoad(false);
+    setHasError(false);
+    setShowError(false);
   };
 
   const handleImageError = () => {
     console.error(`IPFSImage: 圖片加載失敗 ${imageUrl}`);
+
+    // 檢查URL是否指向本地文件
+    if (src.startsWith("/")) {
+      console.log(`IPFSImage: 嘗試直接使用本地路徑: ${src}`);
+      setImageUrl(src);
+      return;
+    }
+
+    // 檢查是否是我們已知的問題URL格式，應用特殊處理
+    if (src.includes("ipfs://")) {
+      console.log(`IPFSImage: 檢測到ipfs://格式，嘗試特殊處理`);
+      // 這裡可以添加特殊處理邏輯
+    }
+
     handleLoadingFailure();
   };
 
@@ -288,49 +396,88 @@ const IPFSImage = ({
 
   return (
     <ImageContainer
-      width={width}
-      height={height}
-      borderRadius={borderRadius}
+      $width={width}
+      $height={height}
+      $borderRadius={borderRadius}
       className={className}
-      backgroundColor={backgroundColor}
-      {...props}
+      $backgroundColor={backgroundColor}
+      style={{
+        margin: 0,
+        padding: 0,
+        border: "none",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        ...props.style,
+      }}
     >
+      {/* 背景預覽圖 - 如果之前有成功加載的圖片，先顯示它，避免閃爍 */}
+      {previousImage && !isLoaded && !hasError && (
+        <StyledImage
+          src={
+            previousImage.startsWith("http")
+              ? previousImage
+              : getHttpUrl(previousImage, gateway)
+          }
+          alt={`${alt} (前回のイメージ)`}
+          $isLoaded={true}
+          $objectFit={objectFit}
+          $hoverEffect={false}
+          style={{
+            opacity: 0.3,
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* 主要圖片顯示 */}
       {!hasError && !useFallbackImage && (
         <StyledImage
           src={imageUrl}
           alt={alt}
           onLoad={handleImageLoad}
           onError={handleImageError}
-          isLoaded={isLoaded}
-          objectFit={objectFit}
-          hoverEffect={hoverEffect}
+          $isLoaded={isLoaded}
+          $objectFit={objectFit}
+          $hoverEffect={hoverEffect}
           key={`img-${gatewayIndex}-${retryCount}`} // 強制React在重試或切換網關時重新創建img元素
+          style={{
+            zIndex: 2,
+            borderRadius: borderRadius || "inherit",
+            backgroundColor: backgroundColor || "inherit",
+          }}
         />
       )}
 
+      {/* 備用圖片顯示 */}
       {useFallbackImage && (
         <FallbackContainer>
           <StyledImage
             src={fallbackImage}
             alt={`${alt} (フォールバック画像)`}
             onLoad={() => setIsLoaded(true)}
-            isLoaded={isLoaded}
-            objectFit={objectFit}
-            hoverEffect={false}
+            $isLoaded={isLoaded}
+            $objectFit={objectFit}
+            $hoverEffect={false}
+            style={{
+              borderRadius: borderRadius || "inherit",
+              backgroundColor: backgroundColor || "inherit",
+            }}
           />
-          <ErrorPlaceholder>
-            {errorText}
-            {gatewayIndex >= 0 &&
-              ` (${MAX_GATEWAY_ATTEMPTS}個のゲートウェイを試しました)`}
-          </ErrorPlaceholder>
+          {showError && (
+            <ErrorPlaceholder>
+              {errorText}
+              {gatewayIndex >= 0 &&
+                ` (${MAX_GATEWAY_ATTEMPTS}個のゲートウェイを試しました)`}
+            </ErrorPlaceholder>
+          )}
         </FallbackContainer>
       )}
 
-      {!isLoaded && !hasError && !useFallbackImage && (
-        <Loader>{getLoaderText()}</Loader>
-      )}
+      {/* 加載中顯示 */}
+      {!isLoaded && isAttemptingLoad && <Loader>{getLoaderText()}</Loader>}
 
-      {hasError && !useFallbackImage && (
+      {/* 錯誤信息顯示 - 只在不再嘗試加載且有錯誤時顯示 */}
+      {hasError && !useFallbackImage && !isAttemptingLoad && showError && (
         <ErrorPlaceholder>
           {errorText}
           {gatewayIndex >= 0 &&
