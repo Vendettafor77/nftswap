@@ -15,15 +15,12 @@ import { getNFTImageUrl } from "../../utils/ipfsUtils";
 const borderGlow = keyframes`
   0% {
     opacity: 0;
-    transform: scale(1);
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.02);
   }
   100% {
     opacity: 0;
-    transform: scale(1.05);
   }
 `;
 
@@ -72,26 +69,29 @@ const LoadingOverlay = styled.div`
 const cardAnimationStyles = css`
   position: relative;
   transition: all 0.3s ease;
+
   &:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
+
   &:hover::after {
     animation: ${borderGlow} 1.5s ease-in-out infinite;
   }
+
   &::after {
     content: "";
     position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
       45deg,
       rgba(131, 58, 180, 0.6),
       rgba(29, 185, 253, 0.6)
     );
-    border-radius: 20px; /* 增加外部光暈的圓角，使其與卡片圓角協調 */
+    border-radius: 16px; /* 使用與卡片相同的圓角 */
     z-index: 2;
     opacity: 0;
     pointer-events: none;
@@ -123,7 +123,7 @@ const Card = styled.div`
       props.theme.colors.surface || "#1e2633"
     }F8)`};
   border-radius: 16px; /* 四個角都設置圓角 */
-  overflow: hidden;
+  overflow: hidden; /* 修改為hidden以確保特效不會超出容器 */
   box-shadow: ${(props) =>
     props.isSelected
       ? "0 15px 30px rgba(106, 17, 203, 0.3)"
@@ -142,6 +142,7 @@ const Card = styled.div`
   aspect-ratio: 1 / 1.6; /* 調整卡片寬高比例，使其更高一些 */
   padding: 0; /* 確保沒有內邊距 */
   margin: 0; /* 確保沒有外邊距 */
+  z-index: 1; /* 確保卡片有正確的層級 */
 
   ${(props) => !props.isSelected && cardAnimationStyles}
 
@@ -169,7 +170,7 @@ const NFTImageWrapper = styled.div`
   width: 100%;
   padding-top: 100%; /* 保持1:1的寬高比 */
   background-color: #1e2633; /* 使用與Card一致的背景色 */
-  overflow: hidden;
+  overflow: hidden; /* 確保內容不會溢出容器 */
   border-radius: 16px 16px 0 0; /* 只設置上方圓角 */
 `;
 
@@ -195,10 +196,6 @@ const Image = styled.img`
   transition: transform 0.3s ease;
   border-radius: inherit;
   z-index: 1;
-
-  ${NFTImageWrapper}:hover & {
-    transform: scale(1.02);
-  }
 `;
 
 // 修改ListingBadge組件
@@ -302,7 +299,7 @@ const NFTCollection = styled.p`
 // 添加動畫切換按鈕容器
 const ActionContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center; /* 修改為居中對齊 */
   align-items: center;
   width: 100%;
   margin: 0;
@@ -326,6 +323,8 @@ const CardButton = styled(PrimaryButton)`
   border-radius: ${(props) => props.theme.borderRadius.medium};
   position: relative; /* 確保按鈕可作為錨點 */
   z-index: 5; /* 確保按鈕可點擊 */
+  box-sizing: border-box; /* 確保尺寸包含padding和border */
+  font-size: 0.95rem; /* 與ListNFTSection中的按鈕字體大小保持一致 */
 `;
 
 // 卡片狀態消息
@@ -471,7 +470,7 @@ const NFTCard = ({
             width="100%"
             height="100%"
             objectFit="cover"
-            hoverEffect={!loading && !loadError}
+            hoverEffect={false}
             errorText="画像の読み込みに失敗しました"
             backgroundColor="#1e2633"
             borderRadius="16px 16px 0 0" /* 只設置上方圓角 */

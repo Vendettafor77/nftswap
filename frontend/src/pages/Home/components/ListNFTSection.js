@@ -30,8 +30,12 @@ const SelectedButton = styled(PrimaryButton)`
   background: linear-gradient(90deg, #ff0080, #7928ca);
   height: 45px; /* 確保固定高度 */
   font-size: 0.95rem;
+  width: 100%; /* 修改為width: 100%確保寬度一致 */
   max-width: 100%;
   box-sizing: border-box;
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
 
   &:hover {
     background: linear-gradient(90deg, #ff0080, #7928ca);
@@ -43,14 +47,19 @@ const SelectedButton = styled(PrimaryButton)`
 const StandardButton = styled(PrimaryButton)`
   height: 45px;
   font-size: 0.95rem;
+  width: 100%; /* 修改為width: 100%確保寬度一致 */
   max-width: 100%;
   box-sizing: border-box;
+  padding: ${(props) => props.theme.spacing.sm}
+    ${(props) => props.theme.spacing.lg};
+  border-radius: ${(props) => props.theme.borderRadius.medium};
 `;
 
 // 包裝器包裹按鈕 - 確保固定尺寸
 const ButtonWrapper = styled.div`
   width: 100%;
   padding: 0;
+  margin: 0; /* 添加margin: 0确保没有外边距 */
   box-sizing: border-box;
   height: 45px; /* 確保固定高度 */
   display: flex;

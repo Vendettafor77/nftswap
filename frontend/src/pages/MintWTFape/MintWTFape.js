@@ -185,6 +185,8 @@ const CollectionInfoCard = styled.div`
   padding: ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
   border: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
 `;
 
 // 收藏信息標題
@@ -259,6 +261,8 @@ const DetailsSection = styled.div`
 // 標題和信息區
 const InfoHeader = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.md};
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
 `;
 
 // 行動按鈕區
@@ -266,6 +270,8 @@ const ActionArea = styled.div`
   margin-top: auto;
   position: relative;
   min-height: 40px; /* 從80px減少到60px，減少空白區域 */
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
 `;
 
 // 懸浮陰影效果 - 用於替代容器動效
@@ -311,6 +317,8 @@ const FeaturesContainer = styled.div`
     ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
   border: 1px solid rgba(106, 17, 203, 0.2);
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
 `;
 
 // 屬性標題
@@ -356,17 +364,18 @@ const FeatureValue = styled.span`
 
 // Token ID 輸入區域 - 使用內聯樣式確保優先級
 const TokenIdInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: rgba(15, 18, 31, 0.6);
   border-radius: ${(props) => props.theme.borderRadius.medium};
   padding: ${(props) => props.theme.spacing.sm}
     ${(props) => props.theme.spacing.md};
   margin-bottom: ${(props) => props.theme.spacing.md};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid rgba(106, 17, 203, 0.2) !important;
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
+  border: 1px solid rgba(106, 17, 203, 0.2);
   overflow: hidden;
-  width: 100%;
 `;
 
 // Token ID 標籤
@@ -423,6 +432,8 @@ const PriceInfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%; /* 確保寬度與其他元素一致 */
+  box-sizing: border-box; /* 確保尺寸計算包含padding和border */
 `;
 
 // 價格標籤
@@ -927,9 +938,7 @@ const MintWTFape = () => {
                   </FeaturesList>
                 </FeaturesContainer>
 
-                <TokenIdInputContainer
-                  style={{ border: "1px solid rgba(106, 17, 203, 0.2)" }}
-                >
+                <TokenIdInputContainer>
                   <TokenIdLabel>Token ID:</TokenIdLabel>
                   <div
                     style={{
@@ -984,6 +993,9 @@ const MintWTFape = () => {
                     fontSize: "1rem",
                     boxShadow: "0 4px 8px rgba(106, 17, 203, 0.15)", // 減輕陰影
                     marginTop: "auto" /* 調整位置，使其與左側按鈕上下對齊 */,
+                    width: "100%" /* 確保按鈕寬度填滿容器 */,
+                    boxSizing:
+                      "border-box" /* 確保尺寸計算包含padding和border */,
                   }}
                 >
                   {isMinting ? (
@@ -1043,6 +1055,7 @@ const MintWTFape = () => {
                     fullWidth
                     noArrow
                     fadeOut={mintStatus.fadeOut}
+                    style={{ width: "100%" }} /* 確保消息寬度與按鈕一致 */
                   >
                     {mintStatus.message}
                   </FixedStatusMessage>
