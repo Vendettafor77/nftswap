@@ -134,35 +134,17 @@ const ListNFTSection = ({ standalone = true }) => {
       );
       setSelectedNFT(selectedNFTRef.current);
 
-      // 使用requestAnimationFrame確保在下一個渲染幀中執行滾動
-      requestAnimationFrame(() => {
-        console.log("執行即時滾動");
-        // 立即檢查元素並滾動，不再使用延遲
+      // 只使用一次requestAnimationFrame，避免多次調用
+      // 使用timeout代替連續的requestAnimationFrame，減少GPU佔用
+      setTimeout(() => {
         const element = document.getElementById(
           `nft-item-${selectedNFTRef.current.tokenId}`
         );
         if (element) {
           console.log("找到元素並滾動:", element.id);
           element.scrollIntoView({ behavior: "auto", block: "center" }); // 使用auto代替smooth實現無延遲滾動
-        } else {
-          console.log("仍未找到元素");
-          // 如果確實找不到元素，可以再嘗試一次（可能DOM還沒完全更新）
-          requestAnimationFrame(() => {
-            const retryElement = document.getElementById(
-              `nft-item-${selectedNFTRef.current.tokenId}`
-            );
-            if (retryElement) {
-              console.log("重試後找到元素並滾動:", retryElement.id);
-              retryElement.scrollIntoView({
-                behavior: "auto",
-                block: "center",
-              });
-            } else {
-              console.log("重試後仍未找到元素");
-            }
-          });
         }
-      });
+      }, 100); // 100ms延遲通常足夠等待DOM更新
     }
 
     window.addEventListener("nft-cleared", handleNFTCleared);

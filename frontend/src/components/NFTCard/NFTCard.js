@@ -65,18 +65,20 @@ const LoadingOverlay = styled.div`
   }
 `;
 
-// 選擇動畫樣式
+// 選擇動畫樣式 - 簡化動畫效果
 const cardAnimationStyles = css`
   position: relative;
-  transition: all 0.3s ease;
+  /* 減少過渡動畫時間以降低GPU消耗 */
+  transition: all 0.2s ease;
 
   &:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
 
+  /* 移除hover時的動畫效果，降低GPU消耗 */
   &:hover::after {
-    animation: ${borderGlow} 1.5s ease-in-out infinite;
+    opacity: 0.3;
   }
 
   &::after {
@@ -88,14 +90,15 @@ const cardAnimationStyles = css`
     bottom: 0;
     background: linear-gradient(
       45deg,
-      rgba(131, 58, 180, 0.6),
-      rgba(29, 185, 253, 0.6)
+      rgba(131, 58, 180, 0.2),
+      rgba(29, 185, 253, 0.2)
     );
     border-radius: 16px; /* 使用與卡片相同的圓角 */
     z-index: 2;
     opacity: 0;
     pointer-events: none;
-    mix-blend-mode: screen;
+    /* 移除混合模式以減少GPU渲染負擔 */
+    transition: opacity 0.2s ease;
   }
 `;
 
@@ -185,7 +188,7 @@ const NFTImageContent = styled.div`
   overflow: hidden;
 `;
 
-// 修改Image組件
+// 修改Star組件
 const Image = styled.img`
   position: absolute;
   top: 0;
@@ -193,7 +196,8 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  /* 減少過渡動畫時間以降低GPU消耗 */
+  transition: transform 0.2s ease;
   border-radius: inherit;
   z-index: 1;
 `;

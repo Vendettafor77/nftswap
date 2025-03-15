@@ -12,12 +12,31 @@ import { myNFTs } from "../../data/mockData";
 import IPFSImage from "../../components/IPFSImage";
 import { getNFTImageUrl } from "../../utils/ipfsUtils";
 
+// 頁面主容器，與Home頁面的HomeContainer保持一致
 const PageContainer = styled.div`
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
+  /* 應用全局樣式 */
+  &.content-container {
+    /* 補償滾動條寬度 */
+    width: 100%;
+    padding-right: calc(20px + 6px); /* 原始padding + 滾動條寬度 */
+    box-sizing: border-box;
+  }
+`;
+
+// 固定寬度的主內容區域，與Home頁面的MainContent保持一致
+const MainContent = styled.div`
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${(props) => props.theme.spacing.xl};
-  padding-right: calc(${(props) => props.theme.spacing.xl} + 6px);
-  min-height: 90vh;
+  padding: ${(props) => props.theme.spacing.lg} 0;
+  /* 確保內容寬度一致，不受滾動條影響 */
+  box-sizing: border-box;
+  min-height: 70vh; /* 確保內容足夠高，保持頁面內容充實 */
   position: relative;
   padding-top: 0;
   margin-top: ${(props) => props.theme.spacing.lg};
@@ -71,9 +90,15 @@ const FilterBarContainer = styled.div`
 
 const NFTGridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: ${(props) => props.theme.spacing.md};
   position: relative;
+
+  /* 確保與Home頁面的MarketContainer一致 */
+  margin-top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
 
   > div {
     height: 100%;
@@ -762,198 +787,199 @@ const MyNFTs = () => {
   return (
     <>
       <PageContainer className="content-container">
-        <PageHeader>
-          <Title>
-            <GradientTitle>マイNFT</GradientTitle>
-          </Title>
-          <Subtitle>
-            あなたのウォレットにあるすべてのNFTをここで確認できます。
-          </Subtitle>
-        </PageHeader>
+        <MainContent>
+          <PageHeader>
+            <Title>
+              <GradientTitle>マイNFT</GradientTitle>
+            </Title>
+            <Subtitle>
+              あなたのウォレットにあるすべてのNFTをここで確認できます。
+            </Subtitle>
+          </PageHeader>
 
-        {loading ? (
-          <LoadingState>
-            <h3>NFTを読み込み中...</h3>
-            <p>お持ちのNFTを取得しています。しばらくお待ちください。</p>
-          </LoadingState>
-        ) : (
-          <>
-            <FilterBar
-              searchTerm={searchTerm}
-              onSearchChange={handleSearchChange}
-              searchPlaceholder="NFTを検索..."
-              filters={[
-                {
-                  value: collectionFilter,
-                  options: [
-                    { value: "all", label: "すべてのコレクション" },
-                    ...collections.map((collection) => ({
-                      value: collection,
-                      label: collection,
-                    })),
-                  ],
-                  onChange: setCollectionFilter,
-                },
-                {
-                  value: sortBy,
-                  options: [
-                    { value: "recent", label: "最新順" },
-                    { value: "name_asc", label: "名前（A-Z）" },
-                    { value: "name_desc", label: "名前（Z-A）" },
-                  ],
-                  onChange: setSortBy,
-                },
-              ]}
-            />
-
-            {filteredNFTs.length > 0 ? (
-              <NFTGrid
-                items={filteredNFTs}
-                actionText="操作"
-                onItemAction={(nft, event) => {
-                  if (event) {
-                    event.preventDefault(); // 防止默認行為
-                    event.stopPropagation(); // 阻止事件冒泡
-                    handleNFTAction(nft, event);
-                  }
-                }}
-                renderStatus={(nft) =>
-                  nft.statusMessage
-                    ? {
-                        message: nft.statusMessage,
-                        success: nft.statusType === "success",
-                        fadeOut: nft.fadeOut,
-                      }
-                    : null
-                }
-                imageUrlKey="processedImage" // 使用預處理好的圖片URL
+          {loading ? (
+            <LoadingState>
+              <h3>NFTを読み込み中...</h3>
+              <p>お持ちのNFTを取得しています。しばらくお待ちください。</p>
+            </LoadingState>
+          ) : (
+            <>
+              <FilterBar
+                searchTerm={searchTerm}
+                onSearchChange={handleSearchChange}
+                searchPlaceholder="NFTを検索..."
+                filters={[
+                  {
+                    value: collectionFilter,
+                    options: [
+                      { value: "all", label: "すべてのコレクション" },
+                      ...collections.map((collection) => ({
+                        value: collection,
+                        label: collection,
+                      })),
+                    ],
+                    onChange: setCollectionFilter,
+                  },
+                  {
+                    value: sortBy,
+                    options: [
+                      { value: "recent", label: "最新順" },
+                      { value: "name_asc", label: "名前（A-Z）" },
+                      { value: "name_desc", label: "名前（Z-A）" },
+                    ],
+                    onChange: setSortBy,
+                  },
+                ]}
               />
-            ) : (
-              <EmptyState>
-                <h3>NFTが見つかりません</h3>
-                <p>NFTをミントするか、他のユーザーから購入してください。</p>
-              </EmptyState>
-            )}
 
-            {showActionMenu && activeNFT && (
-              <>
-                <ModalOverlay onClick={() => setShowActionMenu(false)} />
-                <ActionMenu
-                  style={{
-                    top: `${menuPosition.top}px`,
-                    left: `${menuPosition.left}px`,
+              {filteredNFTs.length > 0 ? (
+                <NFTGrid
+                  items={filteredNFTs}
+                  actionText="操作"
+                  hasRightSidebar={false}
+                  onItemAction={(nft, event) => {
+                    if (event) {
+                      event.preventDefault(); // 防止默認行為
+                      event.stopPropagation(); // 阻止事件冒泡
+                      handleNFTAction(nft, event);
+                    }
                   }}
-                  flipUp={menuPosition.flipUp}
-                >
-                  {activeNFT.isListed ? (
+                  renderStatus={(nft) =>
+                    nft.statusMessage
+                      ? {
+                          message: nft.statusMessage,
+                          success: nft.statusType === "success",
+                          fadeOut: nft.fadeOut,
+                        }
+                      : null
+                  }
+                  imageUrlKey="processedImage" // 使用預處理好的圖片URL
+                />
+              ) : (
+                <EmptyState>
+                  <h3>NFTが見つかりません</h3>
+                  <p>NFTをミントするか、他のユーザーから購入してください。</p>
+                </EmptyState>
+              )}
+
+              {showActionMenu && activeNFT && (
+                <>
+                  <ModalOverlay onClick={() => setShowActionMenu(false)} />
+                  <ActionMenu
+                    style={{
+                      top: `${menuPosition.top}px`,
+                      left: `${menuPosition.left}px`,
+                    }}
+                    flipUp={menuPosition.flipUp}
+                  >
+                    {activeNFT.isListed ? (
+                      <ActionMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation(); // 阻止事件冒泡
+                          handleRevoke(activeNFT);
+                        }}
+                      >
+                        出品を取り消す
+                      </ActionMenuItem>
+                    ) : (
+                      <>
+                        <ActionMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation(); // 阻止事件冒泡
+                            handleListNFT(activeNFT);
+                          }}
+                        >
+                          マーケットに出品
+                        </ActionMenuItem>
+                        <ActionMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation(); // 阻止事件冒泡
+                            handleTransfer(activeNFT);
+                          }}
+                        >
+                          転送する
+                        </ActionMenuItem>
+                      </>
+                    )}
                     <ActionMenuItem
                       onClick={(e) => {
                         e.stopPropagation(); // 阻止事件冒泡
-                        handleRevoke(activeNFT);
+                        navigate(`/history?nft=${activeNFT.tokenId}`);
                       }}
                     >
-                      出品を取り消す
+                      履歴ページへ
                     </ActionMenuItem>
-                  ) : (
-                    <>
-                      <ActionMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation(); // 阻止事件冒泡
-                          handleListNFT(activeNFT);
-                        }}
-                      >
-                        マーケットに出品
-                      </ActionMenuItem>
-                      <ActionMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation(); // 阻止事件冒泡
-                          handleTransfer(activeNFT);
-                        }}
-                      >
-                        転送する
-                      </ActionMenuItem>
-                    </>
-                  )}
-                  <ActionMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation(); // 阻止事件冒泡
-                      navigate(`/history?nft=${activeNFT.tokenId}`);
-                    }}
-                  >
-                    履歴ページへ
-                  </ActionMenuItem>
-                </ActionMenu>
-              </>
-            )}
-          </>
-        )}
-
-        {showTransferModal && activeNFT && (
-          <>
-            <ModalOverlay onClick={closeTransferModal} />
-            <TransferModal>
-              <ModalCloseButton onClick={closeTransferModal}>
-                ×
-              </ModalCloseButton>
-              <h3>NFTを転送</h3>
-              <NFTPreview>
-                <IPFSImage
-                  src={activeNFT.processedImage || activeNFT.image}
-                  alt={activeNFT.name}
-                  width="100%"
-                  height="100%"
-                  objectFit="cover"
-                />
-                <div>
-                  <NFTNamePreviewSVG>{activeNFT.name}</NFTNamePreviewSVG>
-                  <NFTCollection>{activeNFT.collection}</NFTCollection>
-                </div>
-              </NFTPreview>
-              <TransferInput
-                placeholder="受取人のアドレスを入力"
-                value={recipientAddress}
-                onChange={(e) => setRecipientAddress(e.target.value)}
-              />
-              <TransferButton
-                onClick={handleTransferSubmit}
-                fullWidth
-                disabled={!recipientAddress.trim()}
-              >
-                転送する
-              </TransferButton>
-
-              {transferStatus.show && (
-                <CustomStatusMessage
-                  success={transferStatus.success}
-                  fadeOut={transferStatus.fadeOut}
-                  noArrow={false}
-                  centered={true}
-                >
-                  {transferStatus.message}
-                </CustomStatusMessage>
+                  </ActionMenu>
+                </>
               )}
-            </TransferModal>
-          </>
-        )}
-
-        {transferStatus.show && !showTransferModal && (
-          <StatusMessage
-            success={transferStatus.success}
-            fadeOut={transferStatus.fadeOut}
-            style={{
-              position: "fixed",
-              top: "20px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 1100,
-              minWidth: "300px",
-              maxWidth: "80%",
-            }}
-          >
-            {transferStatus.message}
-          </StatusMessage>
-        )}
+            </>
+          )}
+        </MainContent>
       </PageContainer>
+
+      {showTransferModal && activeNFT && (
+        <>
+          <ModalOverlay onClick={closeTransferModal} />
+          <TransferModal>
+            <ModalCloseButton onClick={closeTransferModal}>×</ModalCloseButton>
+            <h3>NFTを転送</h3>
+            <NFTPreview>
+              <IPFSImage
+                src={activeNFT.processedImage || activeNFT.image}
+                alt={activeNFT.name}
+                width="100%"
+                height="100%"
+                objectFit="cover"
+              />
+              <div>
+                <NFTNamePreviewSVG>{activeNFT.name}</NFTNamePreviewSVG>
+                <NFTCollection>{activeNFT.collection}</NFTCollection>
+              </div>
+            </NFTPreview>
+            <TransferInput
+              placeholder="受取人のアドレスを入力"
+              value={recipientAddress}
+              onChange={(e) => setRecipientAddress(e.target.value)}
+            />
+            <TransferButton
+              onClick={handleTransferSubmit}
+              fullWidth
+              disabled={!recipientAddress.trim()}
+            >
+              転送する
+            </TransferButton>
+
+            {transferStatus.show && (
+              <CustomStatusMessage
+                success={transferStatus.success}
+                fadeOut={transferStatus.fadeOut}
+                noArrow={false}
+                centered={true}
+              >
+                {transferStatus.message}
+              </CustomStatusMessage>
+            )}
+          </TransferModal>
+        </>
+      )}
+
+      {transferStatus.show && !showTransferModal && (
+        <StatusMessage
+          success={transferStatus.success}
+          fadeOut={transferStatus.fadeOut}
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1100,
+            minWidth: "300px",
+            maxWidth: "80%",
+          }}
+        >
+          {transferStatus.message}
+        </StatusMessage>
+      )}
     </>
   );
 };

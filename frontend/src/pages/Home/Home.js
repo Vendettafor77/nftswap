@@ -567,6 +567,7 @@ const Home = () => {
                   actionText="購入する"
                   onItemAction={handleBuy}
                   renderStatus={renderNftStatus}
+                  hasRightSidebar={true}
                 />
               </MarketContainer>
             ) : (

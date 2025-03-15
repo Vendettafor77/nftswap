@@ -10,15 +10,13 @@ import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <FontProvider>
-        <Router>
-          <AnimationProvider>
-            <App />
-          </AnimationProvider>
-        </Router>
-      </FontProvider>
-    </ThemeProvider>
-  </React.StrictMode>
+  <ThemeProvider theme={theme}>
+    <FontProvider>
+      <Router>
+        <AnimationProvider>
+          <App />
+        </AnimationProvider>
+      </Router>
+    </FontProvider>
+  </ThemeProvider>
 );
