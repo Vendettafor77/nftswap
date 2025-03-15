@@ -2,6 +2,20 @@
 
 一個基於以太坊區塊鏈的NFT（非同質化代幣）交易平台，支持NFT的鑄造、上架、購買、撤回和轉移等功能。
 
+## 當前開發狀態
+
+**重要說明：** 本項目目前處於開發階段，主要進展如下：
+
+- ✅ **合約開發**：智能合約已完成開發和測試
+- ✅ **中間層構建**：ethers v6中間層、合約函數封裝和IPFS集成已完成
+- ✅ **消息系統**：交易監聽與通知系統架構已完成
+- ⏳ **前端整合**：正在進行前端UI與中間層的整合工作
+- ⏳ **新功能開發**：批量操作、高級篩選等功能待開發
+
+**注意**：目前前端UI大部分使用模擬數據進行展示，尚未與實際區塊鏈交互。後續開發將專注於將中間層功能整合到前端UI組件中。
+
+詳細的開發計劃和進度請參見[任務清單](TASKS.md)。
+
 ## 目錄
 
 - [用戶操作指南](#用戶操作指南)
@@ -24,6 +38,7 @@
   - [智能合約](#智能合約)
   - [樣式系統](#樣式系統)
   - [開發和部署](#開發和部署)
+  - [下一步開發計劃](#下一步開發計劃)
 
 ---
 
@@ -435,68 +450,73 @@ VenAPE NFT合約，繼承自ERC721標準，允許鑄造和管理VenAPE NFT。
 - `REACT_APP_IPFS_GATEWAY`: 首選IPFS網關URL
 - `REACT_APP_CHAIN_ID`: 目標區塊鏈網絡ID
 
-## 技術架構
+## 下一步開發計劃
 
-### 前端
+### 前端整合方案
 
-- React.js框架
-- styled-components用於樣式管理
-- ethers.js v6用於與區塊鏈交互
-- React Router用於頁面路由
+我們即將進行的主要工作是將已完成的中間層功能整合到前端UI組件中。整合將按照以下步驟進行：
 
-### 智能合約
+1. **NFT瀏覽與購買功能**
 
-- Solidity編寫
-- 包含NFTSwap.sol（交易合約）和VenAPE.sol（NFT合約）
-- 使用Hardhat進行開發和測試
+   - 在`Home.js`中整合`useNFTSwapContract`和`nftSwapFunctions`
+   - 替換模擬的購買邏輯，實現真實的區塊鏈交互
 
-## ethers v6中間層設計
+   ```jsx
+   // 示例代碼
+   import { useNFTSwapContract } from "../hooks/useContract";
 
-整個系統採用分層架構設計與區塊鏈互動:
+   const Home = () => {
+     const { contract, purchaseNFT } = useNFTSwapContract();
 
-1. **基礎層 (contractUtils.js)**
+     const handleBuy = async (nft) => {
+       try {
+         const result = await purchaseNFT(
+           nft.contractAddress,
+           nft.tokenId,
+           nft.price
+         );
+         // 處理交易結果...
+       } catch (error) {
+         // 錯誤處理...
+       }
+     };
 
-   - 提供Provider、Signer獲取
-   - 通用合約實例創建
-   - 錯誤處理和格式化
-   - 事件監聽基礎架構
+     // 組件其餘部分...
+   };
+   ```
 
-2. **合約接口層 (nftSwap.js, venApeFunctions.js)**
+2. **NFT上架功能**
 
-   - 直接映射合約方法
-   - 處理參數轉換和結果解析
-   - 提供交易狀態跟蹤
-   - 實現異常處理
+   - 整合`ListNFTForm.js`中的上架邏輯
+   - 添加NFT授權檢查和處理
+   - 完整的上架狀態顯示
 
-3. **業務邏輯層 (nftSwapFunctions.js)**
+3. **我的NFT管理功能**
+   - 從區塊鏈獲取用戶NFT數據
+   - 實現NFT撤回、轉移和價格更新等功能
 
-   - 組合多個合約調用
-   - 實現復雜業務邏輯
-   - 處理元數據和IPFS整合
-   - 提供高級數據查詢
+### 代碼貢獻指南
 
-4. **展示層 (React Hooks)**
-   - useContract: 組件級合約訪問
-   - useTransactionStatus: 交易狀態跟蹤
-   - useContractEvent: 事件訂閱
+如果您想參與開發，請按照以下步驟：
 
-主要特性:
+1. Fork 此倉庫
+2. 創建您的特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 打開一個 Pull Request
 
-- 完整支持ethers v6最新特性
-- 支持交易確認和狀態跟蹤
-- 內置錯誤處理和本地化錯誤信息
-- 支持批量操作和事件監聽
-- 可配置的交易參數（gas、優先級費用等）
+請確保您的代碼遵循項目的代碼風格，並且所有測試都能通過。
 
-## 用戶互動流程
+### 整合測試計劃
 
-1. 用戶在UI上發起操作
-2. React組件調用相應hook
-3. Hook調用合約函數封裝
-4. 封裝初始化交易並返回交易對象
-5. TransactionContext跟蹤交易狀態
-6. UI根據交易狀態更新顯示
-7. 合約事件觸發UI刷新
+在完成每個功能的整合後，我們將進行以下測試：
+
+1. **功能測試**：確保每個功能按預期工作
+2. **UI交互測試**：確保用戶體驗流暢
+3. **錯誤處理測試**：測試各種錯誤情況的處理
+4. **性能測試**：確保應用在各種條件下都能維持良好性能
+
+測試將在本地環境和測試網絡上進行，以確保功能在部署前的穩定性。
 
 ## 開發者信息
 

@@ -271,5 +271,3 @@ export const BackgroundDecoration = () => {
     </BackgroundWrapper>
   );
 };
-
-export default BackgroundDecoration;

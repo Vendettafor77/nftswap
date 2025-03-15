@@ -7,6 +7,10 @@ import AppRoutes from "./routes";
 import Navbar from "./components/Navbar/Navbar";
 import { BackgroundDecoration } from "./components/BackgroundEffect";
 import { FontProvider } from "./contexts/FontContext";
+import { AnimationProvider } from "./contexts/AnimationContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { TransactionProvider } from "./contexts/TransactionContext";
+import NotificationContainer from "./components/Feedback/NotificationContainer";
 import "./App.css";
 
 /**
@@ -31,18 +35,29 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <FontProvider>
-        <GlobalStyle />
-        <GlobalScrollbarStyle />
-        {/* 導航欄 */}
-        <div className="navbar-container-wrapper" style={navbarContainerStyle}>
-          <Navbar />
-        </div>
-        <div className="App">
-          <BackgroundDecoration />
-          <div className="app-content">
-            <AppRoutes />
-          </div>
-        </div>
+        <AnimationProvider>
+          <NotificationProvider>
+            <TransactionProvider>
+              <GlobalStyle />
+              <GlobalScrollbarStyle />
+              {/* 導航欄 */}
+              <div
+                className="navbar-container-wrapper"
+                style={navbarContainerStyle}
+              >
+                <Navbar />
+              </div>
+              <div className="App">
+                <BackgroundDecoration />
+                <div className="app-content">
+                  <AppRoutes />
+                </div>
+              </div>
+              {/* 全局通知容器 */}
+              <NotificationContainer position="top-right" />
+            </TransactionProvider>
+          </NotificationProvider>
+        </AnimationProvider>
       </FontProvider>
     </ThemeProvider>
   );
