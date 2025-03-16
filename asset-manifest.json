@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/nftswap/static/css/main.b94e0274.css",
-    "main.js": "/nftswap/static/js/main.4c54218b.js",
-    "static/js/455.bfcff850.chunk.js": "/nftswap/static/js/455.bfcff850.chunk.js",
-    "static/js/348.462ceb29.chunk.js": "/nftswap/static/js/348.462ceb29.chunk.js",
-    "static/js/300.92e050fc.chunk.js": "/nftswap/static/js/300.92e050fc.chunk.js",
-    "static/js/541.208d2e3f.chunk.js": "/nftswap/static/js/541.208d2e3f.chunk.js",
-    "static/js/785.718b1a15.chunk.js": "/nftswap/static/js/785.718b1a15.chunk.js",
+    "main.css": "/nftswap/static/css/main.css",
+    "main.js": "/nftswap/static/js/main.js",
+    "static/js/455.chunk.js": "/nftswap/static/js/455.chunk.js",
+    "static/js/348.chunk.js": "/nftswap/static/js/348.chunk.js",
+    "static/js/300.chunk.js": "/nftswap/static/js/300.chunk.js",
+    "static/js/541.chunk.js": "/nftswap/static/js/541.chunk.js",
+    "static/js/785.chunk.js": "/nftswap/static/js/785.chunk.js",
     "index.html": "/nftswap/index.html"
   },
   "entrypoints": [
-    "static/css/main.b94e0274.css",
-    "static/js/main.4c54218b.js"
+    "static/css/main.css",
+    "static/js/main.js"
   ]
 }
