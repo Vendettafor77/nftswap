@@ -4,6 +4,9 @@ import styled from "styled-components";
 import "./Navbar.css"; // 使用獨立的CSS文件
 import { clearSelectedNFT } from "../../pages/Home/components/sharedState";
 import GradientText from "../styled/GradientText";
+import { useWallet } from "../../contexts/WalletContext";
+import WalletModal from "../WalletConnect/WalletModal";
+import { formatAddress } from "../../utils/walletUtils";
 
 // 用於替換現有 CSS .logo 類的 styled-component
 const LogoContainer = styled(Link)`
@@ -21,8 +24,12 @@ const LogoContainer = styled(Link)`
  * @returns {JSX.Element} 導航欄組件
  */
 const Navbar = () => {
-  // 錢包連接狀態
-  const [connected, setConnected] = useState(false);
+  // 使用錢包上下文
+  const { account, isConnected, isConnecting } = useWallet();
+
+  // 錢包模態窗狀態
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+
   // 移動設備菜單狀態
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -41,6 +48,20 @@ const Navbar = () => {
     setMenuOpen(false);
     // 清除選中的NFT狀態
     clearSelectedNFT();
+  };
+
+  /**
+   * 開啟錢包連接模態窗
+   */
+  const openWalletModal = () => {
+    setIsWalletModalOpen(true);
+  };
+
+  /**
+   * 關閉錢包連接模態窗
+   */
+  const closeWalletModal = () => {
+    setIsWalletModalOpen(false);
   };
 
   return (
@@ -71,19 +92,20 @@ const Navbar = () => {
           </div>
 
           <div className="navbar-right">
-            {connected ? (
+            {isConnected ? (
               <button
                 className="wallet-button connected"
-                onClick={() => setConnected(false)}
+                onClick={openWalletModal}
               >
-                0x1234...5678
+                {formatAddress(account)}
               </button>
             ) : (
               <button
                 className="wallet-button"
-                onClick={() => setConnected(true)}
+                onClick={openWalletModal}
+                disabled={isConnecting}
               >
-                ウォレット接続
+                {isConnecting ? "接続中..." : "ウォレット接続"}
               </button>
             )}
 
@@ -97,6 +119,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* 錢包連接模態窗 */}
+      <WalletModal isOpen={isWalletModalOpen} onClose={closeWalletModal} />
     </div>
   );
 };

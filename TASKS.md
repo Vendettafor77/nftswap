@@ -6,7 +6,7 @@
 
 - **現狀**：✅ 基本框架已完成，適配ethers v6新特性
 - **任務**：
-  - ✅ 重構現有`nftSwap.js`以使用ethers v6最新特性
+  - ✅ 重構現有`nftSwap.js`以使用ethers v6最新特性∏
   - ✅ 添加事件監聽功能，處理合約事件
   - ✅ 實現錯誤處理和用戶友好的錯誤提示
   - ✅ 提供完整的交易狀態跟蹤（待處理、確認中、已確認、失敗）
@@ -284,22 +284,6 @@
 1. **NFT瀏覽與購買功能** ⚠️ 最高優先級
 
    - 將模擬的購買邏輯替換為實際合約調用
-   - 示例代碼:
-
-   ```jsx
-   // 在Home.js中
-   import { useNFTSwapContract } from "../hooks/useContract";
-
-   // 替換現有handleBuy函數
-   const handleBuy = async (nft) => {
-     const result = await purchaseNFT(
-       nft.contractAddress,
-       nft.tokenId,
-       nft.price
-     );
-     // 處理交易結果...
-   };
-   ```
 
 2. **NFT上架功能** ⚠️ 高優先級
 

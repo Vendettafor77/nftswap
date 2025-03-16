@@ -10,6 +10,7 @@ import { FontProvider } from "./contexts/FontContext";
 import { AnimationProvider } from "./contexts/AnimationContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { TransactionProvider } from "./contexts/TransactionContext";
+import { WalletProvider } from "./contexts/WalletContext";
 import NotificationContainer from "./components/Feedback/NotificationContainer";
 import "./App.css";
 
@@ -37,25 +38,27 @@ const App = () => {
       <FontProvider>
         <AnimationProvider>
           <NotificationProvider>
-            <TransactionProvider>
-              <GlobalStyle />
-              <GlobalScrollbarStyle />
-              {/* 導航欄 */}
-              <div
-                className="navbar-container-wrapper"
-                style={navbarContainerStyle}
-              >
-                <Navbar />
-              </div>
-              <div className="App">
-                <BackgroundDecoration />
-                <div className="app-content">
-                  <AppRoutes />
+            <WalletProvider>
+              <TransactionProvider>
+                <GlobalStyle />
+                <GlobalScrollbarStyle />
+                {/* 導航欄 */}
+                <div
+                  className="navbar-container-wrapper"
+                  style={navbarContainerStyle}
+                >
+                  <Navbar />
                 </div>
-              </div>
-              {/* 全局通知容器 */}
-              <NotificationContainer position="top-right" />
-            </TransactionProvider>
+                <div className="App">
+                  <BackgroundDecoration />
+                  <div className="app-content">
+                    <AppRoutes />
+                  </div>
+                </div>
+                {/* 全局通知容器 */}
+                <NotificationContainer position="top-right" />
+              </TransactionProvider>
+            </WalletProvider>
           </NotificationProvider>
         </AnimationProvider>
       </FontProvider>

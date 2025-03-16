@@ -145,6 +145,39 @@ const Message = styled.div`
   word-break: break-word;
 `;
 
+// 操作按鈕容器
+const ActionsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+`;
+
+// 操作按鈕
+const ActionButton = styled.button`
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: ${(props) =>
+    props.primary
+      ? getTypeColor(props.type, props.theme)
+      : getTypeBgColor(props.type, 0.2)};
+  color: ${(props) =>
+    props.primary ? "#fff" : getTypeColor(props.type, props.theme)};
+  border: 1px solid ${(props) => getTypeColor(props.type, props.theme)};
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 // 關閉按鈕樣式
 const CloseButton = styled.button`
   position: absolute;
@@ -236,6 +269,18 @@ const NotificationToast = ({
     }, 300);
   };
 
+  // 處理操作按鈕點擊
+  const handleActionClick = (action) => {
+    if (typeof action.onClick === "function") {
+      action.onClick();
+    }
+
+    // 如果設置了點擊後關閉，則關閉通知
+    if (action.closeOnClick !== false) {
+      handleClose();
+    }
+  };
+
   // 自動關閉
   useEffect(() => {
     if (autoClose) {
@@ -256,6 +301,22 @@ const NotificationToast = ({
       <ContentContainer>
         {notification.title && <Title>{notification.title}</Title>}
         <Message>{notification.message}</Message>
+
+        {/* 顯示操作按鈕 */}
+        {notification.actions && notification.actions.length > 0 && (
+          <ActionsContainer>
+            {notification.actions.map((action, index) => (
+              <ActionButton
+                key={index}
+                type={notification.type}
+                primary={index === 0}
+                onClick={() => handleActionClick(action)}
+              >
+                {action.label}
+              </ActionButton>
+            ))}
+          </ActionsContainer>
+        )}
       </ContentContainer>
 
       <CloseButton onClick={handleClose} />
