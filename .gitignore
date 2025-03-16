@@ -7,6 +7,7 @@ yarn.lock
 
 # 环境变量
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
@@ -28,11 +29,17 @@ frontend/dist/
 
 # 区块链/Hardhat特定
 artifacts/
+contracts/artifacts/
+build-info/
 cache/
 typechain/
 typechain-types/
 coverage/
 coverage.json
+deployments/
+.openzeppelin/
+.etherscan-args-*
+abis/
 
 # 本地开发
 .DS_Store
@@ -47,6 +54,8 @@ coverage.json
 # 测试
 test-results/
 junit.xml
+coverage/
+.coverage/
 
 # 编译输出
 *.d.ts
@@ -63,4 +72,12 @@ junit.xml
 # 其他
 .vercel
 .next/
+tmp/
+temp/
+
+# 合约私鑰和密鑰
+secrets.json
+mnemonic.txt
+private-keys.txt
+wallet.json
 
