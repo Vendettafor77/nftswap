@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/nftswap/static/css/main.b94e0274.css",
-    "main.js": "/nftswap/static/js/main.5900f82e.js",
+    "main.js": "/nftswap/static/js/main.8c52ac53.js",
     "static/js/455.bfcff850.chunk.js": "/nftswap/static/js/455.bfcff850.chunk.js",
     "static/js/348.462ceb29.chunk.js": "/nftswap/static/js/348.462ceb29.chunk.js",
     "static/js/300.92e050fc.chunk.js": "/nftswap/static/js/300.92e050fc.chunk.js",
@@ -11,6 +11,6 @@
   },
   "entrypoints": [
     "static/css/main.b94e0274.css",
-    "static/js/main.5900f82e.js"
+    "static/js/main.8c52ac53.js"
   ]
 }
