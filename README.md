@@ -1,5 +1,5 @@
 ブロックチェーン上でNFT（非代替性トークン）の取引を可能にする分散型プラットフォームです。
-![Logo](https://github.com/user-attachments/assets/c3a7e54a-ea9a-41de-9829-87cfc7df59a1){width=800}
+<img src="https://github.com/user-attachments/assets/c3a7e54a-ea9a-41de-9829-87cfc7df59a1" alt="Logo" width="800" />
 
 ## 📋 プロジェクト概要
 
