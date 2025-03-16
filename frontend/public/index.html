@@ -22,6 +22,28 @@
       rel="stylesheet"
     />
     <title>NFTスワップ</title>
+
+    <!-- GitHub Pages SPA 支持代碼 -->
+    <script type="text/javascript">
+      // 如果是重定向頁面，則重定向到真正的頁面
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
+
     <style>
       /* 移除滾動條樣式，由GlobalScrollbarStyle接管 */
       /* html::-webkit-scrollbar,
