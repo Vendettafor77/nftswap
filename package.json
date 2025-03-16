@@ -20,7 +20,7 @@
   ],
   "author": "",
   "license": "ISC",
-  "description": "NFT交換平台",
+  "description": "NFTスワッププラットフォーム",
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
