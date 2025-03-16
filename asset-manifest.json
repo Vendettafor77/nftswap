@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/nftswap/static/css/main.b94e0274.css",
-    "main.js": "/nftswap/static/js/main.8c52ac53.js",
+    "main.js": "/nftswap/static/js/main.1e79bbea.js",
     "static/js/455.bfcff850.chunk.js": "/nftswap/static/js/455.bfcff850.chunk.js",
     "static/js/348.462ceb29.chunk.js": "/nftswap/static/js/348.462ceb29.chunk.js",
     "static/js/300.92e050fc.chunk.js": "/nftswap/static/js/300.92e050fc.chunk.js",
     "static/js/541.208d2e3f.chunk.js": "/nftswap/static/js/541.208d2e3f.chunk.js",
-    "static/js/785.e770ac6d.chunk.js": "/nftswap/static/js/785.e770ac6d.chunk.js",
+    "static/js/785.1bc2214d.chunk.js": "/nftswap/static/js/785.1bc2214d.chunk.js",
     "index.html": "/nftswap/index.html"
   },
   "entrypoints": [
     "static/css/main.b94e0274.css",
-    "static/js/main.8c52ac53.js"
+    "static/js/main.1e79bbea.js"
   ]
 }
