@@ -21,8 +21,6 @@ export const ALTERNATE_IPFS_GATEWAYS = [
   "https://gateway.pinata.cloud/ipfs/",
   "https://gateway.ipfs.io/ipfs/",
   "https://ipfs.fleek.co/ipfs/",
-  "https://cloudflare-ipfs.com/ipfs/",
-  "https://ipfs.infura.io/ipfs/",
 ];
 
 /**

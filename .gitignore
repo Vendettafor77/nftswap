@@ -64,7 +64,10 @@ coverage/
 
 # 我们的特定目录
 .cursor/
+.cursor/rules/
 .VSCodeCounter/
+.github/ISSUE_TEMPLATE/
+ignition/modules/
 
 # IPFS 相关
 .ipfs/
