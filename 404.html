@@ -1,59 +1,32 @@
 <!doctype html>
-<html lang="ja">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1c2241" />
-    <meta name="robots" content="noads, noadvertise, notracker" />
-    <meta name="description" content="NFTスワッププラットフォーム" />
-    <meta name="resource-type" content="document" />
-    <meta name="application-name" content="NFTSwapPlatform" />
-    <title>NFTスワップ</title>
-    <style>
-      body {
-        background-color: #1c2241;
-        color: #ffffff;
-        font-family: "Noto Sans JP", sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-      }
-    </style>
+    <title>NFTSwap</title>
     <script type="text/javascript">
-      // リダイレクト処理
-      var segmentsToKeep = 1;
-      var loc = window.location;
-      loc.replace(
-        loc.protocol +
+      // 處理GitHub Pages的SPA應用刷新問題
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol +
           "//" +
-          loc.hostname +
-          (loc.port ? ":" + loc.port : "") +
-          loc.pathname
+          l.hostname +
+          (l.port ? ":" + l.port : "") +
+          l.pathname
             .split("/")
-            .slice(0, 1 + segmentsToKeep)
+            .slice(0, 1 + pathSegmentsToKeep)
             .join("/") +
           "/?/" +
-          loc.pathname
+          l.pathname
             .slice(1)
             .split("/")
-            .slice(segmentsToKeep)
+            .slice(pathSegmentsToKeep)
             .join("/")
             .replace(/&/g, "~and~") +
-          (loc.search ? "&" + loc.search.slice(1).replace(/&/g, "~and~") : "") +
-          loc.hash
+          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+          l.hash
       );
     </script>
   </head>
-  <body>
-    <div>
-      <h1>ページを読み込んでいます...</h1>
-      <p>
-        リダイレクトされない場合は、<a href="/">ここをクリック</a>してください。
-      </p>
-    </div>
-  </body>
+  <body></body>
 </html>
